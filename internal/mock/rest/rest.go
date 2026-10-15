@@ -82,8 +82,8 @@ func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// HttpStatus.valueOf rejects unknown codes after the response was built.
 		err = fmt.Errorf("unknown HTTP status code %d", resp.HTTPStatusCode)
 	}
-	e.recordEvent(req, id, resp, start)
 	if err != nil {
+		e.recordEvent(req, id, resp, start)
 		e.log.WarnContext(ctx, "REST service exception", "path", req.path, "method", id.method.ID, "err", err)
 		writeError(w, http.StatusInternalServerError, req.path)
 		return
@@ -94,6 +94,9 @@ func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		case <-ctx.Done():
 		}
 	}
+	// The event is created in a finally block after the delay, so its end
+	// date includes it.
+	e.recordEvent(req, id, resp, start)
 	accept, _ := headerValue(req.headers, "Accept")
 	writeResponse(w, resp, accept)
 	e.log.DebugContext(ctx, "REST mock request", "method", req.method, "path", req.path, "project", id.projectID,

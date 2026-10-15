@@ -155,7 +155,7 @@ func TestMockedStrategies(t *testing.T) {
 				response("R2", "B", xmlBody, func(r *domain.RestMockResponse) {
 					r.XPathExpressions = []domain.RestXPathExpression{{Expression: "//request/name[text()='Request']"}}
 				})),
-			call: call{method: "POST", path: mockBase + "/method/test", body: "<request><name>Request</name></request>"},
+			call:       call{method: "POST", path: mockBase + "/method/test", body: "<request><name>Request</name></request>"},
 			wantStatus: 200, wantBody: xmlBody,
 		},
 		{
@@ -196,8 +196,8 @@ func TestMockedStrategies(t *testing.T) {
 			wantStatus: 200, wantBody: "json",
 		},
 		{
-			name: "echo",
-			uri:  "/method/test",
+			name:   "echo",
+			uri:    "/method/test",
 			method: method("M1", domain.MethodPOST, func(m *domain.RestMethod) { m.Status = domain.RestMethodEcho }),
 			call: call{method: "POST", path: mockBase + "/method/test", body: "<request>\r\n</request>\r\n",
 				headers: map[string]string{"Content-Type": "application/json"}},
@@ -240,10 +240,10 @@ func TestMockedStrategies(t *testing.T) {
 			wantHeader: map[string]string{"Content-Encoding": "", "X-A": "2", "Content-Type": "text/plain;charset=UTF-8"},
 		},
 		{
-			name:   "default content type follows accept",
-			uri:    "/method/test",
-			method: method("M1", domain.MethodGET, nil, response("R1", "A", "{}", func(r *domain.RestMockResponse) { r.HTTPHeaders = nil })),
-			call:   call{method: "GET", path: mockBase + "/method/test", headers: map[string]string{"Accept": "application/json"}},
+			name:       "default content type follows accept",
+			uri:        "/method/test",
+			method:     method("M1", domain.MethodGET, nil, response("R1", "A", "{}", func(r *domain.RestMockResponse) { r.HTTPHeaders = nil })),
+			call:       call{method: "GET", path: mockBase + "/method/test", headers: map[string]string{"Accept": "application/json"}},
 			wantStatus: 200, wantBody: "{}", wantHeader: map[string]string{"Content-Type": "application/json"},
 		},
 		{
@@ -264,10 +264,10 @@ func TestMockedStrategies(t *testing.T) {
 			wantStatus: 200, wantBody: "a b|x|y|example.com|${RANDOM_X}",
 		},
 		{
-			name: "expressions disabled",
-			uri:  "/user",
+			name:   "expressions disabled",
+			uri:    "/user",
 			method: method("M1", domain.MethodGET, nil, response("R1", "A", "${URL_HOST()}")),
-			call: call{method: "GET", path: mockBase + "/user"}, wantStatus: 200, wantBody: "${URL_HOST()}",
+			call:   call{method: "GET", path: mockBase + "/user"}, wantStatus: 200, wantBody: "${URL_HOST()}",
 		},
 		{
 			name: "network delay",

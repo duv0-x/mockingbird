@@ -62,6 +62,8 @@ Normative words: **MUST** = required for parity, **SHOULD** = recommended,
 | D-14 | No health endpoints | `GET /healthz`, `GET /readyz` outside the context path |
 | D-15 | `server.mode.demo` disables admin controllers | Not supported |
 | D-16 | React SPA at `{ctx}/` with hash routes `#/web/...` | templ + htmx pages at `{ctx}/web/...` (§8); `{ctx}/` redirects to `{ctx}/web` |
+| D-17 | Forwarding (REST `RestClient`) fails with HTTP 500 when the target answers 4xx (`HttpURLConnection.getInputStream` throws) | Any status of the target is served/recorded as is |
+| D-18 | A mock body expression that throws (e.g. `${RANDOM_ENUM}` without values, `max=0`) fails the whole mock request with HTTP 500 | The expression is left in the body unchanged (§4.4) |
 
 Everything not listed here MUST behave like CastleMock.
 
@@ -579,9 +581,11 @@ Numbers printed by RANDOM_ENUM/arguments follow Java `Double.toString` (`1.0`, `
 
 ### 4.5 XPath / JSONPath (T2, `internal/mock/match`)
 
-- XPath 1.0 over a **non-namespace-aware** parse (Java `DocumentBuilderFactory` default):
-  element names include their prefix literally (`//soapenv:Body/ns:add` matches by qualified
-  name; `local-name()` works). `XPathMatches`: true if the result is a non-empty node set, or any
+- XPath 1.0 over a **non-namespace-aware** parse (Java `DocumentBuilderFactory` default). On
+  such a DOM, Xalan matches an unprefixed name test against the part of the qualified name
+  after the colon and cannot resolve prefixed name tests (no `NamespaceContext`): `//GetWhoIS`
+  selects `<web:GetWhoIS>` while `//web:GetWhoIS` never matches (`XPathUtilityTest`);
+  `local-name()` works. `XPathMatches`: true if the result is a non-empty node set, or any
   number/string/boolean result (Java tries NODESET, NUMBER, STRING, NODE, BOOLEAN in order and
   returns on the first that evaluates). Invalid XML → false.
 - JSONPath: Jayway semantics. `JSONPathMatches`: indefinite path → non-empty array; definite

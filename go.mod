@@ -9,6 +9,7 @@ require (
 	github.com/brianvoe/gofakeit/v7 v7.18.0
 	github.com/gin-gonic/gin v1.12.0
 	github.com/ohler55/ojg v1.28.7
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (

@@ -19,17 +19,19 @@ import (
 // arguments receive them in args. The locale argument is ignored: gofakeit
 // only generates English data.
 var fakerAPI = map[string]func(f *gofakeit.Faker, args fakerArgs) string{
-	"name.fullname":       func(f *gofakeit.Faker, _ fakerArgs) string { return f.FirstName() + " " + f.LastName() },
-	"name.name":           func(f *gofakeit.Faker, _ fakerArgs) string { return f.FirstName() + " " + f.LastName() },
-	"name.namewithmiddle": func(f *gofakeit.Faker, _ fakerArgs) string { return f.FirstName() + " " + f.FirstName() + " " + f.LastName() },
-	"name.firstname":      func(f *gofakeit.Faker, _ fakerArgs) string { return f.FirstName() },
-	"name.lastname":       func(f *gofakeit.Faker, _ fakerArgs) string { return f.LastName() },
-	"name.prefix":         func(f *gofakeit.Faker, _ fakerArgs) string { return f.NamePrefix() },
-	"name.suffix":         func(f *gofakeit.Faker, _ fakerArgs) string { return f.NameSuffix() },
-	"name.title":          func(f *gofakeit.Faker, _ fakerArgs) string { return f.JobTitle() },
-	"name.username":       func(f *gofakeit.Faker, _ fakerArgs) string { return f.Username() },
+	"name.fullname": func(f *gofakeit.Faker, _ fakerArgs) string { return f.FirstName() + " " + f.LastName() },
+	"name.name":     func(f *gofakeit.Faker, _ fakerArgs) string { return f.FirstName() + " " + f.LastName() },
+	"name.namewithmiddle": func(f *gofakeit.Faker, _ fakerArgs) string {
+		return f.FirstName() + " " + f.FirstName() + " " + f.LastName()
+	},
+	"name.firstname": func(f *gofakeit.Faker, _ fakerArgs) string { return f.FirstName() },
+	"name.lastname":  func(f *gofakeit.Faker, _ fakerArgs) string { return f.LastName() },
+	"name.prefix":    func(f *gofakeit.Faker, _ fakerArgs) string { return f.NamePrefix() },
+	"name.suffix":    func(f *gofakeit.Faker, _ fakerArgs) string { return f.NameSuffix() },
+	"name.title":     func(f *gofakeit.Faker, _ fakerArgs) string { return f.JobTitle() },
+	"name.username":  func(f *gofakeit.Faker, _ fakerArgs) string { return f.Username() },
 
-	"address.fulladdress":      func(f *gofakeit.Faker, _ fakerArgs) string { return f.Address().Address },
+	"address.fulladdress": func(f *gofakeit.Faker, _ fakerArgs) string { return f.Address().Address },
 	"address.streetaddress": func(f *gofakeit.Faker, args fakerArgs) string {
 		if args.bool(0) {
 			return f.Street() + " Apt. " + strconv.Itoa(f.Number(100, 999))
@@ -119,10 +121,10 @@ var fakerAPI = map[string]func(f *gofakeit.Faker, args fakerArgs) string{
 		return match.FormatJavaDouble(math.Round(v*p) / p)
 	},
 
-	"commerce.productname":   func(f *gofakeit.Faker, _ fakerArgs) string { return f.ProductName() },
-	"commerce.department":    func(f *gofakeit.Faker, _ fakerArgs) string { return f.ProductCategory() },
-	"commerce.color":         func(f *gofakeit.Faker, _ fakerArgs) string { return f.Color() },
-	"commerce.material":      func(f *gofakeit.Faker, _ fakerArgs) string { return f.Noun() },
+	"commerce.productname": func(f *gofakeit.Faker, _ fakerArgs) string { return f.ProductName() },
+	"commerce.department":  func(f *gofakeit.Faker, _ fakerArgs) string { return f.ProductCategory() },
+	"commerce.color":       func(f *gofakeit.Faker, _ fakerArgs) string { return f.Color() },
+	"commerce.material":    func(f *gofakeit.Faker, _ fakerArgs) string { return f.Noun() },
 	"commerce.price": func(f *gofakeit.Faker, args fakerArgs) string {
 		return strconv.FormatFloat(f.Price(args.float(0, 1), args.float(1, 100)), 'f', 2, 64)
 	},
