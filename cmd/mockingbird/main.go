@@ -49,14 +49,18 @@ func run(args []string, getenv func(string) string, stdout io.Writer) error {
 	if len(args) > 0 && !strings.HasPrefix(args[0], "-") {
 		cmd, args = args[0], args[1:]
 	}
-	cfg, err := config.Load(getenv)
-	if err != nil {
-		return err
-	}
 	switch cmd {
 	case "serve":
+		cfg, err := config.Load(getenv)
+		if err != nil {
+			return err
+		}
 		return serve(cfg)
 	case "import":
+		cfg, err := config.Load(getenv)
+		if err != nil {
+			return err
+		}
 		return importCastleMock(cfg, args, stdout)
 	case "version":
 		fmt.Fprintln(stdout, version)
@@ -173,12 +177,26 @@ func newRouter(cfg config.Config, logger *slog.Logger, m mounts) http.Handler {
 	r.Any(ctx+"/mock/soap/*path", gin.WrapH(m.soap))
 
 	g := r.Group(ctx, m.auth)
+	g.Use(limitBody(cfg.UploadMaxBytes))
 	m.api(g)
 	m.web(g)
 	if ctx != "" {
 		r.GET("/", func(c *gin.Context) { c.Redirect(http.StatusFound, ctx+"/") })
 	}
 	return r
+}
+
+// limitBody caps the request body of every route under the context path
+// (admin API and UI) at max bytes; the mock engines are mounted outside and
+// never hit this limit. Handlers see *http.MaxBytesError when they read past
+// the cap. max <= 0 disables the limit.
+func limitBody(max int64) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if max > 0 {
+			c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, max)
+		}
+		c.Next()
+	}
 }
 
 func requestLog(logger *slog.Logger) gin.HandlerFunc {
@@ -201,6 +219,15 @@ func importCastleMock(cfg config.Config, args []string, stdout io.Writer) error 
 	}
 	if *src == "" {
 		return errors.New("import: --castlemock <dir> is required")
+	}
+	// Fail on a bad source before opening (and possibly writing to) the target.
+	if info, err := os.Stat(*src); err != nil {
+		return fmt.Errorf("import: --castlemock %s: %w", *src, err)
+	} else if !info.IsDir() {
+		return fmt.Errorf("import: --castlemock %s: not a directory", *src)
+	}
+	if fs.NArg() > 0 {
+		return fmt.Errorf("import: unexpected argument %q", fs.Arg(0))
 	}
 	cfg.DataDir = *dataDir
 	cfg.SeedDir = ""
