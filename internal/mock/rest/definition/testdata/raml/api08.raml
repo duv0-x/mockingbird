@@ -1,0 +1,30 @@
+#%RAML 0.8
+title: Castle Mock RAML 0.8
+baseUri: http://castlemock.com/{version}
+version: v1
+/users:
+  get:
+    responses:
+      200:
+        headers:
+          X-Rate:
+            default: "10"
+        body:
+          application/json:
+            example: |
+              {"users": []}
+      404:
+        body:
+          application/json:
+            example: '{"error": "not found"}'
+  /{userId}:
+    get:
+      responses:
+        200:
+          body:
+            application/xml:
+              example: <user/>
+    delete:
+/empty:
+  /child:
+    put:

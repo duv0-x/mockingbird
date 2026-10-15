@@ -1,0 +1,20 @@
+{
+    "store": {
+        "book": [
+        {
+            "category": "fiction",
+            "author": "Author 1",
+            "title": "Book title 1",
+            "isbn": "1-553-21311-3",
+            "price": 8.99
+        },
+        {
+            "category": "fiction",
+            "author": "Author 2",
+            "title": "Book title 2",
+            "isbn": "1-395-19395-8",
+            "price": 22.99
+        }
+        ]
+    }
+}

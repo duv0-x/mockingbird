@@ -1,0 +1,25 @@
+#%RAML 1.0
+title: Castle Mock RAML 1.0
+mediaType: application/json
+/users:
+  displayName: Users
+  get:
+    displayName: List users
+    responses:
+      200:
+        body:
+          example:
+            users:
+              - name: Karl
+                active: true
+      500:
+  /{userId}:
+    patch:
+      responses:
+        default:
+          headers:
+            X-Id:
+              default: abc
+          body:
+            application/json:
+              example: '{"id": 1}'
