@@ -1,0 +1,8 @@
+# Keep the image build context small: the reference source tree and local
+# artifacts are not needed to compile the binary.
+.git/
+.castlemock-src/
+bin/
+.agents/
+node_modules/
+*.done

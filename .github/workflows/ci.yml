@@ -1,0 +1,60 @@
+# CI for mockingbird (SPEC.md §10, T6).
+#
+# 1. generated templ code must be committed and fresh: `templ generate`
+#    followed by `git diff --exit-code` fails the build on stale *_templ.go;
+# 2. go vet + go test -race on Go 1.26;
+# 3. the distroless image builds.
+
+name: CI
+
+on:
+  push:
+    branches: [main, "feature/**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: generate, vet, test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Install templ v0.3.977
+        run: |
+          go install github.com/a-h/templ/cmd/templ@v0.3.977
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      - name: Check *_templ.go are fresh
+        run: |
+          templ generate
+          git diff --exit-code
+
+      - name: Check formatting
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "gofmt needed:"; echo "$unformatted"
+            exit 1
+          fi
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: go test -race
+        run: go test -race ./...
+
+  image:
+    name: docker image
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build --build-arg VERSION=${{ github.sha }} -t mockingbird:ci .
