@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>mockingbird — core-banking SOAP Project</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-low": "#1a1c20",
+            "error": "#ffb4ab",
+            "surface-container-highest": "#333539",
+            "inverse-surface": "#e2e2e8",
+            "on-tertiary-fixed": "#2d1600",
+            "on-error": "#690005",
+            "primary-fixed-dim": "#3cddc7",
+            "surface-container": "#1e2024",
+            "on-tertiary-fixed-variant": "#6b3b00",
+            "error-container": "#93000a",
+            "secondary-container": "#1a4f47",
+            "surface-tint": "#3cddc7",
+            "on-primary-fixed": "#00201c",
+            "tertiary-container": "#ffac5a",
+            "tertiary": "#ffd1aa",
+            "surface-container-high": "#282a2e",
+            "on-surface-variant": "#bacac5",
+            "primary-container": "#2dd4bf",
+            "primary-fixed": "#62fae3",
+            "on-secondary-fixed": "#00201c",
+            "surface-variant": "#333539",
+            "on-tertiary-container": "#744000",
+            "on-secondary-fixed-variant": "#1a4f47",
+            "inverse-primary": "#006b5f",
+            "background": "#111317",
+            "tertiary-fixed-dim": "#ffb875",
+            "surface-bright": "#37393e",
+            "secondary-fixed": "#b8ede2",
+            "surface-dim": "#111317",
+            "primary": "#57f1db",
+            "on-surface": "#e2e2e8",
+            "on-primary-fixed-variant": "#005047",
+            "surface": "#111317",
+            "outline": "#859490",
+            "on-primary-container": "#00574d",
+            "secondary-fixed-dim": "#9cd1c6",
+            "on-error-container": "#ffdad6",
+            "tertiary-fixed": "#ffdcc0",
+            "on-background": "#e2e2e8",
+            "outline-variant": "#3c4a46",
+            "on-tertiary": "#4b2800",
+            "on-secondary-container": "#8bbfb5",
+            "on-secondary": "#003731",
+            "on-primary": "#003731",
+            "secondary": "#9cd1c6",
+            "surface-container-lowest": "#0c0e12",
+            "inverse-on-surface": "#2f3035"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "margin": "1.5rem",
+            "space-md": "0.75rem",
+            "space-xl": "1.5rem",
+            "gutter": "1.5rem",
+            "space-lg": "1rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "code-sm": ["JetBrains Mono"],
+            "label-sm": ["JetBrains Mono"],
+            "headline-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "headline-md": ["Inter"],
+            "body-sm": ["Inter"]
+          },
+          "fontSize": {
+            "code-sm": ["0.75rem", { "lineHeight": "1.125rem", "fontWeight": "400" }],
+            "label-sm": ["0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.05em", "fontWeight": "500" }],
+            "headline-lg": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "600" }],
+            "body-md": ["0.8125rem", { "lineHeight": "1.25rem", "fontWeight": "400" }],
+            "headline-md": ["1.125rem", { "lineHeight": "1.5rem", "fontWeight": "600" }],
+            "body-sm": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<header class="w-full h-12 px-space-xl flex items-center justify-between bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant sticky top-0 z-30">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs text-primary">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight">mockingbird</span>
+</div>
+</div>
+<div class="flex items-center gap-space-lg">
+<div class="relative hidden sm:flex items-center w-64">
+<span class="absolute left-2.5 text-on-surface-variant material-symbols-outlined text-sm">search</span>
+<input class="w-full h-8 bg-surface-container border border-outline-variant rounded text-body-md pl-8 pr-12 text-on-surface focus:outline-none focus:border-primary" placeholder="Search APIs, projects, ports..." type="text"/>
+<div class="absolute right-2 flex items-center gap-0.5">
+<kbd class="px-1 py-0.5 text-code-sm font-code-sm bg-surface-container-high text-on-surface-variant rounded border border-outline-variant">⌘</kbd>
+<kbd class="px-1 py-0.5 text-code-sm font-code-sm bg-surface-container-high text-on-surface-variant rounded border border-outline-variant">K</kbd>
+</div>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" title="Toggle theme">
+<span class="material-symbols-outlined text-base">dark_mode</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" title="Help">
+<span class="material-symbols-outlined text-base">help</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors relative" title="Notifications">
+<span class="material-symbols-outlined text-base">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+</div>
+<div class="flex items-center pl-2 border-l border-outline-variant">
+<img class="w-6 h-6 rounded-full object-cover border border-outline-variant" data-alt="Professional developer profile picture showing an administrator in a sleek dark mode office environment with soft teal ambient lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrcn_o7VkO7i5K7xKUEk3A3YjayMjyjuzZ8dcTXjVD4M7SqFU1r0A9nekmqUkf0ut_vGISxPJlACJSfEwI_RndBKXBGm3lc_ikIzT75zR5poWqWJ2htdORCXyPIYscnATBwzLHArHjNvIX8oxCnifQyaTNtoh9iRaDfs0_iHqAozm7Sj7Yv8ORgJDcbgBxO6Dq-B_tD2hl-Msy0U1xuwnUdWv2Tz8rDWjmanNEqBOgTP3xqaEaAM3fGyAC34-YDpM2sPRp_XJNoUU"/>
+</div>
+</div>
+</header>
+<!-- Main App Shell Layout -->
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="w-60 h-[calc(100vh-3rem)] flex flex-col justify-between p-space-sm bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant shrink-0 select-none overflow-y-auto">
+<div class="flex flex-col gap-1">
+<div class="px-space-sm py-2 mb-1">
+<div class="flex items-center justify-between">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">mockingbird</span>
+<span class="px-1.5 py-0.5 text-code-sm font-code-sm bg-surface-container border border-outline-variant text-on-surface-variant rounded">v1.4</span>
+</div>
+<span class="text-code-sm font-code-sm text-on-surface-variant mt-0.5 block">Local Instance</span>
+</div>
+<nav class="flex flex-col gap-0.5">
+<a class="flex items-center gap-2 px-space-sm py-1.5 bg-secondary-container dark:bg-secondary-container text-primary dark:text-primary font-medium rounded text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined text-base">folder_open</span>
+<span>Projects</span>
+</a>
+<a class="flex items-center gap-2 px-space-sm py-1.5 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined text-base">bolt</span>
+<span>Events</span>
+</a>
+<a class="flex items-center gap-2 px-space-sm py-1.5 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined text-base">group</span>
+<span>Users</span>
+</a>
+<a class="flex items-center gap-2 px-space-sm py-1.5 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined text-base">settings</span>
+<span>System</span>
+</a>
+</nav>
+<div class="mt-4 pt-3 border-t border-outline-variant flex flex-col gap-1">
+<div class="flex items-center justify-between px-space-sm py-1">
+<span class="text-label-sm uppercase text-on-surface-variant">Project Tree</span>
+<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+<!-- Project Tree Nested Items -->
+<div class="flex flex-col gap-0.5 mt-1 font-code-sm text-code-sm">
+<div class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container rounded text-on-surface font-medium cursor-pointer">
+<span class="material-symbols-outlined text-sm">arrow_drop_down</span>
+<span class="material-symbols-outlined text-sm text-primary">dns</span>
+<span class="truncate">core-banking</span>
+</div>
+<div class="flex flex-col pl-4 gap-0.5 mt-0.5 border-l border-outline-variant/50 ml-3">
+<a class="flex items-center gap-2 px-2 py-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors" href="#">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="truncate">AccountServicePort</span>
+</a>
+<a class="flex items-center gap-2 px-2 py-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors" href="#">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="truncate">CustomerServicePort</span>
+</a>
+<a class="flex items-center gap-2 px-2 py-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors" href="#">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span class="truncate">LoanServicePort</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-3 border-t border-outline-variant flex flex-col gap-2">
+<button class="w-full h-8 bg-surface-container hover:bg-surface-container-high text-on-surface font-medium text-body-md rounded border border-outline-variant flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+<span>New Mock</span>
+</button>
+<div class="flex items-center justify-between text-code-sm font-code-sm text-on-surface-variant px-1">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">menu_book</span>
+<span>Docs</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">tag</span>
+<span>v1.4.2-preview</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto bg-background p-space-gutter flex flex-col gap-space-xl">
+<!-- Breadcrumb -->
+<div class="flex items-center gap-2 text-body-sm text-on-surface-variant font-code-sm">
+<a class="hover:text-on-surface transition-colors" href="#">Projects</a>
+<span>/</span>
+<span class="text-on-surface">core-banking</span>
+</div>
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-outline-variant">
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center gap-3">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">core-banking</h1>
+<span class="px-2 py-0.5 text-label-sm uppercase font-code-sm bg-surface-container border border-outline-variant text-on-surface-variant rounded">SOAP</span>
+</div>
+<p class="text-body-md text-on-surface-variant">Core banking SOAP services</p>
+<div class="flex items-center gap-2 mt-1">
+<span class="font-code-sm text-code-sm text-on-surface-variant bg-surface-container px-2 py-1 rounded border border-outline-variant select-all">http://mockingbird:8080/castlemock/mock/soap/project/Cb71</span>
+<button class="p-1 hover:bg-surface-container rounded text-on-surface-variant hover:text-on-surface transition-colors" title="Copy endpoint">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="h-8 px-3 bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant rounded font-medium text-body-md flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-sm">upload</span>
+<span>Upload WSDL</span>
+</button>
+<button class="h-8 px-3 bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant rounded font-medium text-body-md flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-sm">edit</span>
+<span>Edit</span>
+</button>
+<button class="h-8 px-3 bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary rounded font-medium text-body-md flex items-center gap-1.5 transition-colors shadow-sm">
+<span>Set mode</span>
+<span class="material-symbols-outlined text-sm">arrow_drop_down</span>
+</button>
+</div>
+</div>
+<!-- Tabs Navigation -->
+<div class="flex items-center gap-6 border-b border-outline-variant">
+<button class="pb-3 text-body-md font-medium text-primary border-b-2 border-primary flex items-center gap-2">
+<span>Ports</span>
+<span class="px-1.5 py-0.2 bg-primary-container/20 text-primary rounded text-code-sm font-code-sm">3</span>
+</button>
+<button class="pb-3 text-body-md font-medium text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-2">
+<span>WSDL &amp; resources</span>
+<span class="px-1.5 py-0.2 bg-surface-container text-on-surface-variant rounded text-code-sm font-code-sm">4</span>
+</button>
+<button class="pb-3 text-body-md font-medium text-on-surface-variant hover:text-on-surface transition-colors">
+<span>Events</span>
+</button>
+<button class="pb-3 text-body-md font-medium text-on-surface-variant hover:text-on-surface transition-colors">
+<span>Settings</span>
+</button>
+</div>
+<!-- Ports Table Section -->
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-headline-md text-on-surface">SOAP Ports</h2>
+<div class="flex items-center gap-2">
+<span class="text-code-sm font-code-sm text-on-surface-variant">Filter ports...</span>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant rounded overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container border-b border-outline-variant h-9 text-label-sm uppercase font-code-sm text-on-surface-variant">
+<th class="w-10 px-3"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></th>
+<th class="px-3">PORT NAME</th>
+<th class="px-3">SOAP VERSION</th>
+<th class="px-3">OPERATIONS</th>
+<th class="px-3 w-72">MODES</th>
+<th class="w-12 px-3 text-right"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/60 font-body-md">
+<!-- Row 1: AccountServicePort (Expanded) -->
+<tr class="h-9 bg-surface-container/40 hover:bg-surface-container transition-colors">
+<td class="px-3"><input checked="" class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="px-3 font-code-sm font-medium text-on-surface flex items-center gap-2 h-9">
+<span class="material-symbols-outlined text-sm text-primary">arrow_drop_down</span>
+<span>AccountServicePort</span>
+</td>
+<td class="px-3">
+<span class="px-2 py-0.5 text-code-sm font-code-sm bg-surface-container border border-outline-variant text-on-surface-variant rounded">SOAP 1.1</span>
+</td>
+<td class="px-3 font-code-sm text-on-surface-variant">12 ops</td>
+<td class="px-3">
+<div class="flex flex-col gap-1">
+<div class="w-full h-1.5 flex rounded-full overflow-hidden bg-surface-container-highest">
+<div class="bg-primary h-full" style="width: 80%" title="10 mocked"></div>
+<div class="bg-blue-400 h-full" style="width: 10%" title="1 forwarded"></div>
+<div class="bg-gray-500 h-full" style="width: 10%" title="1 disabled"></div>
+</div>
+<span class="text-code-sm font-code-sm text-on-surface-variant">10 mocked · 1 forwarded · 1 disabled</span>
+</div>
+</td>
+<td class="px-3 text-right">
+<button class="text-on-surface-variant hover:text-on-surface p-1"><span class="material-symbols-outlined text-sm">more_vert</span></button>
+</td>
+</tr>
+<!-- Expanded Sub-table for AccountServicePort -->
+<tr class="bg-surface-container-lowest">
+<td class="p-0" colspan="6">
+<div class="py-2 px-6 border-b border-outline-variant bg-surface-container/20">
+<table class="w-full text-left">
+<thead>
+<tr class="text-label-sm uppercase font-code-sm text-on-surface-variant h-8 border-b border-outline-variant/40">
+<th class="w-8"></th>
+<th class="px-2">OPERATION NAME</th>
+<th class="px-2">STATUS / MODE</th>
+<th class="px-2">RESPONSE STRATEGY</th>
+<th class="px-2">RESPONSES</th>
+<th class="w-20 text-right">ACTIONS</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30 font-code-sm">
+<!-- Op 1 -->
+<tr class="h-8 hover:bg-surface-container transition-colors">
+<td class="w-8 text-center text-blue-400"><span class="material-symbols-outlined text-xs">subdirectory_arrow_right</span></td>
+<td class="px-2 font-medium text-on-surface">GetBalance</td>
+<td class="px-2">
+<span class="px-1.5 py-0.5 text-code-sm bg-blue-950 text-blue-300 border border-blue-800 rounded">FORWARDED</span>
+</td>
+<td class="px-2">
+<span class="px-1.5 py-0.5 text-code-sm bg-surface-container border border-outline-variant text-on-surface-variant rounded">XPATH_INPUT</span>
+</td>
+<td class="px-2 text-on-surface-variant">3</td>
+<td class="px-2 text-right">
+<button class="text-primary hover:underline text-code-sm">Configure</button>
+</td>
+</tr>
+<!-- Op 2 -->
+<tr class="h-8 hover:bg-surface-container transition-colors">
+<td class="w-8 text-center text-primary"><span class="material-symbols-outlined text-xs">subdirectory_arrow_right</span></td>
+<td class="px-2 font-medium text-on-surface">GetStatement</td>
+<td class="px-2">
+<span class="px-1.5 py-0.5 text-code-sm bg-primary-container/20 text-primary border border-primary/30 rounded">MOCKED</span>
+</td>
+<td class="px-2">
+<span class="px-1.5 py-0.5 text-code-sm bg-surface-container border border-outline-variant text-on-surface-variant rounded">SEQUENCE</span>
+</td>
+<td class="px-2 text-on-surface-variant">2</td>
+<td class="px-2 text-right">
+<button class="text-primary hover:underline text-code-sm">Configure</button>
+</td>
+</tr>
+<!-- Op 3 -->
+<tr class="h-8 hover:bg-surface-container transition-colors">
+<td class="w-8 text-center text-primary"><span class="material-symbols-outlined text-xs">subdirectory_arrow_right</span></td>
+<td class="px-2 font-medium text-on-surface">TransferFunds</td>
+<td class="px-2">
+<span class="px-1.5 py-0.5 text-code-sm bg-primary-container/20 text-primary border border-primary/30 rounded">MOCKED</span>
+</td>
+<td class="px-2">
+<span class="px-1.5 py-0.5 text-code-sm bg-surface-container border border-outline-variant text-on-surface-variant rounded">RANDOM</span>
+</td>
+<td class="px-2 text-on-surface-variant">4</td>
+<td class="px-2 text-right">
+<button class="text-primary hover:underline text-code-sm">Configure</button>
+</td>
+</tr>
+<!-- Op 4 -->
+<tr class="h-8 hover:bg-surface-container transition-colors">
+<td class="w-8 text-center text-gray-500"><span class="material-symbols-outlined text-xs">subdirectory_arrow_right</span></td>
+<td class="px-2 font-medium text-on-surface-variant">CloseAccount</td>
+<td class="px-2">
+<span class="px-1.5 py-0.5 text-code-sm bg-surface-container border border-outline-variant text-on-surface-variant rounded">DISABLED</span>
+</td>
+<td class="px-2">
+<span class="px-1.5 py-0.5 text-code-sm bg-surface-container border border-outline-variant text-on-surface-variant rounded">RANDOM</span>
+</td>
+<td class="px-2 text-on-surface-variant">1</td>
+<td class="px-2 text-right">
+<button class="text-primary hover:underline text-code-sm">Configure</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</td>
+</tr>
+<!-- Row 2: CustomerServicePort -->
+<tr class="h-9 hover:bg-surface-container/60 transition-colors">
+<td class="px-3"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="px-3 font-code-sm font-medium text-on-surface flex items-center gap-2 h-9">
+<span class="material-symbols-outlined text-sm text-on-surface-variant">arrow_right</span>
+<span>CustomerServicePort</span>
+</td>
+<td class="px-3">
+<span class="px-2 py-0.5 text-code-sm font-code-sm bg-surface-container border border-outline-variant text-on-surface-variant rounded">SOAP 1.2</span>
+</td>
+<td class="px-3 font-code-sm text-on-surface-variant">8 ops</td>
+<td class="px-3">
+<div class="flex flex-col gap-1">
+<div class="w-full h-1.5 flex rounded-full overflow-hidden bg-surface-container-highest">
+<div class="bg-primary h-full" style="width: 100%" title="8 mocked"></div>
+</div>
+<span class="text-code-sm font-code-sm text-on-surface-variant">8 mocked</span>
+</div>
+</td>
+<td class="px-3 text-right">
+<button class="text-on-surface-variant hover:text-on-surface p-1"><span class="material-symbols-outlined text-sm">more_vert</span></button>
+</td>
+</tr>
+<!-- Row 3: LoanServicePort -->
+<tr class="h-9 hover:bg-surface-container/60 transition-colors">
+<td class="px-3"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="px-3 font-code-sm font-medium text-on-surface flex items-center gap-2 h-9">
+<span class="material-symbols-outlined text-sm text-on-surface-variant">arrow_right</span>
+<span>LoanServicePort</span>
+</td>
+<td class="px-3">
+<span class="px-2 py-0.5 text-code-sm font-code-sm bg-surface-container border border-outline-variant text-on-surface-variant rounded">SOAP 1.1</span>
+</td>
+<td class="px-3 font-code-sm text-on-surface-variant">24 ops</td>
+<td class="px-3">
+<div class="flex flex-col gap-1">
+<div class="w-full h-1.5 flex rounded-full overflow-hidden bg-surface-container-highest">
+<div class="bg-primary h-full" style="width: 83%" title="20 mocked"></div>
+<div class="bg-amber-500 h-full" style="width: 17%" title="4 recording"></div>
+</div>
+<span class="text-code-sm font-code-sm text-on-surface-variant">20 mocked · 4 recording</span>
+</div>
+</td>
+<td class="px-3 text-right">
+<button class="text-on-surface-variant hover:text-on-surface p-1"><span class="material-symbols-outlined text-sm">more_vert</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- WSDL Resources Card Section -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-lg flex flex-col gap-4 mt-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">description</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">WSDL resources</h3>
+</div>
+<span class="text-code-sm font-code-sm text-on-surface-variant">2 files attached</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+<!-- File 1 -->
+<div class="bg-surface border border-outline-variant rounded p-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">code</span>
+<div class="flex flex-col">
+<span class="font-code-sm font-medium text-on-surface">AccountService.wsdl</span>
+<span class="text-code-sm text-on-surface-variant">WSDL Definition</span>
+</div>
+</div>
+<button class="h-7 px-2.5 bg-surface-container hover:bg-surface-container-high text-on-surface rounded border border-outline-variant text-body-sm flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-xs">download</span>
+<span>Download</span>
+</button>
+</div>
+<!-- File 2 -->
+<div class="bg-surface border border-outline-variant rounded p-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">schema</span>
+<div class="flex flex-col">
+<span class="font-code-sm font-medium text-on-surface">common-types.xsd</span>
+<span class="text-code-sm text-on-surface-variant">XML Schema</span>
+</div>
+</div>
+<button class="h-7 px-2.5 bg-surface-container hover:bg-surface-container-high text-on-surface rounded border border-outline-variant text-body-sm flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-xs">download</span>
+<span>Download</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

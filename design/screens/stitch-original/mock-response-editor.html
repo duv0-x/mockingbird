@@ -1,0 +1,450 @@
+<html class="dark"><head>
+<meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "tertiary-fixed-dim": "#ffb875",
+          "surface-container-low": "#1a1c20",
+          "secondary-container": "#1a4f47",
+          "inverse-surface": "#e2e2e8",
+          "surface-container-lowest": "#0c0e12",
+          "on-secondary-container": "#8bbfb5",
+          "on-background": "#e2e2e8",
+          "primary-container": "#2dd4bf",
+          "on-error-container": "#ffdad6",
+          "outline-variant": "#3c4a46",
+          "secondary": "#9cd1c6",
+          "inverse-on-surface": "#2f3035",
+          "background": "#111317",
+          "on-tertiary-fixed-variant": "#6b3b00",
+          "secondary-fixed": "#b8ede2",
+          "on-primary-container": "#00574d",
+          "tertiary": "#ffd1aa",
+          "surface-tint": "#3cddc7",
+          "primary": "#57f1db",
+          "on-tertiary-container": "#744000",
+          "on-primary-fixed": "#00201c",
+          "on-surface-variant": "#bacac5",
+          "tertiary-container": "#ffac5a",
+          "primary-fixed-dim": "#3cddc7",
+          "on-primary-fixed-variant": "#005047",
+          "on-error": "#690005",
+          "tertiary-fixed": "#ffdcc0",
+          "error": "#ffb4ab",
+          "surface-variant": "#333539",
+          "on-surface": "#e2e2e8",
+          "surface-dim": "#111317",
+          "surface-container-highest": "#333539",
+          "surface-container-high": "#282a2e",
+          "on-primary": "#003731",
+          "surface": "#111317",
+          "surface-container": "#1e2024",
+          "on-tertiary": "#4b2800",
+          "inverse-primary": "#006b5f",
+          "on-tertiary-fixed": "#2d1600",
+          "on-secondary": "#003731",
+          "surface-bright": "#37393e",
+          "secondary-fixed-dim": "#9cd1c6",
+          "primary-fixed": "#62fae3",
+          "on-secondary-fixed": "#00201c",
+          "outline": "#859490",
+          "error-container": "#93000a",
+          "on-secondary-fixed-variant": "#1a4f47"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "space-md": "0.75rem",
+          "space-xs": "0.25rem",
+          "margin": "1.5rem",
+          "space-xl": "1.5rem",
+          "gutter": "1.5rem",
+          "space-sm": "0.5rem",
+          "space-lg": "1rem"
+        },
+        "fontFamily": {
+          "body-md": ["Inter"],
+          "label-sm": ["JetBrains Mono"],
+          "headline-md": ["Inter"],
+          "body-sm": ["Inter"],
+          "headline-lg": ["Inter"],
+          "code-sm": ["JetBrains Mono"]
+        },
+        "fontSize": {
+          "body-md": ["0.8125rem", { "lineHeight": "1.25rem", "fontWeight": "400" }],
+          "label-sm": ["0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.05em", "fontWeight": "500" }],
+          "headline-md": ["1.125rem", { "lineHeight": "1.5rem", "fontWeight": "600" }],
+          "body-sm": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "400" }],
+          "headline-lg": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "600" }],
+          "code-sm": ["0.75rem", { "lineHeight": "1.125rem", "fontWeight": "400" }]
+        }
+      }
+    }
+  }
+</script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="w-full h-12 px-space-xl flex items-center justify-between bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant sticky top-0 z-50">
+<div class="flex items-center space-x-space-md">
+<div class="flex items-center space-x-space-xs">
+<span class="material-symbols-outlined text-primary text-headline-lg" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight">mockingbird</span>
+</div>
+<div class="relative ml-space-lg">
+<div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">search</span>
+</div>
+<input class="w-64 h-7 pl-8 pr-3 bg-surface-container border border-outline-variant rounded text-body-sm text-on-surface placeholder-on-surface-variant focus:outline-none focus:border-primary" placeholder="Search mocks, routes... (⌘K)" type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-space-md">
+<button class="text-on-surface-variant hover:text-on-surface transition-colors duration-150 p-1 rounded" title="Toggle theme">
+<span class="material-symbols-outlined text-base">dark_mode</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors duration-150 p-1 rounded" title="Help">
+<span class="material-symbols-outlined text-base">help</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors duration-150 p-1 rounded relative" title="Notifications">
+<span class="material-symbols-outlined text-base">notifications</span>
+<span class="absolute top-1 right-1 w-1.5 h-1.5 bg-primary rounded-full"></span>
+</button>
+<div class="h-4 w-px bg-outline-variant mx-1"></div>
+<div class="flex items-center space-x-space-sm cursor-pointer">
+<img class="w-6 h-6 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot avatar of an admin software user in a clean dark mode developer environment, neutral background, sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9wOTvNyU-pqPNe3MtyMYlH8qyNe7aStcVBzrssiOKpRhyqi7L4BQP-hfFNw8Dbba6Itn48LT1pVefKnfr9LZyCW3LQk6Z1GNPI17_B6f--Gh_jJw9fZDbstfiI_ien11ldYEQ9yDzVa_i1FVMzZ8De0iTBBDX6ogXdluGVv-EIg-1uOJ2LiTlAgVv5bk5kqVp1NIoI4A2JKck7tPUXstIRaJg-bJpEom-4wj2RXmqvEtd6dfWo1t7VBKqrgqaD489Z5DVckUTiIw"/>
+<span class="text-body-sm font-medium text-on-surface">admin</span>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="w-60 h-[calc(100vh-3rem)] flex flex-col justify-between p-space-sm bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant flex-shrink-0 select-none">
+<div class="flex flex-col space-y-space-xs">
+<div class="px-space-xs py-space-xs mb-space-xs flex items-center justify-between text-on-surface-variant">
+<span class="font-label-sm uppercase tracking-wider">Workspace</span>
+<span class="text-label-sm font-mono">Local Instance</span>
+</div>
+<!-- Primary Nav Items -->
+<a class="flex items-center space-x-space-sm px-space-sm py-1.5 bg-secondary-container dark:bg-secondary-container text-primary dark:text-primary font-medium rounded transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span class="text-body-md">Projects</span>
+</a>
+<a class="flex items-center space-x-space-sm px-space-sm py-1.5 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-base">bolt</span>
+<span class="text-body-md">Events</span>
+</a>
+<a class="flex items-center space-x-space-sm px-space-sm py-1.5 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-base">group</span>
+<span class="text-body-md">Users</span>
+</a>
+<a class="flex items-center space-x-space-sm px-space-sm py-1.5 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-base">settings</span>
+<span class="text-body-md">System</span>
+</a>
+<!-- Project tree for payments-gateway -->
+<div class="pt-space-md pb-space-xs px-space-xs">
+<div class="text-label-sm text-on-surface-variant uppercase mb-space-xs">Project Tree</div>
+<div class="font-mono text-body-sm space-y-1 text-on-surface-variant">
+<div class="flex items-center space-x-1 text-primary cursor-pointer hover:text-primary">
+<span class="material-symbols-outlined text-xs">expand_more</span>
+<span class="material-symbols-outlined text-xs">folder</span>
+<span class="truncate">payments-gateway</span>
+</div>
+<div class="pl-4 space-y-1">
+<div class="flex items-center space-x-1 cursor-pointer hover:text-on-surface">
+<span class="material-symbols-outlined text-xs">expand_more</span>
+<span class="material-symbols-outlined text-xs">folder_open</span>
+<span class="text-on-surface">payments-v1</span>
+</div>
+<div class="pl-4 space-y-1">
+<div class="flex items-center space-x-1 cursor-pointer hover:text-on-surface">
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="material-symbols-outlined text-xs text-secondary">api</span>
+<span>POST /charges</span>
+</div>
+<div class="flex items-center space-x-1 bg-surface-container px-1 py-0.5 rounded text-primary cursor-pointer">
+<span class="material-symbols-outlined text-xs">expand_more</span>
+<span class="material-symbols-outlined text-xs text-primary" style="font-variation-settings: 'FILL' 1;">api</span>
+<span class="font-medium truncate">/customers/{id}</span>
+</div>
+<div class="pl-4 space-y-1">
+<div class="flex items-center space-x-1 cursor-pointer hover:text-on-surface">
+<span class="material-symbols-outlined text-xs text-success">subdirectory_arrow_right</span>
+<span class="text-on-surface font-semibold bg-surface-container-high px-1 rounded">Get customer</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col space-y-space-sm pt-space-md border-t border-outline-variant">
+<button class="w-full h-8 bg-surface-container hover:bg-surface-container-high text-on-surface text-body-sm font-medium rounded flex items-center justify-center space-x-space-xs transition-colors border border-outline-variant">
+<span class="material-symbols-outlined text-sm">add</span>
+<span>New Mock</span>
+</button>
+<div class="flex items-center justify-between text-label-sm text-on-surface-variant px-space-xs">
+<div class="flex items-center space-x-1 hover:text-on-surface cursor-pointer">
+<span class="material-symbols-outlined text-xs">menu_book</span>
+<span>Docs</span>
+</div>
+<div class="flex items-center space-x-1 font-mono text-primary bg-secondary-container px-1.5 py-0.5 rounded">
+<span class="material-symbols-outlined text-xs">tag</span>
+<span>v1.4.2-preview</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto bg-background p-space-xl flex flex-col space-y-space-lg pb-20">
+<!-- Breadcrumb -->
+<div class="flex items-center space-x-2 text-body-sm text-on-surface-variant font-mono">
+<span class="hover:text-on-surface cursor-pointer">Projects</span>
+<span>/</span>
+<span class="hover:text-on-surface cursor-pointer">payments-gateway</span>
+<span>/</span>
+<span class="hover:text-on-surface cursor-pointer">payments-v1</span>
+<span>/</span>
+<span>/customers/{id}</span>
+<span>/</span>
+<span class="text-on-surface">Get customer</span>
+<span>/</span>
+<span class="text-primary font-semibold bg-secondary-container px-1.5 py-0.5 rounded">customer (VIP)</span>
+</div>
+<!-- Header -->
+<div class="flex items-center justify-between border-b border-outline-variant pb-space-md">
+<div class="flex items-center space-x-space-md">
+<h1 class="font-headline-lg text-headline-lg text-on-surface flex items-center space-x-space-sm">
+<span>customer (VIP)</span>
+</h1>
+<span class="px-2 py-0.5 bg-secondary-container text-primary font-mono text-label-sm rounded font-bold border border-outline-variant">200</span>
+<div class="flex items-center space-x-2 bg-surface-container px-2.5 py-1 rounded border border-outline-variant">
+<span class="text-body-sm font-medium text-on-surface-variant">ENABLED</span>
+<button class="w-8 h-4 bg-primary rounded-full relative transition-colors focus:outline-none">
+<span class="absolute right-0.5 top-0.5 w-3 h-3 bg-surface rounded-full transition-transform"></span>
+</button>
+</div>
+</div>
+<div class="flex items-center space-x-space-sm">
+<button class="h-8 px-3 bg-surface-container hover:bg-surface-container-high text-on-surface text-body-sm font-medium rounded border border-outline-variant flex items-center space-x-1 transition-colors">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+<span>Duplicate</span>
+</button>
+<button class="h-8 px-3 bg-transparent hover:bg-error-container/20 text-error text-body-sm font-medium rounded border border-error/30 flex items-center space-x-1 transition-colors">
+<span class="material-symbols-outlined text-sm">delete</span>
+<span>Delete</span>
+</button>
+</div>
+</div>
+<!-- 12-Column Grid Layout -->
+<div class="grid grid-cols-12 gap-space-lg">
+<!-- LEFT 8 cols -->
+<div class="col-span-8 flex flex-col space-y-space-md">
+<!-- Card "Body" -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg overflow-hidden flex flex-col">
+<!-- Header strip -->
+<div class="bg-surface-container px-space-md py-2 border-b border-outline-variant flex items-center justify-between">
+<div class="flex items-center space-x-space-sm">
+<span class="text-body-sm font-semibold text-on-surface">Body</span>
+<div class="flex bg-surface border border-outline-variant rounded overflow-hidden">
+<button class="px-2.5 py-0.5 bg-surface-container text-primary text-label-sm font-mono border-r border-outline-variant font-medium">JSON</button>
+<button class="px-2.5 py-0.5 text-on-surface-variant text-label-sm font-mono hover:text-on-surface border-r border-outline-variant transition-colors">XML</button>
+<button class="px-2.5 py-0.5 text-on-surface-variant text-label-sm font-mono hover:text-on-surface transition-colors">TEXT</button>
+</div>
+</div>
+<div class="flex items-center space-x-space-sm">
+<button class="text-on-surface-variant hover:text-on-surface text-body-sm px-2 py-0.5 rounded bg-surface border border-outline-variant flex items-center space-x-1">
+<span class="material-symbols-outlined text-xs">format_align_left</span>
+<span>Format</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface text-body-sm px-2 py-0.5 rounded bg-surface border border-outline-variant flex items-center space-x-1">
+<span class="material-symbols-outlined text-xs">wrap_text</span>
+<span>Wrap</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface text-body-sm px-2 py-0.5 rounded bg-surface border border-outline-variant flex items-center space-x-1">
+<span class="material-symbols-outlined text-xs">content_copy</span>
+<span>Copy</span>
+</button>
+</div>
+</div>
+<!-- Code editor with line numbers -->
+<div class="bg-[#12151B] p-space-md font-mono text-[12.5px] leading-relaxed overflow-x-auto text-on-surface flex">
+<!-- Line numbers -->
+<div class="select-none text-right pr-4 text-outline-variant font-mono text-xs space-y-0.5">
+<div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+</div>
+<!-- Code content with syntax highlighting -->
+<div class="flex-1 space-y-0.5 whitespace-pre font-mono text-[#E2E2E8]">
+<div>{</div>
+<div class="pl-4"><span class="text-[#57F1DB]">"id"</span>: <span class="bg-[#1A4F47]/60 text-primary px-1 rounded border border-primary/30">${PATH_PARAMETER(key="id")}</span>,</div>
+<div class="pl-4"><span class="text-[#57F1DB]">"name"</span>: <span class="text-[#8BBFB5]">"Ada Lovelace"</span>,</div>
+<div class="pl-4"><span class="text-[#57F1DB]">"tier"</span>: <span class="text-[#8BBFB5]">"vip"</span>,</div>
+<div class="pl-4"><span class="text-[#57F1DB]">"balance"</span>: <span class="text-[#FFB875]">1520.75</span>,</div>
+<div class="pl-4"><span class="text-[#57F1DB]">"active"</span>: <span class="text-[#FFD1AA]">true</span>,</div>
+<div class="pl-4"><span class="text-[#57F1DB]">"createdAt"</span>: <span class="bg-[#1A4F47]/60 text-primary px-1 rounded border border-primary/30">${NOW(format="yyyy-MM-dd")}</span>,</div>
+<div class="pl-4"><span class="text-[#57F1DB]">"requestId"</span>: <span class="bg-[#1A4F47]/60 text-primary px-1 rounded border border-primary/30">${RANDOM_UUID()}</span></div>
+<div>}</div>
+</div>
+</div>
+</div>
+<!-- Tabs and Content Table Section -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg flex flex-col">
+<!-- Tabs Header -->
+<div class="flex items-center border-b border-outline-variant px-space-md">
+<button class="py-3 px-space-md text-body-sm font-medium text-primary border-b-2 border-primary -mb-px flex items-center space-x-1.5">
+<span>Headers</span>
+<span class="bg-secondary-container text-primary text-label-sm px-1.5 py-0.2 rounded-full font-mono">2</span>
+</button>
+<button class="py-3 px-space-md text-body-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors flex items-center space-x-1.5">
+<span>Matching</span>
+<span class="bg-surface-container text-on-surface-variant text-label-sm px-1.5 py-0.2 rounded-full font-mono">1</span>
+</button>
+<button class="py-3 px-space-md text-body-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
+<span>Content encoding</span>
+</button>
+</div>
+<!-- Headers Table -->
+<div class="p-space-md flex flex-col space-y-space-md">
+<div class="space-y-space-sm">
+<!-- Header Row 1 -->
+<div class="flex items-center space-x-space-sm">
+<input class="flex-1 h-8 bg-surface border border-outline-variant rounded font-mono text-body-sm px-2.5 text-on-surface focus:outline-none focus:border-primary" type="text" value="Content-Type"/>
+<span class="text-on-surface-variant">=</span>
+<input class="flex-1 h-8 bg-surface border border-outline-variant rounded font-mono text-body-sm px-2.5 text-on-surface focus:outline-none focus:border-primary" type="text" value="application/json"/>
+<button class="text-on-surface-variant hover:text-error transition-colors p-1.5 rounded">
+<span class="material-symbols-outlined text-base">delete</span>
+</button>
+</div>
+<!-- Header Row 2 -->
+<div class="flex items-center space-x-space-sm">
+<input class="flex-1 h-8 bg-surface border border-outline-variant rounded font-mono text-body-sm px-2.5 text-on-surface focus:outline-none focus:border-primary" type="text" value="X-Mock"/>
+<span class="text-on-surface-variant">=</span>
+<input class="flex-1 h-8 bg-surface border border-outline-variant rounded font-mono text-body-sm px-2.5 text-on-surface focus:outline-none focus:border-primary" type="text" value="mockingbird"/>
+<button class="text-on-surface-variant hover:text-error transition-colors p-1.5 rounded">
+<span class="material-symbols-outlined text-base">delete</span>
+</button>
+</div>
+</div>
+<div>
+<button class="h-8 px-3 bg-surface hover:bg-surface-container text-on-surface text-body-sm font-medium rounded border border-outline-variant flex items-center space-x-1 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+<span>Add header</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT 4 cols -->
+<div class="col-span-4 flex flex-col space-y-space-lg">
+<!-- Card "Settings" -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-space-md flex flex-col space-y-space-md">
+<h3 class="font-headline-md text-headline-md text-on-surface border-b border-outline-variant pb-2">Settings</h3>
+<div class="space-y-1">
+<label class="text-label-sm text-on-surface-variant uppercase">Name</label>
+<input class="w-full h-8 bg-surface border border-outline-variant rounded text-body-md text-on-surface px-2.5 focus:outline-none focus:border-primary" type="text" value="customer (VIP)"/>
+</div>
+<div class="space-y-1">
+<label class="text-label-sm text-on-surface-variant uppercase">HTTP Status</label>
+<div class="flex items-center space-x-space-sm">
+<input class="w-20 h-8 bg-surface border border-outline-variant rounded font-mono text-body-md text-on-surface px-2.5 focus:outline-none focus:border-primary" type="text" value="200"/>
+<span class="px-2 py-1 bg-secondary-container text-primary font-mono text-label-sm rounded font-bold border border-outline-variant flex items-center space-x-1">
+<span class="material-symbols-outlined text-xs">check_circle</span>
+<span>OK</span>
+</span>
+</div>
+</div>
+<div class="pt-2 flex items-center justify-between border-t border-outline-variant">
+<span class="text-body-md text-on-surface">Use expressions</span>
+<button class="w-8 h-4 bg-primary rounded-full relative transition-colors focus:outline-none">
+<span class="absolute right-0.5 top-0.5 w-3 h-3 bg-surface rounded-full transition-transform"></span>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-body-md text-on-surface">Simulate delay</span>
+<button class="w-8 h-4 bg-surface-container-highest border border-outline-variant rounded-full relative transition-colors focus:outline-none">
+<span class="absolute left-0.5 top-0.5 w-3 h-3 bg-on-surface-variant rounded-full transition-transform"></span>
+</button>
+</div>
+</div>
+<!-- Card "Expressions" -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-space-md flex flex-col space-y-space-md">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface">Expressions</h3>
+<span class="material-symbols-outlined text-on-surface-variant text-base cursor-pointer hover:text-on-surface" title="Expression help">help</span>
+</div>
+<div class="space-y-1.5 font-mono text-code-sm">
+<!-- Expression Item -->
+<div class="flex items-center justify-between bg-surface p-1.5 rounded border border-outline-variant group hover:border-primary transition-colors">
+<span class="text-primary">${RANDOM_UUID()}</span>
+<button class="w-5 h-5 bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface-variant rounded flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-xs">add</span>
+</button>
+</div>
+<div class="flex items-center justify-between bg-surface p-1.5 rounded border border-outline-variant group hover:border-primary transition-colors">
+<span class="text-primary">${RANDOM_INTEGER(min, max)}</span>
+<button class="w-5 h-5 bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface-variant rounded flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-xs">add</span>
+</button>
+</div>
+<div class="flex items-center justify-between bg-surface p-1.5 rounded border border-outline-variant group hover:border-primary transition-colors">
+<span class="text-primary">${NOW(format)}</span>
+<button class="w-5 h-5 bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface-variant rounded flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-xs">add</span>
+</button>
+</div>
+<div class="flex items-center justify-between bg-surface p-1.5 rounded border border-outline-variant group hover:border-primary transition-colors">
+<span class="text-primary">${PATH_PARAMETER(key)}</span>
+<button class="w-5 h-5 bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface-variant rounded flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-xs">add</span>
+</button>
+</div>
+<div class="flex items-center justify-between bg-surface p-1.5 rounded border border-outline-variant group hover:border-primary transition-colors">
+<span class="text-primary">${QUERY_STRING(key)}</span>
+<button class="w-5 h-5 bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface-variant rounded flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-xs">add</span>
+</button>
+</div>
+<div class="flex items-center justify-between bg-surface p-1.5 rounded border border-outline-variant group hover:border-primary transition-colors">
+<span class="text-primary">${BODY_JSON_PATH(expression)}</span>
+<button class="w-5 h-5 bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface-variant rounded flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-xs">add</span>
+</button>
+</div>
+<div class="flex items-center justify-between bg-surface p-1.5 rounded border border-outline-variant group hover:border-primary transition-colors">
+<span class="text-primary">${RANDOM_STRING(length)}</span>
+<button class="w-5 h-5 bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface-variant rounded flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-xs">add</span>
+</button>
+</div>
+</div>
+<div class="pt-1 flex justify-end">
+<a class="text-body-sm text-primary hover:underline flex items-center space-x-1" href="#">
+<span>Expression reference</span>
+<span class="material-symbols-outlined text-xs">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Sticky Bottom Bar -->
+<footer class="fixed bottom-0 left-0 right-0 h-12 bg-surface-container-low dark:bg-surface-container-low border-t border-outline-variant px-space-xl flex items-center justify-between z-40">
+<span class="text-body-sm text-on-surface-variant font-medium">Unsaved changes</span>
+<div class="flex items-center space-x-space-sm">
+<button class="h-8 px-4 bg-surface hover:bg-surface-container text-on-surface text-body-sm font-medium rounded border border-outline-variant transition-colors">Cancel</button>
+<button class="h-8 px-4 bg-primary hover:bg-primary-fixed text-on-primary text-body-sm font-medium rounded shadow-none transition-colors">Save response</button>
+</div>
+</footer>
+</body></html>

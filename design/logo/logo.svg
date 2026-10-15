@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 272 64" width="272" height="64" role="img" aria-label="mockingbird">
+  <defs><mask id="mb-cut"><rect width="64" height="64" fill="#fff"/><path d="M27.5 26.5 L39.5 35.5 L30.5 44.5" fill="none" stroke="#000" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="38" cy="16.5" r="1.8" fill="#000"/></mask></defs>
+  <g fill="#2A2F3A" mask="url(#mb-cut)"><circle cx="36" cy="18" r="8.5"/><path d="M42 14 L53 18.5 L42 21.5 Z"/><path d="M29.5 12.5 C22 20 21 33 26.5 41.5 L31 46.5 C42 46 49 38 47.5 27 C46.8 22 44.5 17.5 40 12 Z"/><path d="M26 39 L7 53 L10.5 57 L33 46 Z"/></g>
+  <path d="M56 11.5 A10 10 0 0 1 56 25.5" fill="none" stroke="#0F766E" stroke-width="3.6" stroke-linecap="round"/>
+  <g transform="translate(74 12) scale(1.4)" stroke="#14171C" fill="#14171C">
+<g fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M1.2 24V12M1.2 16a4 4 0 0 1 8 0v8M9.2 16a4 4 0 0 1 8 0v8"/>
+<circle cx="26.8" cy="18" r="6"/>
+<path d="M46.64 13.76a6 6 0 1 0 0 8.48"/>
+<path d="M50.8 6v18M58 12l-7.2 6.6M53.6 16.2l5 7.8"/>
+<path d="M62.6 12v12"/>
+<path d="M67.2 24V12M67.2 16.6a4.4 4.4 0 0 1 8.8 0V24"/>
+<circle cx="86" cy="18" r="6"/><path d="M92 12v13a5 5 0 0 1-9.6 2"/>
+<path d="M96.6 6v18"/><circle cx="102.6" cy="18" r="6"/>
+<path d="M112.6 12v12"/>
+<path d="M117.2 24V12M117.2 17.4a5.4 5.4 0 0 1 6.6-5.2"/>
+<circle cx="132" cy="18" r="6"/><path d="M138 6v18"/>
+</g>
+<circle cx="62.6" cy="7.4" r="1.5"/><circle cx="112.6" cy="7.4" r="1.5"/>
+  </g>
+</svg>

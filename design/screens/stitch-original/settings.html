@@ -1,0 +1,415 @@
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-fixed-dim": "#9cd1c6",
+            "on-secondary-fixed-variant": "#1a4f47",
+            "on-primary-container": "#00574d",
+            "on-error": "#690005",
+            "primary": "#57f1db",
+            "on-surface-variant": "#bacac5",
+            "tertiary-container": "#ffac5a",
+            "surface-tint": "#3cddc7",
+            "on-secondary-container": "#8bbfb5",
+            "primary-container": "#2dd4bf",
+            "surface-container-lowest": "#0c0e12",
+            "on-primary-fixed": "#00201c",
+            "secondary-container": "#1a4f47",
+            "inverse-primary": "#006b5f",
+            "surface-variant": "#333539",
+            "on-error-container": "#ffdad6",
+            "error": "#ffb4ab",
+            "on-tertiary": "#4b2800",
+            "primary-fixed": "#62fae3",
+            "surface-bright": "#37393e",
+            "on-primary-fixed-variant": "#005047",
+            "outline-variant": "#3c4a46",
+            "surface-container-highest": "#333539",
+            "surface-container": "#1e2024",
+            "on-surface": "#e2e2e8",
+            "tertiary-fixed-dim": "#ffb875",
+            "on-secondary-fixed": "#00201c",
+            "surface-container-low": "#1a1c20",
+            "secondary": "#9cd1c6",
+            "primary-fixed-dim": "#3cddc7",
+            "inverse-on-surface": "#2f3035",
+            "on-tertiary-fixed-variant": "#6b3b00",
+            "error-container": "#93000a",
+            "background": "#111317",
+            "inverse-surface": "#e2e2e8",
+            "surface-dim": "#111317",
+            "outline": "#859490",
+            "on-tertiary-container": "#744000",
+            "secondary-fixed": "#b8ede2",
+            "surface-container-high": "#282a2e",
+            "on-secondary": "#003731",
+            "on-primary": "#003731",
+            "on-background": "#e2e2e8",
+            "surface": "#111317",
+            "tertiary-fixed": "#ffdcc0",
+            "tertiary": "#ffd1aa",
+            "on-tertiary-fixed": "#2d1600"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "margin": "1.5rem",
+            "space-lg": "1rem",
+            "gutter": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-md": "0.75rem",
+            "space-xl": "1.5rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Inter"],
+            "headline-lg": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "body-md": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-sm": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "body-sm": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "400" }],
+            "headline-lg": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "600" }],
+            "code-sm": ["0.75rem", { "lineHeight": "1.125rem", "fontWeight": "400" }],
+            "headline-md": ["1.125rem", { "lineHeight": "1.5rem", "fontWeight": "600" }],
+            "label-sm": ["0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.05em", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<header class="w-full h-12 px-space-xl flex items-center justify-between bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant sticky top-0 z-50">
+<div class="flex items-center space-x-space-md">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight">mockingbird</span>
+</div>
+</div>
+<div class="flex items-center space-x-space-md flex-1 max-w-md mx-8">
+<div class="relative w-full">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">search</span>
+</div>
+<input class="w-full h-8 pl-9 pr-12 bg-surface-container border border-outline-variant rounded text-body-md text-on-surface placeholder-on-surface-variant focus:outline-none focus:border-primary" placeholder="Search resources, mocks, endpoints..." type="text"/>
+<div class="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
+<span class="font-code-sm text-xs bg-surface-container-high text-on-surface-variant px-1.5 py-0.5 rounded border border-outline-variant">⌘K</span>
+</div>
+</div>
+</div>
+<div class="flex items-center space-x-space-md">
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors duration-150">
+<span class="material-symbols-outlined text-sm">dark_mode</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors duration-150">
+<span class="material-symbols-outlined text-sm">help</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors duration-150">
+<span class="material-symbols-outlined text-sm">notifications</span>
+</button>
+<div class="h-5 w-[1px] bg-outline-variant mx-1"></div>
+<div class="flex items-center space-x-2 cursor-pointer p-1 rounded hover:bg-surface-container transition-colors duration-150">
+<div class="w-7 h-7 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center text-xs font-code-sm font-bold text-primary">AD</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1">
+<!-- SideNavBar -->
+<aside class="w-60 h-[calc(100vh-3rem)] flex flex-col justify-between p-space-sm bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant sticky top-12">
+<div class="flex flex-col space-y-1">
+<div class="px-2 py-3 mb-2 flex items-center justify-between">
+<div>
+<div class="font-bold text-on-surface text-body-md">mockingbird</div>
+<div class="font-code-sm text-xs text-on-surface-variant">Local Instance</div>
+</div>
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+</div>
+<a class="flex items-center space-x-3 px-3 py-2 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-sm">folder_open</span>
+<span class="font-body-md text-body-md">Projects</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-sm">bolt</span>
+<span class="font-body-md text-body-md">Events</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-sm">group</span>
+<span class="font-body-md text-body-md">Users</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 bg-secondary-container dark:bg-secondary-container text-primary dark:text-primary font-medium rounded transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-body-md text-body-md">System</span>
+</a>
+</div>
+<div class="flex flex-col space-y-1 pt-4 border-t border-outline-variant">
+<div class="px-3 py-1 text-label-sm text-on-surface-variant uppercase">Instance Info</div>
+<a class="flex items-center space-x-3 px-3 py-1.5 text-on-surface-variant hover:bg-surface-container rounded transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-sm">menu_book</span>
+<span class="font-body-sm text-body-sm">Docs</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-1.5 text-on-surface-variant rounded" href="#">
+<span class="material-symbols-outlined text-sm">tag</span>
+<span class="font-code-sm text-xs">v1.4.2-preview</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 p-gutter bg-surface overflow-y-auto">
+<!-- Breadcrumb & Header -->
+<div class="flex flex-col space-y-space-md mb-space-xl">
+<div class="flex items-center space-x-2 text-body-sm text-on-surface-variant">
+<span>Workspace</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-on-surface font-medium">System</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-4">
+<h1 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">System</h1>
+<div class="flex items-center space-x-1.5 px-2.5 py-1 rounded bg-surface-container border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+<span class="font-code-sm text-xs text-emerald-400 font-medium">● Operational</span>
+</div>
+</div>
+<button class="h-8 px-4 bg-primary text-on-primary font-body-md font-medium rounded hover:bg-primary-fixed transition-colors duration-150 flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm">refresh</span>
+<span>Restart Service</span>
+</button>
+</div>
+</div>
+<!-- Two-column grid of cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-xl mb-space-xl">
+<!-- 1. ABOUT card -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-space-xl flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-md pb-space-sm border-b border-outline-variant">
+<h2 class="font-headline-md text-headline-md text-on-surface font-semibold flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-base">info</span>
+<span>ABOUT</span>
+</h2>
+<span class="font-code-sm text-xs text-on-surface-variant">Runtime Environment</span>
+</div>
+<div class="space-y-3 font-code-sm text-sm">
+<div class="flex justify-between py-1 border-b border-outline-variant/50">
+<span class="text-on-surface-variant">Version</span>
+<span class="text-on-surface">v0.1.0</span>
+</div>
+<div class="flex justify-between py-1 border-b border-outline-variant/50">
+<span class="text-on-surface-variant">Commit</span>
+<span class="text-primary">3f9a2c1</span>
+</div>
+<div class="flex justify-between py-1 border-b border-outline-variant/50">
+<span class="text-on-surface-variant">Go</span>
+<span class="text-on-surface">go1.25.3</span>
+</div>
+<div class="flex justify-between py-1 border-b border-outline-variant/50">
+<span class="text-on-surface-variant">OS</span>
+<span class="text-on-surface">linux/amd64</span>
+</div>
+<div class="flex justify-between py-1 border-b border-outline-variant/50">
+<span class="text-on-surface-variant">Uptime</span>
+<span class="text-on-surface">4d 12h 07m</span>
+</div>
+<div class="flex justify-between py-1 border-b border-outline-variant/50">
+<span class="text-on-surface-variant">CPUs</span>
+<span class="text-on-surface">4</span>
+</div>
+<div class="flex flex-col py-1 space-y-1.5">
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Memory</span>
+<span class="text-on-surface">38 MB / 512 MB</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 7.4%;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 2. STORAGE card -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-space-xl flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-md pb-space-sm border-b border-outline-variant">
+<h2 class="font-headline-md text-headline-md text-on-surface font-semibold flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-base">database</span>
+<span>STORAGE</span>
+</h2>
+<span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 font-code-sm text-xs">READ-WRITE</span>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block font-code-sm text-xs text-on-surface-variant mb-1">Data directory</label>
+<div class="flex items-center space-x-2">
+<input class="w-full h-8 px-3 bg-surface-container border border-outline-variant rounded font-code-sm text-xs text-on-surface" readonly="" type="text" value="/var/lib/mockingbird"/>
+<button class="h-8 px-3 bg-surface-container border border-outline-variant rounded hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors flex items-center space-x-1">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 pt-2">
+<div class="bg-surface-container p-3 rounded border border-outline-variant/50">
+<div class="font-code-sm text-xs text-on-surface-variant">Schema version</div>
+<div class="text-lg font-bold text-on-surface mt-1">1</div>
+</div>
+<div class="bg-surface-container p-3 rounded border border-outline-variant/50">
+<div class="font-code-sm text-xs text-on-surface-variant">Projects on disk</div>
+<div class="text-lg font-bold text-on-surface mt-1">6 <span class="text-xs font-normal text-on-surface-variant">(1,284 files)</span></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center space-x-3 pt-6 mt-6 border-t border-outline-variant">
+<button class="h-8 px-3 bg-surface-container border border-outline-variant rounded hover:bg-surface-container-high text-on-surface font-body-md text-body-md transition-colors flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-sm">download</span>
+<span>Export all (.zip)</span>
+</button>
+<button class="h-8 px-3 bg-surface-container border border-outline-variant rounded hover:bg-surface-container-high text-on-surface font-body-md text-body-md transition-colors flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-sm">upload</span>
+<span>Import CastleMock data…</span>
+</button>
+</div>
+</div>
+<!-- 3. DEFAULTS (Global Overrides) card -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-space-xl flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-md pb-space-sm border-b border-outline-variant">
+<h2 class="font-headline-md text-headline-md text-on-surface font-semibold flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-base">tune</span>
+<span>DEFAULTS (Global Overrides)</span>
+</h2>
+</div>
+<div class="space-y-4">
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block font-code-sm text-xs text-on-surface-variant mb-1">Default network delay</label>
+<input class="w-full h-8 px-3 bg-surface-container border border-outline-variant rounded font-code-sm text-xs text-on-surface" type="text" value="0 ms"/>
+</div>
+<div>
+<label class="block font-code-sm text-xs text-on-surface-variant mb-1">Events retention</label>
+<input class="w-full h-8 px-3 bg-surface-container border border-outline-variant rounded font-code-sm text-xs text-on-surface" type="text" value="10,000 events"/>
+</div>
+</div>
+<div class="space-y-3 pt-2">
+<div class="flex items-center justify-between py-2 border-b border-outline-variant/50">
+<div>
+<div class="font-body-md text-on-surface">Record request bodies</div>
+<div class="font-code-sm text-xs text-on-surface-variant">Store inbound payload hashes for debugging</div>
+</div>
+<div class="w-10 h-6 bg-primary rounded-full relative cursor-pointer flex items-center px-0.5">
+<div class="w-5 h-5 bg-on-primary rounded-full ml-auto shadow-sm"></div>
+</div>
+</div>
+<div class="flex items-center justify-between py-2">
+<div>
+<div class="font-body-md text-on-surface">Allow anonymous mock access</div>
+<div class="font-code-sm text-xs text-on-surface-variant">Skip authentication headers for matching mock endpoints</div>
+</div>
+<div class="w-10 h-6 bg-primary rounded-full relative cursor-pointer flex items-center px-0.5">
+<div class="w-5 h-5 bg-on-primary rounded-full ml-auto shadow-sm"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant flex justify-end">
+<button class="h-8 px-4 bg-primary text-on-primary font-body-md font-medium rounded hover:bg-primary-fixed transition-colors">
+              Save defaults
+            </button>
+</div>
+</div>
+<!-- 4. APPEARANCE (UI Preferences) card -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-space-xl flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-md pb-space-sm border-b border-outline-variant">
+<h2 class="font-headline-md text-headline-md text-on-surface font-semibold flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-base">palette</span>
+<span>APPEARANCE (UI Preferences)</span>
+</h2>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block font-code-sm text-xs text-on-surface-variant mb-1.5">Theme control</label>
+<div class="flex rounded bg-surface-container p-0.5 border border-outline-variant">
+<button class="flex-1 py-1 text-center text-xs font-body-md text-on-surface-variant rounded">Light</button>
+<button class="flex-1 py-1 text-center text-xs font-body-md bg-surface-container-high text-on-surface font-medium rounded shadow-sm border border-outline-variant">Dark</button>
+<button class="flex-1 py-1 text-center text-xs font-body-md text-on-surface-variant rounded">System</button>
+</div>
+</div>
+<div>
+<label class="block font-code-sm text-xs text-on-surface-variant mb-1.5">Density control</label>
+<div class="flex rounded bg-surface-container p-0.5 border border-outline-variant">
+<button class="flex-1 py-1 text-center text-xs font-body-md text-on-surface-variant rounded">Comfortable</button>
+<button class="flex-1 py-1 text-center text-xs font-body-md bg-surface-container-high text-on-surface font-medium rounded shadow-sm border border-outline-variant">Compact</button>
+</div>
+</div>
+<div class="pt-2">
+<div class="bg-surface-container p-3 rounded border border-outline-variant/50 flex items-center justify-between">
+<span class="font-code-sm text-xs text-on-surface-variant">Active Typeface</span>
+<span class="font-code-sm text-xs text-primary">Font: Inter &amp; JetBrains Mono</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Full-width DANGER ZONE card -->
+<div class="bg-surface-container-low border border-red-900/50 rounded-lg p-space-xl mb-space-xl">
+<div class="flex items-center justify-between mb-space-md pb-space-sm border-b border-red-900/30">
+<h2 class="font-headline-md text-headline-md text-error font-semibold flex items-center space-x-2">
+<span class="material-symbols-outlined text-error text-base">warning</span>
+<span>DANGER ZONE</span>
+</h2>
+<span class="font-code-sm text-xs text-error/80">Destructive Actions</span>
+</div>
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="text-on-surface-variant text-body-md">
+            Irreversible cluster procedures. Please proceed with caution.
+          </div>
+<div class="flex items-center space-x-3">
+<button class="h-8 px-4 border border-error text-error hover:bg-error-container/20 rounded font-body-md transition-colors flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-sm">delete_sweep</span>
+<span>Clear all events</span>
+</button>
+<button class="h-8 px-4 border border-error text-error hover:bg-error-container/20 rounded font-body-md transition-colors flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-sm">restart_alt</span>
+<span>Reset sequence counters</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Bottom-right toast notification -->
+<div class="fixed bottom-6 right-6 z-50 max-w-sm bg-surface-container-high border border-outline-variant rounded-lg shadow-xl overflow-hidden flex items-start p-4 border-l-4 border-l-primary">
+<div class="mr-3 text-primary flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+</div>
+<div class="flex-1 mr-3">
+<div class="font-bold text-on-surface text-body-md">Defaults saved</div>
+<div class="text-on-surface-variant text-body-sm mt-0.5">Global preferences updated successfully.</div>
+<div class="mt-2">
+<button class="text-primary font-body-sm hover:underline font-medium">Undo</button>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface flex-shrink-0">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+</body></html>

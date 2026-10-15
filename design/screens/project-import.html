@@ -1,0 +1,339 @@
+<html class="dark"><head>
+<meta charset="utf-8"/>
+<title>mockingbird — Projects Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-fixed-dim": "#9cd1c6",
+            "on-primary-fixed": "#00201c",
+            "on-primary-fixed-variant": "#005047",
+            "on-primary-container": "#00574d",
+            "surface-container-low": "#1a1c20",
+            "on-background": "#e2e2e8",
+            "on-error-container": "#ffdad6",
+            "tertiary-fixed": "#ffdcc0",
+            "secondary-container": "#1a4f47",
+            "primary-container": "#2dd4bf",
+            "on-tertiary-fixed": "#2d1600",
+            "secondary-fixed": "#b8ede2",
+            "surface-bright": "#37393e",
+            "primary": "#57f1db",
+            "surface-container": "#1e2024",
+            "surface-container-high": "#282a2e",
+            "on-error": "#690005",
+            "on-secondary-fixed": "#00201c",
+            "tertiary-fixed-dim": "#ffb875",
+            "on-secondary": "#003731",
+            "inverse-primary": "#006b5f",
+            "secondary": "#9cd1c6",
+            "on-tertiary-container": "#744000",
+            "error": "#ffb4ab",
+            "inverse-on-surface": "#2f3035",
+            "on-tertiary-fixed-variant": "#6b3b00",
+            "on-surface-variant": "#bacac5",
+            "on-secondary-fixed-variant": "#1a4f47",
+            "tertiary": "#ffd1aa",
+            "surface-container-highest": "#333539",
+            "on-primary": "#003731",
+            "outline": "#859490",
+            "background": "#111317",
+            "surface-variant": "#333539",
+            "on-surface": "#e2e2e8",
+            "tertiary-container": "#ffac5a",
+            "surface-dim": "#111317",
+            "primary-fixed-dim": "#3cddc7",
+            "error-container": "#93000a",
+            "surface-container-lowest": "#0c0e12",
+            "primary-fixed": "#62fae3",
+            "on-tertiary": "#4b2800",
+            "surface": "#111317",
+            "on-secondary-container": "#8bbfb5",
+            "surface-tint": "#3cddc7",
+            "inverse-surface": "#e2e2e8",
+            "outline-variant": "#3c4a46"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "gutter": "1.5rem",
+            "margin": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1rem",
+            "space-xl": "1.5rem",
+            "space-md": "0.75rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Inter"],
+            "label-sm": ["JetBrains Mono"],
+            "headline-md": ["Inter"],
+            "body-md": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "headline-lg": ["Inter"]
+          },
+          "fontSize": {
+            "body-sm": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "400" }],
+            "label-sm": ["0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.05em", "fontWeight": "500" }],
+            "headline-md": ["1.125rem", { "lineHeight": "1.5rem", "fontWeight": "600" }],
+            "body-md": ["0.8125rem", { "lineHeight": "1.25rem", "fontWeight": "400" }],
+            "code-sm": ["0.75rem", { "lineHeight": "1.125rem", "fontWeight": "400" }],
+            "headline-lg": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container overflow-hidden">
+<!-- TopNavBar -->
+<header class="w-full h-12 px-space-xl flex items-center justify-between bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant select-none">
+<div class="flex items-center space-x-3">
+<div class="flex items-center space-x-2">
+<svg class="mb-logo" viewBox="0 0 64 64" width="22" height="22" aria-hidden="true"><defs><mask id="mb-cut"><rect width="64" height="64" fill="#fff"/><path d="M27.5 26.5 L39.5 35.5 L30.5 44.5" fill="none" stroke="#000" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="38" cy="16.5" r="1.8" fill="#000"/></mask></defs><g fill="#E6E8EC" mask="url(#mb-cut)"><circle cx="36" cy="18" r="8.5"/><path d="M42 14 L53 18.5 L42 21.5 Z"/><path d="M29.5 12.5 C22 20 21 33 26.5 41.5 L31 46.5 C42 46 49 38 47.5 27 C46.8 22 44.5 17.5 40 12 Z"/><path d="M26 39 L7 53 L10.5 57 L33 46 Z"/></g><path d="M56 11.5 A10 10 0 0 1 56 25.5" fill="none" stroke="#2DD4BF" stroke-width="3.6" stroke-linecap="round"/></svg>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight">mockingbird</span>
+</div>
+<div class="h-4 w-[1px] bg-outline-variant mx-2"></div>
+<div class="flex items-center bg-surface-container px-2.5 py-1 rounded-lg text-on-surface-variant border border-outline-variant text-body-sm w-64 justify-between cursor-pointer hover:border-outline transition-colors">
+<span class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm">search</span>
+<span>Search resources, mocks...</span>
+</span>
+<kbd class="font-code-sm bg-surface-container-high px-1.5 py-0.5 rounded text-on-surface text-[10px]">⌘K</kbd>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<button class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="dark_mode">dark_mode</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="help">help</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="notifications">notifications</span>
+</button>
+<div class="h-4 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center space-x-2 cursor-pointer">
+<div class="w-7 h-7 rounded-full bg-secondary-container text-secondary flex items-center justify-center font-bold text-xs" data-alt="Admin user profile picture avatar showing user initials in a dark teal container">AD</div>
+</div>
+</div>
+</header>
+<div class="flex h-[calc(100vh-3rem)]">
+<!-- SideNavBar -->
+<aside class="w-60 h-[calc(100vh-3rem)] flex flex-col justify-between p-space-sm bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant select-none">
+<div class="space-y-4">
+<div class="px-2 py-1.5 flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<div class="w-5 h-5 rounded bg-primary-container text-on-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-xs" data-icon="folder_open" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+</div>
+<span class="font-bold text-on-surface text-body-md">mockingbird</span>
+</div>
+<span class="text-label-sm text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded">Local</span>
+</div>
+<nav class="space-y-1">
+<!-- Active navigation item -->
+<a class="flex items-center space-x-2 px-2.5 py-2 bg-secondary-container dark:bg-secondary-container text-primary dark:text-primary font-medium rounded text-body-md transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-base" data-icon="folder_open" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span>Projects</span>
+</a>
+<!-- Inactive items -->
+<a class="flex items-center space-x-2 px-2.5 py-2 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded text-body-md transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-base" data-icon="bolt">bolt</span>
+<span>Events</span>
+</a>
+<a class="flex items-center space-x-2 px-2.5 py-2 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded text-body-md transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-base" data-icon="group">group</span>
+<span>Users</span>
+</a>
+<a class="flex items-center space-x-2 px-2.5 py-2 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded text-body-md transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-base" data-icon="settings">settings</span>
+<span>System</span>
+</a>
+</nav>
+</div>
+<div class="space-y-2 pt-4 border-t border-outline-variant">
+<button class="w-full bg-primary text-on-primary font-medium py-1.5 px-3 rounded text-body-md flex items-center justify-center space-x-1 hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+<span>New Mock</span>
+</button>
+<div class="flex items-center justify-between text-on-surface-variant px-1 pt-2">
+<div class="flex items-center space-x-1">
+<span class="material-symbols-outlined text-xs">menu_book</span>
+<span class="text-label-sm">Docs</span>
+</div>
+<div class="flex items-center space-x-1">
+<span class="material-symbols-outlined text-xs">tag</span>
+<span class="text-label-sm">v1.4.2-preview</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas (Dimmed background) -->
+<main class="flex-1 flex flex-col bg-background overflow-hidden relative filter brightness-50 select-none pointer-events-none">
+<div class="px-gutter py-4 border-b border-outline-variant flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Projects</h1>
+<span class="bg-surface-container text-on-surface-variant px-2 py-0.5 rounded text-label-sm">12 Active</span>
+</div>
+<div class="flex items-center space-x-2">
+<button class="bg-surface-container text-on-surface px-3 py-1.5 rounded text-body-md border border-outline-variant">Filter</button>
+<button class="bg-primary text-on-primary px-3 py-1.5 rounded text-body-md font-medium">New project</button>
+</div>
+</div>
+<!-- Projects Table -->
+<div class="p-gutter flex-1 overflow-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant text-[11px] font-bold uppercase tracking-wider">
+<th class="py-2 px-3 w-8"><input class="rounded bg-surface border-outline" type="checkbox"/></th>
+<th class="py-2 px-3">Project Name</th>
+<th class="py-2 px-3">Base Path</th>
+<th class="py-2 px-3">Resources</th>
+<th class="py-2 px-3">Status</th>
+<th class="py-2 px-3">Updated</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-body-md text-on-surface">
+<tr class="h-9 hover:bg-surface-container">
+<td class="py-2 px-3"><input class="rounded bg-surface border-outline" type="checkbox"/></td>
+<td class="py-2 px-3 font-medium text-primary">payments-gateway</td>
+<td class="py-2 px-3 font-code-sm text-on-surface-variant">/api/v1/payments</td>
+<td class="py-2 px-3 font-code-sm">12</td>
+<td class="py-2 px-3"><span class="bg-secondary-container text-secondary px-1.5 py-0.5 rounded text-label-sm">Active</span></td>
+<td class="py-2 px-3 text-on-surface-variant">2 mins ago</td>
+</tr>
+<tr class="h-9 hover:bg-surface-container">
+<td class="py-2 px-3"><input class="rounded bg-surface border-outline" type="checkbox"/></td>
+<td class="py-2 px-3 font-medium">user-auth-service</td>
+<td class="py-2 px-3 font-code-sm text-on-surface-variant">/auth</td>
+<td class="py-2 px-3 font-code-sm">8</td>
+<td class="py-2 px-3"><span class="bg-surface-container-high text-on-surface-variant px-1.5 py-0.5 rounded text-label-sm">Idle</span></td>
+<td class="py-2 px-3 text-on-surface-variant">3 hours ago</td>
+</tr>
+<tr class="h-9 hover:bg-surface-container">
+<td class="py-2 px-3"><input class="rounded bg-surface border-outline" type="checkbox"/></td>
+<td class="py-2 px-3 font-medium">inventory-api</td>
+<td class="py-2 px-3 font-code-sm text-on-surface-variant">/inventory</td>
+<td class="py-2 px-3 font-code-sm">24</td>
+<td class="py-2 px-3"><span class="bg-secondary-container text-secondary px-1.5 py-0.5 rounded text-label-sm">Active</span></td>
+<td class="py-2 px-3 text-on-surface-variant">Yesterday</td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+<!-- Centered Modal Overlay -->
+<div class="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-[2px] p-4">
+<div class="w-[640px] bg-[#161920] border border-outline-variant rounded-[6px] shadow-2xl flex flex-col overflow-hidden">
+<!-- Modal Header -->
+<div class="px-5 py-4 border-b border-outline-variant flex items-center justify-between">
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-semibold">New project</h2>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<!-- Tabs Underline -->
+<div class="px-5 border-b border-outline-variant flex space-x-6 text-body-md">
+<button class="py-2.5 text-on-surface-variant hover:text-on-surface font-medium transition-colors">Blank</button>
+<button class="py-2.5 text-primary font-medium border-b-2 border-primary -mb-[1px]">Import</button>
+</div>
+<!-- Modal Body: Import Tab Content -->
+<div class="p-5 space-y-4 overflow-y-auto max-h-[calc(100vh-16rem)]">
+<!-- Field: Format -->
+<div class="space-y-1.5">
+<label class="block text-body-sm font-medium text-on-surface-variant">Format</label>
+<div class="relative">
+<select class="w-full bg-surface border border-outline-variant rounded px-3 py-1.5 text-on-surface text-body-md focus:border-primary focus:ring-1 focus:ring-primary appearance-none pr-8">
+<option>OpenAPI 3 / Swagger 2</option>
+<option>RAML 1.0</option>
+<option>WADL Definition</option>
+<option>WSDL 2.0</option>
+<option>CastleMock export JSON</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-2 text-on-surface-variant pointer-events-none text-base">expand_more</span>
+</div>
+<!-- Helper Chips -->
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="text-[10px] font-code-sm bg-surface-container px-2 py-0.5 rounded border border-outline-variant text-on-surface-variant">OpenAPI</span>
+<span class="text-[10px] font-code-sm bg-surface-container px-2 py-0.5 rounded border border-outline-variant text-on-surface-variant">Swagger</span>
+<span class="text-[10px] font-code-sm bg-surface-container px-2 py-0.5 rounded border border-outline-variant text-on-surface-variant">RAML</span>
+<span class="text-[10px] font-code-sm bg-surface-container px-2 py-0.5 rounded border border-outline-variant text-on-surface-variant">WADL</span>
+<span class="text-[10px] font-code-sm bg-surface-container px-2 py-0.5 rounded border border-outline-variant text-on-surface-variant">WSDL</span>
+<span class="text-[10px] font-code-sm bg-surface-container px-2 py-0.5 rounded border border-outline-variant text-on-surface-variant">CastleMock export</span>
+</div>
+</div>
+<!-- Source Segmented -->
+<div class="space-y-1.5">
+<label class="block text-body-sm font-medium text-on-surface-variant">Source</label>
+<div class="inline-flex bg-surface border border-outline-variant rounded p-0.5 w-full">
+<button class="flex-1 py-1 px-3 text-center text-body-md font-medium bg-surface-container text-on-surface rounded shadow-sm">Upload file</button>
+<button class="flex-1 py-1 px-3 text-center text-body-md font-medium text-on-surface-variant hover:text-on-surface">From URL</button>
+</div>
+</div>
+<!-- Dashed Drop Zone -->
+<div class="border-2 border-dashed border-outline-variant rounded-[6px] h-[120px] flex flex-col items-center justify-center p-4 bg-surface/50 hover:bg-surface transition-colors cursor-pointer space-y-1">
+<span class="material-symbols-outlined text-primary text-2xl">upload</span>
+<p class="text-body-md text-on-surface">Drop a .yaml, .json, .wsdl or .zip file here</p>
+<p class="text-body-sm text-on-surface-variant">or <span class="text-primary underline">browse</span> from your computer</p>
+</div>
+<!-- Selected File Row -->
+<div class="flex items-center justify-between bg-surface border border-outline-variant rounded px-3 py-2 text-body-md">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-base">description</span>
+<span class="text-on-surface font-code-sm">payments-openapi.yaml · 84 KB</span>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+<!-- Field: Project name -->
+<div class="space-y-1.5">
+<label class="block text-body-sm font-medium text-on-surface-variant">Project name</label>
+<input class="w-full bg-surface border border-outline-variant rounded px-3 py-1.5 text-on-surface text-body-md font-code-sm focus:border-primary focus:ring-1 focus:ring-primary" type="text" value="payments-gateway"/>
+</div>
+<!-- Field: Target -->
+<div class="space-y-1.5">
+<label class="block text-body-sm font-medium text-on-surface-variant">Target</label>
+<div class="space-y-2">
+<label class="flex items-center space-x-2 text-body-md text-on-surface cursor-pointer">
+<input checked="" class="text-primary bg-surface border-outline focus:ring-primary" name="target" type="radio"/>
+<span>Create new project</span>
+</label>
+<label class="flex items-center space-x-2 text-body-md text-on-surface-variant cursor-pointer">
+<input class="text-primary bg-surface border-outline focus:ring-primary" name="target" type="radio"/>
+<span>Add to existing project</span>
+</label>
+</div>
+</div>
+<!-- Checkbox -->
+<div class="flex items-center space-x-2 pt-1">
+<input checked="" class="rounded bg-surface border-outline text-primary focus:ring-primary" type="checkbox"/>
+<label class="text-body-md text-on-surface">Generate mock responses from examples</label>
+</div>
+<!-- Preview Box (#1C2029, mono 12px) -->
+<div class="bg-[#1C2029] border border-outline-variant rounded p-3 font-code-sm text-code-sm text-on-surface-variant">
+            Will create: 1 application · 12 resources · 31 methods · 31 mock responses
+          </div>
+</div>
+<!-- Modal Footer -->
+<div class="px-5 py-3 border-t border-outline-variant flex items-center justify-end space-x-3 bg-surface-container-low">
+<button class="bg-surface border border-outline-variant text-on-surface px-3.5 py-1.5 rounded text-body-md hover:bg-surface-container transition-colors">Cancel</button>
+<button class="bg-primary text-on-primary px-3.5 py-1.5 rounded text-body-md font-medium hover:bg-primary-fixed transition-colors">Import project</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

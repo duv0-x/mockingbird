@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1.5 4 141 28" width="141" height="28" role="img" aria-label="mockingbird">
+  <g stroke="currentColor" fill="currentColor">
+<g fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M1.2 24V12M1.2 16a4 4 0 0 1 8 0v8M9.2 16a4 4 0 0 1 8 0v8"/>
+<circle cx="26.8" cy="18" r="6"/>
+<path d="M46.64 13.76a6 6 0 1 0 0 8.48"/>
+<path d="M50.8 6v18M58 12l-7.2 6.6M53.6 16.2l5 7.8"/>
+<path d="M62.6 12v12"/>
+<path d="M67.2 24V12M67.2 16.6a4.4 4.4 0 0 1 8.8 0V24"/>
+<circle cx="86" cy="18" r="6"/><path d="M92 12v13a5 5 0 0 1-9.6 2"/>
+<path d="M96.6 6v18"/><circle cx="102.6" cy="18" r="6"/>
+<path d="M112.6 12v12"/>
+<path d="M117.2 24V12M117.2 17.4a5.4 5.4 0 0 1 6.6-5.2"/>
+<circle cx="132" cy="18" r="6"/><path d="M138 6v18"/>
+</g>
+<circle cx="62.6" cy="7.4" r="1.5"/><circle cx="112.6" cy="7.4" r="1.5"/>
+  </g>
+</svg>

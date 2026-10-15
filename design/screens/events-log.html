@@ -1,0 +1,462 @@
+<html class="dark"><head>
+<meta charset="utf-8"/>
+<title>mockingbird — Events Log</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-primary": "#006b5f",
+              "on-secondary-container": "#8bbfb5",
+              "surface-container-lowest": "#0c0e12",
+              "error-container": "#93000a",
+              "background": "#111317",
+              "on-tertiary-container": "#744000",
+              "on-secondary": "#003731",
+              "surface-dim": "#111317",
+              "error": "#ffb4ab",
+              "surface-container-highest": "#333539",
+              "on-surface-variant": "#bacac5",
+              "primary": "#57f1db",
+              "on-primary-fixed": "#00201c",
+              "surface-container-low": "#1a1c20",
+              "secondary-container": "#1a4f47",
+              "surface-container": "#1e2024",
+              "tertiary-fixed-dim": "#ffb875",
+              "on-tertiary": "#4b2800",
+              "outline": "#859490",
+              "inverse-on-surface": "#2f3035",
+              "on-tertiary-fixed-variant": "#6b3b00",
+              "on-primary-fixed-variant": "#005047",
+              "on-error-container": "#ffdad6",
+              "tertiary": "#ffd1aa",
+              "primary-fixed": "#62fae3",
+              "secondary-fixed": "#b8ede2",
+              "on-tertiary-fixed": "#2d1600",
+              "on-background": "#e2e2e8",
+              "on-error": "#690005",
+              "surface-container-high": "#282a2e",
+              "tertiary-fixed": "#ffdcc0",
+              "on-secondary-fixed-variant": "#1a4f47",
+              "on-primary-container": "#00574d",
+              "on-secondary-fixed": "#00201c",
+              "tertiary-container": "#ffac5a",
+              "surface": "#111317",
+              "surface-tint": "#3cddc7",
+              "outline-variant": "#3c4a46",
+              "inverse-surface": "#e2e2e8",
+              "secondary": "#9cd1c6",
+              "primary-container": "#2dd4bf",
+              "surface-bright": "#37393e",
+              "on-primary": "#003731",
+              "surface-variant": "#333539",
+              "primary-fixed-dim": "#3cddc7",
+              "on-surface": "#e2e2e8",
+              "secondary-fixed-dim": "#9cd1c6"
+            },
+            borderRadius: {
+              DEFAULT: "0.125rem",
+              lg: "0.25rem",
+              xl: "0.5rem",
+              full: "0.75rem"
+            },
+            spacing: {
+              margin: "1.5rem",
+              gutter: "1.5rem",
+              "space-xs": "0.25rem",
+              "space-md": "0.75rem",
+              "space-xl": "1.5rem",
+              "space-sm": "0.5rem",
+              "space-lg": "1rem"
+            },
+            fontFamily: {
+              "headline-md": ["Inter"],
+              "body-sm": ["Inter"],
+              "label-sm": ["JetBrains Mono"],
+              "body-md": ["Inter"],
+              "headline-lg": ["Inter"],
+              "code-sm": ["JetBrains Mono"]
+            },
+            fontSize: {
+              "headline-md": ["1.125rem", { lineHeight: "1.5rem", fontWeight: "600" }],
+              "body-sm": ["0.75rem", { lineHeight: "1rem", fontWeight: "400" }],
+              "label-sm": ["0.6875rem", { lineHeight: "0.875rem", letterSpacing: "0.05em", fontWeight: "500" }],
+              "body-md": ["0.8125rem", { lineHeight: "1.25rem", fontWeight: "400" }],
+              "headline-lg": ["1.25rem", { lineHeight: "1.75rem", fontWeight: "600" }],
+              "code-sm": ["0.75rem", { lineHeight: "1.125rem", fontWeight: "400" }]
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased h-screen overflow-hidden flex flex-col">
+<!-- TopNavBar -->
+<header class="w-full h-12 px-space-xl flex items-center justify-between bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant shrink-0 z-30">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-sm">
+<svg class="mb-logo" viewBox="0 0 64 64" width="22" height="22" aria-hidden="true"><defs><mask id="mb-cut"><rect width="64" height="64" fill="#fff"/><path d="M27.5 26.5 L39.5 35.5 L30.5 44.5" fill="none" stroke="#000" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="38" cy="16.5" r="1.8" fill="#000"/></mask></defs><g fill="#E6E8EC" mask="url(#mb-cut)"><circle cx="36" cy="18" r="8.5"/><path d="M42 14 L53 18.5 L42 21.5 Z"/><path d="M29.5 12.5 C22 20 21 33 26.5 41.5 L31 46.5 C42 46 49 38 47.5 27 C46.8 22 44.5 17.5 40 12 Z"/><path d="M26 39 L7 53 L10.5 57 L33 46 Z"/></g><path d="M56 11.5 A10 10 0 0 1 56 25.5" fill="none" stroke="#2DD4BF" stroke-width="3.6" stroke-linecap="round"/></svg>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight">mockingbird</span>
+</div>
+</div>
+<div class="flex-1 max-w-md mx-space-xl">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-2.5 text-on-surface-variant text-body-md" data-icon="search">search</span>
+<input class="w-full h-8 bg-surface-container border border-outline-variant rounded pl-8 pr-3 text-body-md text-on-surface placeholder-on-surface-variant focus:outline-none focus:border-primary" placeholder="Search operations, mocks, paths... (⌘K)" type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-body-md" data-icon="dark_mode">dark_mode</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-body-md" data-icon="help">help</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors relative">
+<span class="material-symbols-outlined text-body-md" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary rounded-full"></span>
+</button>
+<div class="h-5 w-[1px] bg-outline-variant mx-1"></div>
+<div class="flex items-center gap-space-sm cursor-pointer">
+<div class="w-7 h-7 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center font-label-sm text-primary font-bold">
+                    AD
+                </div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="w-60 h-[calc(100vh-3rem)] flex flex-col justify-between p-space-sm bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant shrink-0">
+<div class="flex flex-col gap-space-xs">
+<div class="px-space-md py-space-xs mb-space-xs">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider">Workspace</span>
+</div>
+<a class="flex items-center gap-space-md px-space-md py-space-sm text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-body-md" data-icon="folder_open">folder_open</span>
+<span class="font-body-md">Projects</span>
+</a>
+<a class="flex items-center gap-space-md px-space-md py-space-sm bg-secondary-container dark:bg-secondary-container text-primary dark:text-primary font-medium rounded transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-body-md" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="font-body-md">Events</span>
+</a>
+<a class="flex items-center gap-space-md px-space-md py-space-sm text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-body-md" data-icon="group">group</span>
+<span class="font-body-md">Users</span>
+</a>
+<a class="flex items-center gap-space-md px-space-md py-space-sm text-on-surface-variant hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-body-md" data-icon="settings">settings</span>
+<span class="font-body-md">System</span>
+</a>
+<div class="mt-space-lg px-space-md py-space-xs">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider">Project Tree</span>
+</div>
+<div class="flex flex-col gap-space-xs pl-space-md">
+<div class="flex items-center gap-space-xs py-1 text-on-surface-variant text-body-sm hover:text-on-surface cursor-pointer">
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="font-label-sm">payments-gateway</span>
+</div>
+<div class="flex items-center gap-space-xs py-1 text-primary text-body-sm hover:text-on-surface cursor-pointer">
+<span class="material-symbols-outlined text-xs">expand_more</span>
+<span class="font-label-sm">core-banking</span>
+</div>
+<div class="pl-space-lg flex flex-col gap-1 border-l border-outline-variant ml-2 my-1">
+<span class="font-label-sm text-on-surface hover:text-primary cursor-pointer py-0.5">AccountService</span>
+<span class="font-label-sm text-on-surface-variant hover:text-primary cursor-pointer py-0.5">TransferAPI</span>
+</div>
+<div class="flex items-center gap-space-xs py-1 text-on-surface-variant text-body-sm hover:text-on-surface cursor-pointer">
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="font-label-sm">fx-engine</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs pt-space-md border-t border-outline-variant">
+<button class="w-full h-8 bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded flex items-center justify-center gap-space-sm text-on-surface font-body-md transition-colors">
+<span class="material-symbols-outlined text-body-md" data-icon="add">add</span>
+<span>New Mock</span>
+</button>
+<div class="flex items-center justify-between px-space-sm py-space-xs text-on-surface-variant">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-body-sm" data-icon="menu_book">menu_book</span>
+<span class="font-code-sm">Docs</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-body-sm" data-icon="tag">tag</span>
+<span class="font-code-sm">v1.4.2-preview</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col overflow-hidden bg-background relative">
+<!-- Breadcrumb & Header -->
+<div class="px-space-xl pt-space-lg pb-space-md flex flex-col gap-space-xs border-b border-outline-variant">
+<div class="flex items-center gap-space-xs text-body-sm text-on-surface-variant">
+<span>Workspace</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-on-surface font-medium">Events</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<h1 class="font-headline-lg text-headline-lg text-on-surface flex items-center gap-3">
+Events
+<span class="font-normal text-body-sm text-on-surface-variant">18,402 in last 24h</span>
+</h1>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-2 bg-surface-container px-3 py-1 rounded border border-outline-variant">
+<span class="text-primary text-xs">●</span>
+<span class="font-label-sm text-on-surface font-medium">Live</span>
+<input checked="" class="rounded-full border-outline-variant text-primary focus:ring-0 bg-surface w-8 h-4 cursor-pointer transition-colors" type="checkbox"/>
+</div>
+<button class="h-8 px-space-md bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded text-on-surface font-body-md transition-colors">
+                            Clear events
+                        </button>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="flex items-center gap-2 pt-space-xs flex-nowrap overflow-x-auto">
+<div class="flex items-center gap-space-xs bg-surface-container border border-outline-variant rounded px-2 h-7 shrink-0">
+<span class="font-label-sm text-on-surface-variant text-[11px]">Project:</span>
+<select class="bg-transparent border-none text-on-surface text-body-sm focus:ring-0 p-0 pr-4 cursor-pointer h-7">
+<option class="bg-surface">All projects</option>
+<option class="bg-surface">core-banking</option>
+<option class="bg-surface">payments-gateway</option>
+<option class="bg-surface">fx-engine</option>
+</select>
+</div>
+<div class="flex items-center gap-space-xs bg-surface-container border border-outline-variant rounded px-2 h-7 shrink-0">
+<span class="font-label-sm text-on-surface-variant text-[11px]">Type:</span>
+<select class="bg-transparent border-none text-on-surface text-body-sm focus:ring-0 p-0 pr-4 cursor-pointer h-7">
+<option class="bg-surface">REST/SOAP</option>
+<option class="bg-surface">REST only</option>
+<option class="bg-surface">SOAP only</option>
+</select>
+</div>
+<div class="flex items-center gap-space-xs bg-surface-container border border-outline-variant rounded px-2 h-7 shrink-0">
+<span class="font-label-sm text-on-surface-variant text-[11px]">Method:</span>
+<select class="bg-transparent border-none text-on-surface text-body-sm focus:ring-0 p-0 pr-4 cursor-pointer h-7">
+<option class="bg-surface">Any</option>
+<option class="bg-surface">GET</option>
+<option class="bg-surface">POST</option>
+<option class="bg-surface">PUT</option>
+<option class="bg-surface">DELETE</option>
+</select>
+</div>
+<div class="flex items-center gap-space-xs bg-surface-container border border-outline-variant rounded px-2 h-7 shrink-0">
+<span class="font-label-sm text-on-surface-variant text-[11px]">Status:</span>
+<select class="bg-transparent border-none text-on-surface text-body-sm focus:ring-0 p-0 pr-4 cursor-pointer h-7">
+<option class="bg-surface">Any</option>
+<option class="bg-surface">2xx Success</option>
+<option class="bg-surface">4xx Client Error</option>
+<option class="bg-surface">5xx Server Error</option>
+</select>
+</div>
+<div class="flex items-center gap-space-xs bg-surface-container border border-outline-variant rounded px-2 h-7 shrink-0">
+<span class="font-label-sm text-on-surface-variant text-[11px]">Range:</span>
+<select class="bg-transparent border-none text-on-surface text-body-sm focus:ring-0 p-0 pr-4 cursor-pointer h-7">
+<option class="bg-surface">Last 1h</option>
+<option class="bg-surface">Last 24h</option>
+<option class="bg-surface">Last 7d</option>
+</select>
+</div>
+<div class="flex-1 min-w-[180px]">
+<input class="w-full h-7 bg-surface-container border border-outline-variant rounded px-3 text-body-sm text-on-surface placeholder-on-surface-variant focus:outline-none focus:border-primary font-code-sm" placeholder="Filter by path…" type="text"/>
+</div>
+</div>
+</div>
+<!-- Dense Table -->
+<div class="flex-1 overflow-auto">
+<table class="w-full border-collapse text-left font-code-sm text-[12px]">
+<thead class="bg-surface-container-low sticky top-0 z-10 border-b border-outline-variant">
+<tr class="text-on-surface-variant font-label-sm uppercase text-[11px] h-9">
+<th class="w-10 px-3 text-center"><input class="rounded border-outline-variant bg-surface text-primary focus:ring-0 w-3.5 h-3.5" type="checkbox"/></th>
+<th class="px-3 font-medium">TIME</th>
+<th class="px-3 font-medium w-24">METHOD</th>
+<th class="px-3 font-medium">PATH</th>
+<th class="px-3 font-medium w-20">STATUS</th>
+<th class="px-3 font-medium text-right w-24">DURATION</th>
+<th class="px-3 font-medium hidden">PROJECT › RESOURCE</th>
+<th class="px-3 font-medium hidden">HANDLED BY</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/50">
+<!-- Row 1 -->
+<tr class="h-[36px] hover:bg-surface-container transition-colors cursor-pointer text-on-surface">
+<td class="px-3 text-center"><input class="rounded border-outline-variant bg-surface text-primary focus:ring-0 w-3.5 h-3.5" type="checkbox"/></td>
+<td class="px-3 text-on-surface-variant">14:32:01.204</td>
+<td class="px-3"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">GET</span></td>
+<td class="px-3 font-code-sm">/customers/1001</td>
+<td class="px-3"><span class="text-primary font-bold">200</span></td>
+<td class="px-3 text-right text-on-surface-variant">12 ms</td>
+<td class="px-3 text-on-surface-variant hidden">payments-gateway <span class="text-outline">›</span> <span class="text-on-surface">/customers/{id}</span></td>
+<td class="px-3 text-primary hidden">'customer (VIP)'</td>
+</tr>
+<!-- Row 2 -->
+<tr class="h-[36px] hover:bg-surface-container transition-colors cursor-pointer text-on-surface">
+<td class="px-3 text-center"><input class="rounded border-outline-variant bg-surface text-primary focus:ring-0 w-3.5 h-3.5" type="checkbox"/></td>
+<td class="px-3 text-on-surface-variant">14:31:58.877</td>
+<td class="px-3"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-tertiary/10 text-tertiary border border-tertiary/20">POST</span></td>
+<td class="px-3 font-code-sm">/charges</td>
+<td class="px-3"><span class="text-primary font-bold">201</span></td>
+<td class="px-3 text-right text-on-surface-variant">48 ms</td>
+<td class="px-3 text-on-surface-variant hidden">payments-gateway <span class="text-outline">›</span> <span class="text-on-surface">/charges</span></td>
+<td class="px-3 text-primary hidden">'charge-created'</td>
+</tr>
+<!-- Row 3 - SELECTED -->
+<tr class="h-[36px] bg-surface-container border-l-2 border-l-primary hover:bg-surface-container-high transition-colors cursor-pointer text-on-surface relative">
+<td class="px-3 text-center"><input checked="" class="rounded border-outline-variant bg-surface text-primary focus:ring-0 w-3.5 h-3.5" type="checkbox"/></td>
+<td class="px-3 text-on-surface">14:31:40.016</td>
+<td class="px-3"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-tertiary/10 text-tertiary border border-tertiary/20">POST</span></td>
+<td class="px-3 font-code-sm font-semibold text-primary">AccountService (SOAP)</td>
+<td class="px-3"><span class="text-error font-bold bg-error-container/30 px-1 py-0.5 rounded">500</span></td>
+<td class="px-3 text-right text-on-surface font-semibold">2,310 ms</td>
+<td class="px-3 text-on-surface-variant hidden">core-banking <span class="text-outline">›</span> <span class="text-on-surface">GetBalance</span></td>
+<td class="px-3 text-error-container font-medium hidden">→ forwarded</td>
+</tr>
+<!-- Row 4 -->
+<tr class="h-[36px] hover:bg-surface-container transition-colors cursor-pointer text-on-surface">
+<td class="px-3 text-center"><input class="rounded border-outline-variant bg-surface text-primary focus:ring-0 w-3.5 h-3.5" type="checkbox"/></td>
+<td class="px-3 text-on-surface-variant">14:31:12.450</td>
+<td class="px-3"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-error/10 text-error border border-error/20">DELETE</span></td>
+<td class="px-3 font-code-sm">/refunds/77</td>
+<td class="px-3"><span class="text-error font-bold">404</span></td>
+<td class="px-3 text-right text-on-surface-variant">6 ms</td>
+<td class="px-3 text-on-surface-variant hidden">payments-gateway <span class="text-outline">›</span> <span class="text-on-surface">/refunds/{id}</span></td>
+<td class="px-3 text-on-surface-variant hidden">--</td>
+</tr>
+<!-- Row 5 -->
+<tr class="h-[36px] hover:bg-surface-container transition-colors cursor-pointer text-on-surface">
+<td class="px-3 text-center"><input class="rounded border-outline-variant bg-surface text-primary focus:ring-0 w-3.5 h-3.5" type="checkbox"/></td>
+<td class="px-3 text-on-surface-variant">14:30:55.001</td>
+<td class="px-3"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-secondary/10 text-secondary border border-secondary/20">PUT</span></td>
+<td class="px-3 font-code-sm">/customers/1002</td>
+<td class="px-3"><span class="text-primary font-bold">200</span></td>
+<td class="px-3 text-right text-on-surface-variant">22 ms</td>
+<td class="px-3 text-on-surface-variant hidden">payments-gateway <span class="text-outline">›</span> <span class="text-on-surface">/customers/{id}</span></td>
+<td class="px-3 text-primary hidden">'customer-update'</td>
+</tr>
+<!-- Row 6 -->
+<tr class="h-[36px] hover:bg-surface-container transition-colors cursor-pointer text-on-surface">
+<td class="px-3 text-center"><input class="rounded border-outline-variant bg-surface text-primary focus:ring-0 w-3.5 h-3.5" type="checkbox"/></td>
+<td class="px-3 text-on-surface-variant">14:30:41.330</td>
+<td class="px-3"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">GET</span></td>
+<td class="px-3 font-code-sm">/fx/rates?base=USD</td>
+<td class="px-3"><span class="text-primary font-bold">200</span></td>
+<td class="px-3 text-right text-on-surface-variant">9 ms</td>
+<td class="px-3 text-on-surface-variant hidden">fx-engine <span class="text-outline">›</span> <span class="text-on-surface">/fx/rates</span></td>
+<td class="px-3 text-primary hidden">'live-fx-ok'</td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+<!-- Right Drawer (576px wide) -->
+<aside class="w-[576px] bg-surface-container-low border-l border-outline-variant flex flex-col z-20 shadow-2xl shrink-0">
+<!-- Drawer Header -->
+<div class="px-space-xl py-space-md border-b border-outline-variant flex items-center justify-between bg-surface">
+<div class="flex items-center gap-space-md">
+<span class="font-code-sm font-bold text-headline-md text-on-surface">POST /AccountService</span>
+<span class="bg-error-container text-on-error-container px-2 py-0.5 rounded font-code-sm font-bold text-body-sm">500</span>
+<span class="font-code-sm text-on-surface-variant">2,310 ms</span>
+</div>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-body-md">close</span>
+</button>
+</div>
+<!-- Meta Key-Value List -->
+<div class="grid grid-cols-2 gap-x-space-xl gap-y-space-xs p-space-lg bg-surface-container/50 border-b border-outline-variant font-code-sm text-body-sm">
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant">Time</span>
+<span class="text-on-surface">14:31:40.016</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant">Client</span>
+<span class="text-on-surface">10.0.4.17</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant">Project</span>
+<span class="text-primary">core-banking</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant">Operation</span>
+<span class="text-on-surface">GetBalance</span>
+</div>
+<div class="flex items-center justify-between col-span-2">
+<span class="text-on-surface-variant">Mode</span>
+<span class="text-[#60A5FA] bg-[#60A5FA]/10 px-2 py-0.5 rounded font-bold">FORWARDED</span>
+</div>
+</div>
+<!-- Tabs -->
+<div class="flex items-center px-space-xl border-b border-outline-variant bg-surface">
+<button class="py-3 px-space-md text-on-surface-variant font-body-md hover:text-on-surface transition-colors">Request</button>
+<button class="py-3 px-space-md text-on-surface-variant font-body-md hover:text-on-surface transition-colors">Response</button>
+<button class="py-3 px-space-md text-primary font-body-md font-semibold border-b-2 border-primary">Diff</button>
+</div>
+<!-- Diff View Content -->
+<div class="flex-1 flex flex-col overflow-hidden">
+<div class="px-space-xl py-space-sm bg-surface-container-low border-b border-outline-variant flex items-center justify-between text-body-sm">
+<div class="flex items-center gap-space-lg font-code-sm">
+<span class="flex items-center gap-space-xs text-secondary"><span class="w-2 h-2 rounded-full bg-secondary"></span> Mock response (balance-ok)</span>
+<span class="text-outline">vs</span>
+<span class="flex items-center gap-space-xs text-error"><span class="w-2 h-2 rounded-full bg-error"></span> Forwarded response (actual)</span>
+</div>
+<div class="flex items-center bg-surface border border-outline-variant rounded p-0.5 text-xs font-label-sm">
+<button class="px-2 py-1 bg-surface-container text-on-surface rounded">Split</button>
+<button class="px-2 py-1 text-on-surface-variant hover:text-on-surface">Unified</button>
+</div>
+</div>
+<div class="flex-1 overflow-auto p-space-lg font-code-sm text-code-sm bg-surface-container-lowest">
+<div class="grid grid-cols-2 gap-4 h-full">
+<!-- Left Column: Mock -->
+<div class="border border-outline-variant rounded bg-surface p-space-md overflow-x-auto flex flex-col">
+<div class="text-[11px] text-on-surface-variant pb-2 border-b border-outline-variant mb-2 font-label-sm uppercase">Mock Response Template</div>
+<div class="space-y-1 text-on-surface-variant font-code-sm">
+<div class="flex"><span class="w-6 text-outline select-none">1</span><span>&lt;soap:Envelope xmlns:soap="..."&gt;</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">2</span><span>  &lt;soap:Body&gt;</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">3</span><span>    &lt;GetBalanceResponse&gt;</span></div>
+<div class="flex bg-red-950/40 border-l-2 border-red-500 text-[#E6E8EC]"><span class="w-6 text-outline select-none">-</span><span class="pr-2 text-red-400">−</span><span>&lt;balance&gt;1520.75&lt;/balance&gt;</span></div>
+<div class="flex bg-emerald-950/40 border-l-2 border-emerald-500 text-[#E6E8EC]"><span class="w-6 text-outline select-none">+</span><span class="pr-2 text-emerald-400">+</span><span>&lt;balance&gt;1520.75&lt;/balance&gt;</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">5</span><span>      &lt;currency&gt;USD&lt;/currency&gt;</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">6</span><span>      &lt;status&gt;ACTIVE&lt;/status&gt;</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">7</span><span>    &lt;/GetBalanceResponse&gt;</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">8</span><span>  &lt;/soap:Body&gt;</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">9</span><span>&lt;/soap:Envelope&gt;</span></div>
+</div>
+</div>
+<!-- Right Column: Forwarded Actual -->
+<div class="border border-outline-variant rounded bg-surface p-space-md overflow-x-auto flex flex-col">
+<div class="text-[11px] text-on-surface-variant pb-2 border-b border-outline-variant mb-2 font-label-sm uppercase">Forwarded Actual (Error 500)</div>
+<div class="space-y-1 text-on-surface-variant font-code-sm">
+<div class="flex"><span class="w-6 text-outline select-none">1</span><span>&lt;soap:Envelope xmlns:soap="..."&gt;</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">2</span><span>  &lt;soap:Body&gt;</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">3</span><span>    &lt;soap:Fault&gt;</span></div>
+<div class="flex bg-red-950/40 border-l-2 border-red-500 text-[#E6E8EC]"><span class="w-6 text-outline select-none">-</span><span class="pr-2 text-red-400">−</span><span>&lt;faultstring&gt;Timeout calling core&lt;/faultstring&gt;</span></div>
+<div class="flex bg-emerald-950/40 border-l-2 border-emerald-500 text-[#E6E8EC]"><span class="w-6 text-outline select-none">+</span><span class="pr-2 text-emerald-400">+</span><span>&lt;faultstring&gt;Timeout calling core&lt;/faultstring&gt;</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">5</span><span>      &lt;code&gt;ERR_CONN_REFUSED&lt;/code&gt;</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">6</span><span>    &lt;/soap:Fault&gt;</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">7</span><span>  &lt;/soap:Body&gt;</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">8</span><span>&lt;/soap:Envelope&gt;</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Buttons -->
+<div class="px-space-xl py-space-md border-t border-outline-variant bg-surface flex items-center justify-between">
+<button class="h-8 px-space-md bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded text-on-surface font-body-md transition-colors">
+                    Copy as cURL
+                </button>
+<button class="h-8 px-space-md bg-primary-container text-on-primary-container hover:brightness-105 font-medium rounded text-body-md transition-all">
+                    Save as mock response
+                </button>
+</div>
+</aside>
+</div>
+</body></html>

@@ -1,0 +1,414 @@
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+              "surface-container-high": "#282a2e",
+              "secondary-fixed-dim": "#9cd1c6",
+              "surface-container-lowest": "#0c0e12",
+              "on-primary-fixed": "#00201c",
+              "tertiary-fixed": "#ffdcc0",
+              "primary-fixed-dim": "#3cddc7",
+              "primary-container": "#2dd4bf",
+              "surface-variant": "#333539",
+              "on-tertiary-fixed": "#2d1600",
+              "on-secondary-fixed": "#00201c",
+              "surface-container-low": "#1a1c20",
+              "surface-container-highest": "#333539",
+              "secondary": "#9cd1c6",
+              "error-container": "#93000a",
+              "on-surface-variant": "#bacac5",
+              "inverse-surface": "#e2e2e8",
+              "surface-container": "#1e2024",
+              "on-secondary": "#003731",
+              "surface-bright": "#37393e",
+              "on-primary-container": "#00574d",
+              "surface-dim": "#111317",
+              "on-error-container": "#ffdad6",
+              "inverse-on-surface": "#2f3035",
+              "primary-fixed": "#62fae3",
+              "outline-variant": "#3c4a46",
+              "tertiary-container": "#ffac5a",
+              "on-error": "#690005",
+              "surface-tint": "#3cddc7",
+              "secondary-fixed": "#b8ede2",
+              "on-tertiary": "#4b2800",
+              "on-tertiary-fixed-variant": "#6b3b00",
+              "background": "#111317",
+              "on-primary": "#003731",
+              "tertiary-fixed-dim": "#ffb875",
+              "outline": "#859490",
+              "surface": "#111317",
+              "on-primary-fixed-variant": "#005047",
+              "secondary-container": "#1a4f47",
+              "inverse-primary": "#006b5f",
+              "tertiary": "#ffd1aa",
+              "primary": "#57f1db",
+              "on-tertiary-container": "#744000",
+              "on-background": "#e2e2e8",
+              "on-secondary-fixed-variant": "#1a4f47",
+              "on-secondary-container": "#8bbfb5",
+              "error": "#ffb4ab",
+              "on-surface": "#e2e2e8"
+            },
+            "borderRadius": {
+              "DEFAULT": "0.125rem",
+              "lg": "0.25rem",
+              "xl": "0.5rem",
+              "full": "0.75rem"
+            },
+            "spacing": {
+              "space-xs": "0.25rem",
+              "margin": "1.5rem",
+              "space-md": "0.75rem",
+              "gutter": "1.5rem",
+              "space-sm": "0.5rem",
+              "space-lg": "1rem",
+              "space-xl": "1.5rem"
+            },
+            "fontFamily": {
+              "body-md": ["Inter"],
+              "body-sm": ["Inter"],
+              "headline-md": ["Inter"],
+              "headline-lg": ["Inter"],
+              "label-sm": ["JetBrains Mono"],
+              "code-sm": ["JetBrains Mono"]
+            },
+            "fontSize": {
+              "body-md": ["0.8125rem", { "lineHeight": "1.25rem", "fontWeight": "400" }],
+              "body-sm": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "400" }],
+              "headline-md": ["1.125rem", { "lineHeight": "1.5rem", "fontWeight": "600" }],
+              "headline-lg": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "600" }],
+              "label-sm": ["0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.05em", "fontWeight": "500" }],
+              "code-sm": ["0.75rem", { "lineHeight": "1.125rem", "fontWeight": "400" }]
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased h-screen flex flex-col overflow-hidden">
+<!-- TopNavBar -->
+<header class="w-full h-12 px-space-xl flex items-center justify-between bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant z-20 shrink-0">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight">mockingbird</span>
+</div>
+<div class="ml-space-xl relative flex items-center">
+<span class="absolute left-2.5 material-symbols-outlined text-on-surface-variant text-sm">search</span>
+<input class="w-80 h-7 pl-8 pr-3 bg-surface-container border border-outline-variant rounded text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary" placeholder="Search operations, projects, endpoints... (⌘K)" type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<button class="w-7 h-7 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-sm">dark_mode</span>
+</button>
+<button class="w-7 h-7 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-sm">help</span>
+</button>
+<button class="w-7 h-7 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-sm">notifications</span>
+</button>
+<div class="h-4 w-[1px] bg-outline-variant mx-1"></div>
+<div class="flex items-center gap-2 cursor-pointer">
+<img class="w-6 h-6 rounded-full object-cover border border-outline-variant" data-alt="Admin user profile picture professional avatar dark background high quality headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArN4bnHWdBtAS_9u0saPH6b7JEd9EzBdWiOYuzTE3veOBF6vCPDaDqcAvc8S_h8fhQ4hHD7-t_qJq6SIc420_8VOjSvgWstGqjjQUhVVRUDxHW7KpQwXkiiTvV0IEP3Wn3L9uaqwq4wSzPf2CEnKwRqAbN9PFgHq_AsYzPpkWK9wKaBS78ptqr5ilfMjT4Iyi_EpZEV8fi7koVKU4PskckV9Flbk5_1TnIwXANs0yiVP0_qppbMI5zocI842IhEWXws_xXLKIhJuI"/>
+<span class="text-body-sm font-medium text-on-surface">admin</span>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="w-60 h-[calc(100vh-3rem)] flex flex-col justify-between p-space-sm bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant shrink-0 overflow-y-auto">
+<div class="flex flex-col gap-1">
+<!-- Nav items -->
+<a class="flex items-center gap-2 px-space-sm py-1.5 bg-secondary-container dark:bg-secondary-container text-primary dark:text-primary font-medium rounded transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span class="font-body-md text-body-md">Projects</span>
+</a>
+<a class="flex items-center gap-2 px-space-sm py-1.5 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-sm">bolt</span>
+<span class="font-body-md text-body-md">Events</span>
+</a>
+<a class="flex items-center gap-2 px-space-sm py-1.5 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-sm">group</span>
+<span class="font-body-md text-body-md">Users</span>
+</a>
+<a class="flex items-center gap-2 px-space-sm py-1.5 text-on-surface-variant dark:text-on-surface-variant font-normal hover:bg-surface-container dark:hover:bg-surface-container hover:text-on-surface rounded transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-sm">settings</span>
+<span class="font-body-md text-body-md">System</span>
+</a>
+<div class="my-3 border-t border-outline-variant"></div>
+<!-- Project tree view -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between px-2 py-1 text-on-surface-variant font-label-sm uppercase">
+<span>Workspace Tree</span>
+<span class="material-symbols-outlined text-xs">unfold_more</span>
+</div>
+<!-- payments-gateway expanded -->
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-1.5 px-2 py-1 text-on-surface rounded hover:bg-surface-container cursor-pointer">
+<span class="material-symbols-outlined text-xs text-on-surface-variant">expand_more</span>
+<span class="material-symbols-outlined text-sm text-primary">folder</span>
+<span class="font-body-sm font-medium">payments-gateway</span>
+</div>
+<div class="pl-4 flex flex-col gap-0.5 border-l border-outline-variant ml-3">
+<div class="flex items-center gap-1.5 px-2 py-1 text-on-surface rounded hover:bg-surface-container cursor-pointer">
+<span class="material-symbols-outlined text-xs text-on-surface-variant">expand_more</span>
+<span class="material-symbols-outlined text-sm text-secondary">dns</span>
+<span class="font-body-sm">payments-v1</span>
+</div>
+<div class="pl-4 flex flex-col gap-0.5 border-l border-outline-variant ml-3">
+<div class="flex items-center gap-1.5 px-2 py-1 bg-secondary-container/40 border border-primary/30 text-primary rounded cursor-pointer">
+<span class="text-[10px] font-code-sm font-bold px-1 rounded bg-primary-container text-on-primary-container" style="color: #4ADE80; background-color: rgba(74,222,128,0.14);">GET</span>
+<span class="font-code-sm truncate">/customers/{id}</span>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-1 text-on-surface-variant hover:text-on-surface rounded hover:bg-surface-container cursor-pointer">
+<span class="text-[10px] font-code-sm font-bold px-1 rounded bg-tertiary-container/20 text-tertiary" style="color: #60A5FA; background-color: rgba(96,165,250,0.14);">POST</span>
+<span class="font-code-sm truncate">/charges</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-1 text-on-surface-variant rounded hover:bg-surface-container cursor-pointer mt-1">
+<span class="material-symbols-outlined text-xs text-on-surface-variant">chevron_right</span>
+<span class="material-symbols-outlined text-sm text-on-surface-variant">folder</span>
+<span class="font-body-sm">auth-service</span>
+</div>
+</div>
+</div>
+<!-- Sidebar footer -->
+<div class="flex flex-col gap-2 pt-space-sm border-t border-outline-variant">
+<button class="w-full h-8 bg-surface-container hover:bg-surface-container-high text-on-surface font-body-sm rounded flex items-center justify-center gap-1.5 border border-outline-variant transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+<span>New Mock</span>
+</button>
+<div class="flex items-center justify-between text-on-surface-variant px-1">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">menu_book</span>
+<span class="font-code-sm">Docs</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">tag</span>
+<span class="font-code-sm">v1.4.2-preview</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 bg-background overflow-y-auto p-gutter flex flex-col gap-space-lg">
+<!-- Breadcrumb -->
+<div class="flex items-center gap-2 font-code-sm text-on-surface-variant text-xs">
+<span class="hover:text-on-surface cursor-pointer">Projects</span>
+<span>/</span>
+<span class="hover:text-on-surface cursor-pointer">payments-gateway</span>
+<span>/</span>
+<span class="hover:text-on-surface cursor-pointer">payments-v1</span>
+<span>/</span>
+<span class="text-primary">/customers/{id}</span>
+<span>/</span>
+<span class="text-on-surface font-medium">Get customer</span>
+</div>
+<!-- Header -->
+<div class="flex items-center justify-between pb-space-md border-b border-outline-variant">
+<div class="flex items-center gap-3">
+<span class="px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-code-sm font-bold text-xs" style="font-size: 13px;">GET</span>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Get customer</h1>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary-container text-primary font-label-sm text-xs border border-primary/20">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                        MOCKED
+                    </span>
+<span class="font-code-sm text-on-surface-variant bg-surface-container px-2 py-1 rounded border border-outline-variant ml-2" style="font-size: 13px;">
+                        /customers/<span class="text-primary font-bold">{id}</span>
+</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="h-8 px-3 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface text-body-sm font-medium rounded flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+                        Duplicate
+                    </button>
+<button class="h-8 px-3 hover:bg-error-container/20 text-error text-body-sm font-medium rounded flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-sm">delete</span>
+                        Delete
+                    </button>
+<button class="h-8 px-3 bg-primary hover:bg-primary-fixed text-on-primary text-body-sm font-semibold rounded flex items-center gap-1.5 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-sm">add</span>
+                        Add response
+                    </button>
+</div>
+</div>
+<!-- Control Strip Card -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-space-md grid grid-cols-4 gap-4 items-center">
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-on-surface-variant uppercase">Mode</label>
+<div class="relative">
+<select class="w-full h-8 bg-surface border border-outline-variant rounded px-2.5 text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary appearance-none">
+<option>Mocked</option>
+<option>Proxy</option>
+<option>Record</option>
+<option>Disabled</option>
+</select>
+<span class="absolute right-2.5 top-2 material-symbols-outlined text-on-surface-variant text-sm pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-on-surface-variant uppercase">Response Strategy</label>
+<div class="relative">
+<select class="w-full h-8 bg-surface border border-outline-variant rounded px-2.5 text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary appearance-none">
+<option>Sequence</option>
+<option>Random</option>
+<option>First Match</option>
+<option>Round Robin</option>
+</select>
+<span class="absolute right-2.5 top-2 material-symbols-outlined text-on-surface-variant text-sm pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<label class="font-label-sm text-on-surface-variant uppercase">Network Delay</label>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-7 h-4 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface after:border-outline after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="relative">
+<input class="w-full h-8 bg-surface border border-outline-variant rounded px-2.5 text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary" type="text" value="250 ms"/>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-on-surface-variant uppercase">Default Response</label>
+<div class="relative">
+<select class="w-full h-8 bg-surface border border-outline-variant rounded px-2.5 text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary appearance-none">
+<option>200 OK — customer</option>
+<option>404 Not Found</option>
+<option>500 Error</option>
+</select>
+<span class="absolute right-2.5 top-2 material-symbols-outlined text-on-surface-variant text-sm pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Two Columns Main Layout -->
+<div class="grid grid-cols-12 gap-space-lg">
+<!-- Left Column (8 cols): Mock Responses Table -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl flex flex-col overflow-hidden col-span-12">
+<div class="px-space-md py-3 border-b border-outline-variant flex items-center justify-between bg-surface-container/50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">list_alt</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Mock responses (4)</h2>
+</div>
+<div class="text-body-sm font-code-sm text-on-surface-variant">
+                            Sequence: next response is <span class="text-primary font-bold">#2</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant bg-surface-container text-on-surface-variant font-label-sm">
+<th class="py-2.5 px-3 w-8"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></th>
+<th class="py-2.5 px-2 w-10">#</th>
+<th class="py-2.5 px-3">Name</th>
+<th class="py-2.5 px-3">Status</th>
+<th class="py-2.5 px-3">Content-Type</th>
+<th class="py-2.5 px-3">Match</th>
+<th class="py-2.5 px-3 w-16">Enabled</th>
+<th class="py-2.5 px-3 w-10"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/60 font-body-sm">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container/60 transition-colors bg-surface-container/20">
+<td class="py-2 px-3"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="py-2 px-2 font-code-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs cursor-grab text-outline">drag_indicator</span> 1
+                                    </td>
+<td class="py-2 px-3 font-medium text-on-surface flex items-center gap-2">
+                                        customer
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-code-sm border border-primary text-primary">DEFAULT</span>
+</td>
+<td class="py-2 px-3"><span class="px-1.5 py-0.5 rounded bg-primary-container/20 text-primary font-code-sm text-xs font-semibold" style="color: #4ADE80; background-color: rgba(74,222,128,0.14); font-size: 11px; font-family: 'JetBrains Mono', monospace;">200</span></td>
+<td class="py-2 px-3 font-code-sm text-on-surface-variant">application/json</td>
+<td class="py-2 px-3 font-code-sm text-outline">—</td>
+<td class="py-2 px-3">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-7 h-4 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface after:border-outline after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</td>
+<td class="py-2 px-3 text-right"><button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-sm">more_vert</span></button></td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-2 px-3"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="py-2 px-2 font-code-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs cursor-grab text-outline">drag_indicator</span> 2
+                                    </td>
+<td class="py-2 px-3 font-medium text-on-surface">customer (VIP)</td>
+<td class="py-2 px-3"><span class="px-1.5 py-0.5 rounded bg-primary-container/20 text-primary font-code-sm text-xs font-semibold" style="color: #4ADE80; background-color: rgba(74,222,128,0.14); font-size: 11px; font-family: 'JetBrains Mono', monospace;">200</span></td>
+<td class="py-2 px-3 font-code-sm text-on-surface-variant">application/json</td>
+<td class="py-2 px-3 font-code-sm text-secondary bg-surface-container px-1 py-0.5 rounded inline-block my-1">query tier=vip</td>
+<td class="py-2 px-3">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-7 h-4 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface after:border-outline after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</td>
+<td class="py-2 px-3 text-right"><button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-sm">more_vert</span></button></td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-2 px-3"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="py-2 px-2 font-code-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs cursor-grab text-outline">drag_indicator</span> 3
+                                    </td>
+<td class="py-2 px-3 font-medium text-on-surface">not found</td>
+<td class="py-2 px-3"><span class="px-1.5 py-0.5 rounded bg-tertiary-container/20 text-tertiary-fixed-dim font-code-sm text-xs font-semibold" style="color: #FBBF24; background-color: rgba(251,191,36,0.14); font-size: 11px; font-family: 'JetBrains Mono', monospace;">404</span></td>
+<td class="py-2 px-3 font-code-sm text-on-surface-variant">application/json</td>
+<td class="py-2 px-3 font-code-sm text-outline">—</td>
+<td class="py-2 px-3">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-7 h-4 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface after:border-outline after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</td>
+<td class="py-2 px-3 text-right"><button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-sm">more_vert</span></button></td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container/60 transition-colors opacity-50">
+<td class="py-2 px-3"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="py-2 px-2 font-code-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs cursor-grab text-outline">drag_indicator</span> 4
+                                    </td>
+<td class="py-2 px-3 font-medium text-on-surface">server error</td>
+<td class="py-2 px-3"><span class="px-1.5 py-0.5 rounded bg-error-container/40 text-error font-code-sm text-xs font-semibold" style="color: #F87171; background-color: rgba(248,113,113,0.14); font-size: 11px; font-family: 'JetBrains Mono', monospace;">503</span></td>
+<td class="py-2 px-3 font-code-sm text-on-surface-variant">text/plain</td>
+<td class="py-2 px-3 font-code-sm text-outline">—</td>
+<td class="py-2 px-3">
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-7 h-4 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface after:border-outline after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</td>
+<td class="py-2 px-3 text-right"><button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-sm">more_vert</span></button></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-space-md py-2.5 bg-surface-container/30 border-t border-outline-variant text-body-sm font-code-sm text-on-surface-variant flex items-center justify-between">
+<span>Showing 4 configured mock responses</span>
+<span class="text-xs">Drag handles to reorder sequence</span>
+</div>
+</div>
+<!-- Right Column (4 cols): Endpoint Card & Recent Events -->
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>mockingbird — Projects</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary": "#9cd1c6",
+            "secondary-fixed-dim": "#9cd1c6",
+            "on-surface-variant": "#bacac5",
+            "inverse-on-surface": "#2f3035",
+            "tertiary": "#ffd1aa",
+            "surface-variant": "#333539",
+            "primary-fixed": "#62fae3",
+            "surface-container-low": "#1a1c20",
+            "primary-fixed-dim": "#3cddc7",
+            "tertiary-fixed-dim": "#ffb875",
+            "error-container": "#93000a",
+            "on-secondary": "#003731",
+            "surface-dim": "#111317",
+            "surface-container-lowest": "#0c0e12",
+            "surface-bright": "#37393e",
+            "on-secondary-fixed-variant": "#1a4f47",
+            "on-secondary-fixed": "#00201c",
+            "on-background": "#e2e2e8",
+            "surface-container-highest": "#333539",
+            "secondary-fixed": "#b8ede2",
+            "on-error-container": "#ffdad6",
+            "tertiary-container": "#ffac5a",
+            "background": "#111317",
+            "surface-container": "#1e2024",
+            "secondary-container": "#1a4f47",
+            "on-tertiary": "#4b2800",
+            "on-primary": "#003731",
+            "inverse-primary": "#006b5f",
+            "on-secondary-container": "#8bbfb5",
+            "on-tertiary-container": "#744000",
+            "on-primary-fixed-variant": "#005047",
+            "error": "#ffb4ab",
+            "outline": "#859490",
+            "on-primary-container": "#00574d",
+            "on-error": "#690005",
+            "inverse-surface": "#e2e2e8",
+            "primary-container": "#2dd4bf",
+            "surface-tint": "#3cddc7",
+            "on-tertiary-fixed": "#2d1600",
+            "primary": "#57f1db",
+            "surface": "#111317",
+            "on-primary-fixed": "#00201c",
+            "on-tertiary-fixed-variant": "#6b3b00",
+            "on-surface": "#e2e2e8",
+            "tertiary-fixed": "#ffdcc0",
+            "outline-variant": "#3c4a46",
+            "surface-container-high": "#282a2e"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xl": "1.5rem",
+            "margin": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "0.75rem",
+            "space-lg": "1rem",
+            "gutter": "1.5rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Inter"],
+            "headline-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "body-md": ["Inter"],
+            "label-sm": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "body-sm": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "400" }],
+            "headline-md": ["1.125rem", { "lineHeight": "1.5rem", "fontWeight": "600" }],
+            "headline-lg": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "600" }],
+            "code-sm": ["0.75rem", { "lineHeight": "1.125rem", "fontWeight": "400" }],
+            "body-md": ["0.8125rem", { "lineHeight": "1.25rem", "fontWeight": "400" }],
+            "label-sm": ["0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.05em", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<header class="w-full h-12 px-space-xl flex items-center justify-between bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant sticky top-0 z-50">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-headline-md" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight">mockingbird</span>
+</div>
+</div>
+<div class="flex-1 max-w-md mx-space-xl">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-space-sm text-on-surface-variant text-body-sm">search</span>
+<input class="w-full h-8 bg-surface-container border border-outline-variant rounded px-8 text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary" placeholder="Search projects, methods, events…" type="text"/>
+<div class="absolute right-space-sm flex items-center gap-space-xs">
+<kbd class="font-code-sm px-1.5 py-0.5 bg-surface-container-high border border-outline-variant rounded text-on-surface-variant">⌘K</kbd>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-body-md">dark_mode</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-body-md">help</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-body-md">notifications</span>
+</button>
+<div class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-code-sm font-medium">
+        AD
+      </div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="w-60 h-[calc(100vh-3rem)] flex flex-col justify-between p-space-sm bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant shrink-0 overflow-y-auto">
+<div class="flex flex-col gap-space-xs">
+<div class="px-space-sm py-1">
+<a class="flex items-center gap-space-sm px-space-sm py-1.5 text-primary bg-secondary-container dark:bg-secondary-container font-medium rounded text-body-md" href="#">
+<span class="material-symbols-outlined text-body-md" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+            Projects
+          </a>
+</div>
+<div class="px-space-sm py-1">
+<a class="flex items-center gap-space-sm px-space-sm py-1.5 text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined text-body-md">bolt</span>
+            Events
+          </a>
+</div>
+<div class="px-space-sm py-1">
+<a class="flex items-center gap-space-sm px-space-sm py-1.5 text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined text-body-md">group</span>
+            Users
+          </a>
+</div>
+<div class="px-space-sm py-1">
+<a class="flex items-center gap-space-sm px-space-sm py-1.5 text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined text-body-md">settings</span>
+            System
+          </a>
+</div>
+<div class="my-space-sm border-t border-outline-variant"></div>
+<div class="px-space-sm py-1 flex items-center justify-between">
+<span class="font-label-sm text-on-surface-variant">PROJECTS</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm cursor-pointer hover:text-on-surface">add</span>
+</div>
+<div class="flex flex-col gap-0.5 mt-1">
+<a class="flex items-center justify-between px-space-sm py-1 rounded hover:bg-surface-container text-on-surface text-body-sm font-code-sm transition-colors" href="#">
+<span class="truncate">payments-gateway</span>
+<span class="text-[10px] px-1 py-0.2 bg-surface-container-high rounded text-on-surface-variant">REST</span>
+</a>
+<a class="flex items-center justify-between px-space-sm py-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface text-body-sm font-code-sm transition-colors" href="#">
+<span class="truncate">core-banking</span>
+<span class="text-[10px] px-1 py-0.2 bg-surface-container-high rounded text-on-surface-variant">SOAP</span>
+</a>
+<a class="flex items-center justify-between px-space-sm py-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface text-body-sm font-code-sm transition-colors" href="#">
+<span class="truncate">kyc-provider</span>
+<span class="text-[10px] px-1 py-0.2 bg-surface-container-high rounded text-on-surface-variant">REST</span>
+</a>
+<a class="flex items-center justify-between px-space-sm py-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface text-body-sm font-code-sm transition-colors" href="#">
+<span class="truncate">notifications</span>
+<span class="text-[10px] px-1 py-0.2 bg-surface-container-high rounded text-on-surface-variant">REST</span>
+</a>
+</div>
+</div>
+<div class="pt-space-md border-t border-outline-variant flex items-center justify-between px-space-sm text-on-surface-variant font-code-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-xs">menu_book</span>
+<span>Docs</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-xs">tag</span>
+<span>v0.1.0</span>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto p-gutter bg-background flex flex-col gap-space-xl">
+<!-- Breadcrumb & Header -->
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center gap-space-xs text-body-sm text-on-surface-variant">
+<span>Projects</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-baseline gap-space-md">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Projects</h1>
+<span class="text-body-sm text-on-surface-variant">6 projects · 214 endpoints</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<button class="h-8 px-space-md bg-surface-container border border-outline-variant hover:bg-surface-bright text-on-surface rounded text-body-md font-medium flex items-center gap-space-xs transition-colors">
+<span class="material-symbols-outlined text-body-md">upload</span>
+              Import
+            </button>
+<button class="h-8 px-space-md bg-primary-container text-on-primary-container hover:bg-primary rounded text-body-md font-medium flex items-center gap-space-xs transition-colors">
+<span class="material-symbols-outlined text-body-md">add</span>
+              New project
+            </button>
+</div>
+</div>
+</div>
+<!-- Stat Cards -->
+<div class="grid grid-cols-4 gap-space-md">
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col gap-space-xs">
+<span class="font-label-sm text-on-surface-variant">PROJECTS</span>
+<span class="font-headline-lg text-headline-lg text-on-surface font-code-sm">6</span>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col gap-space-xs">
+<span class="font-label-sm text-on-surface-variant">MOCKED ENDPOINTS</span>
+<span class="font-headline-lg text-headline-lg text-on-surface font-code-sm">214</span>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col gap-space-xs">
+<span class="font-label-sm text-on-surface-variant">REQUESTS (24H)</span>
+<span class="font-headline-lg text-headline-lg text-on-surface font-code-sm">18,402</span>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col gap-space-xs">
+<span class="font-label-sm text-on-surface-variant">ERRORS (24H)</span>
+<span class="font-headline-lg text-headline-lg text-error font-code-sm">37</span>
+</div>
+</div>
+<!-- Filter Row -->
+<div class="flex items-center justify-between gap-space-md">
+<div class="relative flex-1 max-w-sm">
+<span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-body-sm">search</span>
+<input class="w-full h-8 bg-surface-container border border-outline-variant rounded pl-8 pr-space-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary" placeholder="Filter projects…" type="text"/>
+</div>
+<div class="flex items-center bg-surface-container border border-outline-variant rounded p-0.5">
+<button class="px-space-md py-1 bg-surface-container-high text-on-surface text-body-sm font-medium rounded">All</button>
+<button class="px-space-md py-1 text-on-surface-variant hover:text-on-surface text-body-sm transition-colors">REST</button>
+<button class="px-space-md py-1 text-on-surface-variant hover:text-on-surface text-body-sm transition-colors">SOAP</button>
+</div>
+</div>
+<!-- Table Card -->
+<div class="bg-surface-container-low border border-outline-variant rounded flex flex-col">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant text-on-surface-variant font-label-sm h-9">
+<th class="w-10 px-space-md"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></th>
+<th class="px-space-md font-medium">NAME</th>
+<th class="px-space-md font-medium">TYPE</th>
+<th class="px-space-md font-medium text-right">ENDPOINTS</th>
+<th class="px-space-md font-medium">MODES</th>
+<th class="px-space-md font-medium">LAST REQUEST</th>
+<th class="w-10 px-space-md"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant text-body-md font-body-md">
+<!-- Row 1 -->
+<tr class="h-9 hover:bg-surface-container transition-colors group">
+<td class="px-space-md"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface font-code-sm">payments-gateway</span>
+<span class="text-body-sm text-on-surface-variant">Stripe-like payments API</span>
+</div>
+</td>
+<td class="px-space-md"><span class="px-1.5 py-0.5 bg-surface-container border border-outline-variant rounded font-code-sm text-body-sm text-on-surface-variant">REST</span></td>
+<td class="px-space-md text-right font-code-sm text-on-surface">48</td>
+<td class="px-space-md w-36">
+<div class="flex h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 60%;"></div>
+<div class="bg-blue-400 h-full" style="width: 20%;"></div>
+<div class="bg-error h-full" style="width: 10%;"></div>
+<div class="bg-surface-bright h-full" style="width: 10%;"></div>
+</div>
+</td>
+<td class="px-space-md font-code-sm text-on-surface-variant text-body-sm">2m ago</td>
+<td class="px-space-md text-right">
+<button class="text-on-surface-variant hover:text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-body-md">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="h-9 hover:bg-surface-container transition-colors group">
+<td class="px-space-md"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface font-code-sm">core-banking</span>
+<span class="text-body-sm text-on-surface-variant">Core banking SOAP services</span>
+</div>
+</td>
+<td class="px-space-md"><span class="px-1.5 py-0.5 bg-surface-container border border-outline-variant rounded font-code-sm text-body-sm text-on-surface-variant">SOAP</span></td>
+<td class="px-space-md text-right font-code-sm text-on-surface">62</td>
+<td class="px-space-md w-36">
+<div class="flex h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 75%;"></div>
+<div class="bg-blue-400 h-full" style="width: 15%;"></div>
+<div class="bg-error h-full" style="width: 5%;"></div>
+<div class="bg-surface-bright h-full" style="width: 5%;"></div>
+</div>
+</td>
+<td class="px-space-md font-code-sm text-on-surface-variant text-body-sm">14m ago</td>
+<td class="px-space-md text-right">
+<button class="text-on-surface-variant hover:text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-body-md">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="h-9 hover:bg-surface-container transition-colors group">
+<td class="px-space-md"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface font-code-sm">kyc-provider</span>
+<span class="text-body-sm text-on-surface-variant">Identity verification</span>
+</div>
+</td>
+<td class="px-space-md"><span class="px-1.5 py-0.5 bg-surface-container border border-outline-variant rounded font-code-sm text-body-sm text-on-surface-variant">REST</span></td>
+<td class="px-space-md text-right font-code-sm text-on-surface">21</td>
+<td class="px-space-md w-36">
+<div class="flex h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 50%;"></div>
+<div class="bg-blue-400 h-full" style="width: 30%;"></div>
+<div class="bg-error h-full" style="width: 10%;"></div>
+<div class="bg-surface-bright h-full" style="width: 10%;"></div>
+</div>
+</td>
+<td class="px-space-md font-code-sm text-on-surface-variant text-body-sm">1h ago</td>
+<td class="px-space-md text-right">
+<button class="text-on-surface-variant hover:text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-body-md">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="h-9 hover:bg-surface-container transition-colors group">
+<td class="px-space-md"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface font-code-sm">notifications</span>
+<span class="text-body-sm text-on-surface-variant">SMS &amp; email gateway</span>
+</div>
+</td>
+<td class="px-space-md"><span class="px-1.5 py-0.5 bg-surface-container border border-outline-variant rounded font-code-sm text-body-sm text-on-surface-variant">REST</span></td>
+<td class="px-space-md text-right font-code-sm text-on-surface">17</td>
+<td class="px-space-md w-36">
+<div class="flex h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 80%;"></div>
+<div class="bg-blue-400 h-full" style="width: 10%;"></div>
+<div class="bg-error h-full" style="width: 5%;"></div>
+<div class="bg-surface-bright h-full" style="width: 5%;"></div>
+</div>
+</td>
+<td class="px-space-md font-code-sm text-on-surface-variant text-body-sm">3h ago</td>
+<td class="px-space-md text-right">
+<button class="text-on-surface-variant hover:text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-body-md">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="h-9 hover:bg-surface-container transition-colors group">
+<td class="px-space-md"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface font-code-sm">legacy-ledger</span>
+<span class="text-body-sm text-on-surface-variant">Ledger WSDL v2</span>
+</div>
+</td>
+<td class="px-space-md"><span class="px-1.5 py-0.5 bg-surface-container border border-outline-variant rounded font-code-sm text-body-sm text-on-surface-variant">SOAP</span></td>
+<td class="px-space-md text-right font-code-sm text-on-surface">44</td>
+<td class="px-space-md w-36">
+<div class="flex h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 40%;"></div>
+<div class="bg-blue-400 h-full" style="width: 40%;"></div>
+<div class="bg-error h-full" style="width: 10%;"></div>
+<div class="bg-surface-bright h-full" style="width: 10%;"></div>
+</div>
+</td>
+<td class="px-space-md font-code-sm text-on-surface-variant text-body-sm">5h ago</td>
+<td class="px-space-md text-right">
+<button class="text-on-surface-variant hover:text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-body-md">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="h-9 hover:bg-surface-container transition-colors group">
+<td class="px-space-md"><input class="rounded bg-surface border-outline-variant text-primary focus:ring-0" type="checkbox"/></td>
+<td class="px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface font-code-sm">fx-rates</span>
+<span class="text-body-sm text-on-surface-variant">Currency rates</span>
+</div>
+</td>
+<td class="px-space-md"><span class="px-1.5 py-0.5 bg-surface-container border border-outline-variant rounded font-code-sm text-body-sm text-on-surface-variant">REST</span></td>
+<td class="px-space-md text-right font-code-sm text-on-surface">22</td>
+<td class="px-space-md w-36">
+<div class="flex h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 90%;"></div>
+<div class="bg-blue-400 h-full" style="width: 5%;"></div>
+<div class="bg-error h-full" style="width: 2%;"></div>
+<div class="bg-surface-bright h-full" style="width: 3%;"></div>
+</div>
+</td>
+<td class="px-space-md font-code-sm text-on-surface-variant text-body-sm">12h ago</td>
+<td class="px-space-md text-right">
+<button class="text-on-surface-variant hover:text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-body-md">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-space-md py-space-sm border-t border-outline-variant flex items-center justify-between text-body-sm text-on-surface-variant">
+<span>Showing 6 of 6</span>
+<div class="flex items-center gap-space-xs font-code-sm">
+<span>Page 1 of 1</span>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
