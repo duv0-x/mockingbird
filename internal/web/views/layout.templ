@@ -1,0 +1,26 @@
+package views
+
+// Layout is a structural stub. T5 replaces its markup following design/.
+templ Layout(p Page) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<title>{ p.Title }</title>
+			<link rel="stylesheet" href={ p.Asset("css/mockingbird.css") }/>
+			<script src={ p.Asset("js/htmx.min.js") } defer></script>
+		</head>
+		<body>
+			<main>
+				{ children... }
+			</main>
+		</body>
+	</html>
+}
+
+templ Placeholder(p Page) {
+	@Layout(p) {
+		<p>mockingbird { p.Version }: UI not implemented yet.</p>
+	}
+}

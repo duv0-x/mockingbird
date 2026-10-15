@@ -1,0 +1,4 @@
+.castlemock-src/
+.agents/
+/bin/
+node_modules/
