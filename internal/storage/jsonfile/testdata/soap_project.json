@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "kind": "SoapProject",
+  "id": "Ef34Gh",
+  "name": "Soap Ef34Gh",
+  "created": "2024-05-01T10:20:30.123Z",
+  "updated": "2024-05-01T10:20:30.123Z",
+  "resources": [
+    {
+      "id": "yrsc1",
+      "name": "calc.wsdl",
+      "type": "WSDL",
+      "content": "<definitions/>"
+    }
+  ],
+  "ports": [
+    {
+      "id": "yprt1",
+      "name": "CalcSoap",
+      "uri": "CalcSoap",
+      "operations": [
+        {
+          "id": "yopr1",
+          "name": "Add",
+          "operationIdentifier": {
+            "name": "Add",
+            "namespace": "http://t/"
+          },
+          "httpMethod": "POST",
+          "soapVersion": "SOAP11",
+          "status": "MOCKED",
+          "responseStrategy": "RANDOM",
+          "identifyStrategy": "ELEMENT_NAMESPACE",
+          "mockResponses": [
+            {
+              "id": "ysmr1",
+              "name": "r",
+              "status": "ENABLED",
+              "httpStatusCode": 200,
+              "body": "<a/>",
+              "httpHeaders": [],
+              "contentEncodings": [],
+              "xpathExpressions": [
+                "//a"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

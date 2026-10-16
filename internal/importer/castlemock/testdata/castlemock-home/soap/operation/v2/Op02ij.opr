@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<soapOperation>
+    <id>Op02ij</id>
+    <name>Subtract</name>
+    <portId>Po01cd</portId>
+    <responseStrategy>SEQUENCE</responseStrategy>
+    <identifier>SubtractRequest</identifier>
+    <status>ECHO</status>
+    <httpMethod>POST</httpMethod>
+    <soapVersion>SOAP12</soapVersion>
+    <currentResponseSequenceIndex>1</currentResponseSequenceIndex>
+</soapOperation>

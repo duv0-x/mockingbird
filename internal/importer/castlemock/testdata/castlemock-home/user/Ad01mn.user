@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<user>
+    <id>Ad01mn</id>
+    <username>admin</username>
+    <password>$2a$10$gpERi60es.N8L4CiSlZfxeLnaQOUduo1BceoiAgTGQ0FFCtPZNytq</password>
+    <fullName>Legacy Admin</fullName>
+    <updated>2023-02-01T10:15:30.123+01:00</updated>
+    <created>2023-01-01T09:00:00+01:00</created>
+    <status>ACTIVE</status>
+    <role>ADMIN</role>
+</user>

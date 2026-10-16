@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<restMockResponse>
+    <id>Mr02mn</id>
+    <name>404 Not found</name>
+    <methodId>Me01gh</methodId>
+    <status>DISABLED</status>
+    <httpStatusCode>404</httpStatusCode>
+    <usingExpressions>false</usingExpressions>
+    <httpHeaders/>
+    <contentEncodings/>
+</restMockResponse>

@@ -90,6 +90,7 @@ func openStore(ctx context.Context, cfg config.Config) (storage.Store, error) {
 		RestEventMax:  cfg.RestEventMax,
 		SoapEventMax:  cfg.SoapEventMax,
 		AdminPassword: cfg.AdminPassword,
+		Version:       version,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("open store %s: %w", cfg.DataDir, err)
@@ -237,7 +238,7 @@ func importCastleMock(cfg config.Config, args []string, stdout io.Writer) error 
 		return err
 	}
 	defer store.Close()
-	report, err := castlemock.ImportDataDir(ctx, *src, store, castlemock.ImportOptions{Overwrite: *overwrite, SkipEvents: *skipEvents})
+	report, err := castlemock.ImportDataDir(ctx, *src, store, castlemock.ImportOptions{Overwrite: *overwrite, SkipEvents: *skipEvents, AdminPassword: cfg.AdminPassword})
 	if err != nil {
 		return fmt.Errorf("import %s: %w", *src, err)
 	}

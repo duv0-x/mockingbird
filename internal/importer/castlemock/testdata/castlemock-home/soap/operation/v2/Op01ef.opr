@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<soapOperation>
+    <id>Op01ef</id>
+    <name>Add</name>
+    <portId>Po01cd</portId>
+    <responseStrategy>XPATH_INPUT</responseStrategy>
+    <operationIdentifier>
+        <name>Add</name>
+        <namespace>http://tempuri.org/</namespace>
+    </operationIdentifier>
+    <status>MOCKED</status>
+    <httpMethod>POST</httpMethod>
+    <soapVersion>SOAP11</soapVersion>
+    <defaultBody>&lt;soapenv:Envelope/&gt;</defaultBody>
+    <currentResponseSequenceIndex>0</currentResponseSequenceIndex>
+    <forwardedEndpoint>http://www.dneonline.com/calculator.asmx</forwardedEndpoint>
+    <originalEndpoint>http://www.dneonline.com/calculator.asmx</originalEndpoint>
+    <defaultMockResponseId>Sr01gh</defaultMockResponseId>
+    <simulateNetworkDelay>false</simulateNetworkDelay>
+    <networkDelay>0</networkDelay>
+    <mockOnFailure>true</mockOnFailure>
+    <identifyStrategy>ELEMENT_NAMESPACE</identifyStrategy>
+    <automaticForward>false</automaticForward>
+</soapOperation>

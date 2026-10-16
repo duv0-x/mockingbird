@@ -4,22 +4,23 @@
 //   - the project export files produced by GET .../project/{id}/export
 //     (Jackson XmlMapper format), which it also writes for API exports.
 //
+// Both formats name every field like the Java model (JAXB in the data dir,
+// Jackson getters in exports), so one set of element → domain converters
+// (entities.go) serves both; only list wrapping and date encoding differ,
+// and the readers accept either form.
+//
 // Owner: T1. Nothing at runtime depends on the legacy data dir.
 package castlemock
-
-import (
-	"context"
-	"errors"
-
-	"github.com/duv0-x/mockingbird/internal/domain"
-	"github.com/duv0-x/mockingbird/internal/storage"
-)
 
 type ImportOptions struct {
 	// Overwrite replaces projects/users whose id already exists in the target store.
 	Overwrite bool
 	// SkipEvents ignores rest/event and soap/event.
 	SkipEvents bool
+	// AdminPassword is the target store's default admin password
+	// (MOCKINGBIRD_ADMIN_PASSWORD); "" means "admin". An untouched default
+	// admin in the target is replaced by the imported "admin" user.
+	AdminPassword string
 }
 
 type Report struct {
@@ -30,30 +31,4 @@ type Report struct {
 	SoapEvents   int
 	Skipped      []string
 	Warnings     []string
-}
-
-// ImportDataDir converts a CastleMock base.file.directory into store.
-func ImportDataDir(ctx context.Context, dir string, store storage.Store, opts ImportOptions) (Report, error) {
-	return Report{}, errors.New("castlemock: not implemented (T1)")
-}
-
-// ExportRestProject writes the CastleMock export XML (root <RestExportContainer>).
-func ExportRestProject(p domain.RestProject) ([]byte, error) {
-	return nil, errors.New("castlemock: not implemented (T1)")
-}
-
-// ExportSoapProject writes the CastleMock export XML (root <SoapExportContainer>);
-// contents maps SoapResource id -> resource text.
-func ExportSoapProject(p domain.SoapProject, contents map[string]string) ([]byte, error) {
-	return nil, errors.New("castlemock: not implemented (T1)")
-}
-
-// ParseRestExport reads a CastleMock REST export file.
-func ParseRestExport(data []byte) (domain.RestProject, error) {
-	return domain.RestProject{}, errors.New("castlemock: not implemented (T1)")
-}
-
-// ParseSoapExport reads a CastleMock SOAP export file; contents maps resource id -> text.
-func ParseSoapExport(data []byte) (domain.SoapProject, map[string]string, error) {
-	return domain.SoapProject{}, nil, errors.New("castlemock: not implemented (T1)")
 }

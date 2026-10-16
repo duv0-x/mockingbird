@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<restEvent>
+    <id>Ev01re</id>
+    <resourceName>getPetById</resourceName>
+    <startDate>2023-02-03T10:00:00.100+01:00</startDate>
+    <endDate>2023-02-03T10:00:00.150+01:00</endDate>
+    <request>
+        <uri>/pet/1</uri>
+        <httpMethod>GET</httpMethod>
+        <httpHeaders>
+            <httpHeader>
+                <name>verbose</name>
+                <value>true</value>
+            </httpHeader>
+        </httpHeaders>
+        <httpParameters>
+            <httpParameter>
+                <name>Accept</name>
+                <value>application/json</value>
+            </httpParameter>
+        </httpParameters>
+    </request>
+    <response>
+        <body>{"id": 1}</body>
+        <mockResponseName>200 OK</mockResponseName>
+        <httpStatusCode>200</httpStatusCode>
+        <contentType>application/json</contentType>
+        <httpHeaders>
+            <httpHeader>
+                <name>Content-Type</name>
+                <value>application/json</value>
+            </httpHeader>
+        </httpHeaders>
+        <contentEncodings/>
+    </response>
+    <projectId>Pr01ab</projectId>
+    <applicationId>Ap01cd</applicationId>
+    <resourceId>Rs01ef</resourceId>
+    <methodId>Me01gh</methodId>
+</restEvent>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Same project as rest-export.xml written with the shapes the parser must
+     also accept (SPEC.md §6.3): single (JAXB-style) list wrapping, ISO dates,
+     another element order and unknown elements. -->
+<RestExportContainer>
+  <generator>hand-written</generator>
+  <mockResponses>
+    <mockResponse>
+      <methodId>Me01gh</methodId>
+      <id>Mr01ij</id>
+      <name>200 OK</name>
+      <body><![CDATA[{
+  "id": ${PATH_PARAMETER(parameter="petId")},
+  "name": "doggie & co"
+}]]></body>
+      <httpStatusCode>200</httpStatusCode>
+      <status>ENABLED</status>
+      <usingExpressions>true</usingExpressions>
+      <httpHeaders>
+        <httpHeader><name>Content-Type</name><value>application/json</value></httpHeader>
+      </httpHeaders>
+      <contentEncodings><contentEncoding>GZIP</contentEncoding></contentEncodings>
+      <parameterQueries>
+        <parameterQuery>
+          <parameter>petId</parameter><query>1</query>
+          <matchCase>false</matchCase><matchAny>false</matchAny><matchRegex>false</matchRegex><urlEncoded>true</urlEncoded>
+        </parameterQuery>
+      </parameterQueries>
+      <xpathExpressions><xpathExpression><expression>//pet[id=1]</expression></xpathExpression></xpathExpressions>
+      <jsonPathExpressions><jsonPathExpression><expression>$.pet[?(@.id == 1)]</expression></jsonPathExpression></jsonPathExpressions>
+      <headerQueries>
+        <headerQuery><header>X-Env</header><query>qa</query><matchCase>true</matchCase><matchAny>false</matchAny><matchRegex>false</matchRegex></headerQuery>
+      </headerQueries>
+    </mockResponse>
+    <mockResponse>
+      <id>Mr02mn</id>
+      <name>404 Not found</name>
+      <methodId>Me01gh</methodId>
+      <httpStatusCode>404</httpStatusCode>
+      <status>DISABLED</status>
+      <usingExpressions>false</usingExpressions>
+    </mockResponse>
+  </mockResponses>
+  <methods>
+    <method>
+      <id>Me01gh</id>
+      <name>getPetById</name>
+      <resourceId>Rs01ef</resourceId>
+      <httpMethod>GET</httpMethod>
+      <forwardedEndpoint>https://petstore.example.com/v2</forwardedEndpoint>
+      <status>MOCKED</status>
+      <responseStrategy>SEQUENCE</responseStrategy>
+      <simulateNetworkDelay>true</simulateNetworkDelay>
+      <networkDelay>250</networkDelay>
+      <defaultMockResponseId>Mr01ij</defaultMockResponseId>
+      <automaticForward>false</automaticForward>
+    </method>
+    <method>
+      <id>Me02kl</id>
+      <name>deletePet</name>
+      <resourceId>Rs01ef</resourceId>
+      <defaultBody>{}</defaultBody>
+      <httpMethod>DELETE</httpMethod>
+      <status>DISABLED</status>
+      <responseStrategy>RANDOM</responseStrategy>
+      <simulateNetworkDelay/>
+    </method>
+  </methods>
+  <resources>
+    <resource>
+      <applicationId>Ap01cd</applicationId>
+      <id>Rs01ef</id>
+      <name>/pet/{petId}</name>
+      <uri>/pet/{petId}</uri>
+    </resource>
+  </resources>
+  <applications>
+    <application><id>Ap01cd</id><name>petstore</name><projectId>Pr01ab</projectId></application>
+  </applications>
+  <project>
+    <description>Legacy &lt;REST&gt; project</description>
+    <created>2023-01-15T12:00:00+01:00</created>
+    <updated>2023-02-01T10:15:30.123+01:00</updated>
+    <name>Pet store</name>
+    <id>Pr01ab</id>
+  </project>
+</RestExportContainer>

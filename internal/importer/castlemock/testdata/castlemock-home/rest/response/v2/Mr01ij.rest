@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<restMockResponse>
+    <id>Mr01ij</id>
+    <name>200 OK</name>
+    <body>{
+  "id": ${PATH_PARAMETER(parameter="petId")},
+  "name": "doggie &amp; co"
+}</body>
+    <methodId>Me01gh</methodId>
+    <status>ENABLED</status>
+    <httpStatusCode>200</httpStatusCode>
+    <usingExpressions>true</usingExpressions>
+    <httpHeaders>
+        <httpHeader>
+            <name>Content-Type</name>
+            <value>application/json</value>
+        </httpHeader>
+    </httpHeaders>
+    <contentEncodings>
+        <contentEncoding>GZIP</contentEncoding>
+    </contentEncodings>
+    <parameterQueries>
+        <parameterQuery>
+            <parameter>petId</parameter>
+            <query>1</query>
+            <matchCase>false</matchCase>
+            <matchAny>false</matchAny>
+            <matchRegex>false</matchRegex>
+            <urlEncoded>true</urlEncoded>
+        </parameterQuery>
+    </parameterQueries>
+    <xpathExpressions>
+        <xpathExpression>
+            <expression>//pet[id=1]</expression>
+        </xpathExpression>
+    </xpathExpressions>
+    <jsonPathExpressions>
+        <jsonPathExpression>
+            <expression>$.pet[?(@.id == 1)]</expression>
+        </jsonPathExpression>
+    </jsonPathExpressions>
+    <headerQueries>
+        <headerQuery>
+            <header>X-Env</header>
+            <query>qa</query>
+            <matchCase>true</matchCase>
+            <matchAny>false</matchAny>
+            <matchRegex>false</matchRegex>
+        </headerQuery>
+    </headerQueries>
+</restMockResponse>

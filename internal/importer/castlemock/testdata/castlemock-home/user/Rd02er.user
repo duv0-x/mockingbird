@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<user>
+    <id>Rd02er</id>
+    <username>reader</username>
+    <password>$2a$10$E2wUPjrv6DqFCwyU8tNpRebfbSSaM4QUC5ey3ITznkESOdjYUbL2e</password>
+    <email>reader@example.com</email>
+    <fullName>Read Only</fullName>
+    <updated>2023-02-02T08:00:00.5Z</updated>
+    <created>2023-02-02T08:00:00.5Z</created>
+    <status>LOCKED</status>
+    <role>READER</role>
+</user>
