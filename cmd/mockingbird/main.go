@@ -98,28 +98,35 @@ func openStore(ctx context.Context, cfg config.Config) (storage.Store, error) {
 	return store, nil
 }
 
-func serve(cfg config.Config) error {
-	logger := newLogger(cfg)
-	slog.SetDefault(logger)
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
+// app is a wired server: the HTTP handler plus what must be shut down.
+type app struct {
+	handler    http.Handler
+	store      storage.Store
+	restEngine *rest.Engine
+	soapEngine *soap.Engine
+}
 
+// newApp opens the store and wires every component (SPEC.md §7.2).
+func newApp(ctx context.Context, cfg config.Config, logger *slog.Logger) (*app, error) {
 	store, err := openStore(ctx, cfg)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	defer store.Close()
-
 	authSvc, err := auth.New(store.Users(), auth.Options{KeyFile: cfg.JWTKeyFile})
 	if err != nil {
-		return fmt.Errorf("init auth: %w", err)
+		store.Close()
+		return nil, fmt.Errorf("init auth: %w", err)
 	}
 	fwd := forward.NewClient(forward.Options{Timeout: cfg.ForwardTimeout, TLSVerify: cfg.TLSVerify})
 	svc := service.New(service.Deps{Config: cfg, Store: store, Version: version, Logger: logger})
-
-	handler := newRouter(cfg, logger, mounts{
-		rest: rest.NewEngine(rest.Deps{Store: store, Forward: fwd, ContextPath: cfg.ContextPath, Logger: logger}),
-		soap: soap.NewEngine(soap.Deps{Store: store, Forward: fwd, ContextPath: cfg.ContextPath, Logger: logger}),
+	a := &app{
+		store:      store,
+		restEngine: rest.NewEngine(rest.Deps{Store: store, Forward: fwd, ContextPath: cfg.ContextPath, Logger: logger}),
+		soapEngine: soap.NewEngine(soap.Deps{Store: store, Forward: fwd, ContextPath: cfg.ContextPath, Logger: logger}),
+	}
+	a.handler = newRouter(cfg, logger, mounts{
+		rest: a.restEngine,
+		soap: a.soapEngine,
 		auth: authSvc.Middleware(),
 		api: func(g *gin.RouterGroup) {
 			api.Register(g, api.Deps{Config: cfg, Service: svc, Auth: authSvc, Logger: logger})
@@ -128,10 +135,36 @@ func serve(cfg config.Config) error {
 			web.Register(g, web.Deps{Config: cfg, Service: svc, Auth: authSvc, Version: version, Logger: logger})
 		},
 	})
+	return a, nil
+}
+
+// close waits for the background writes of the mock engines (events,
+// recorded responses) and then flushes and closes the store.
+func (a *app) close() error {
+	a.restEngine.Wait()
+	a.soapEngine.Wait()
+	return a.store.Close()
+}
+
+func serve(cfg config.Config) error {
+	logger := newLogger(cfg)
+	slog.SetDefault(logger)
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	a, err := newApp(ctx, cfg, logger)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := a.close(); err != nil {
+			logger.Error("close store", "err", err)
+		}
+	}()
 
 	srv := &http.Server{
 		Addr:              fmt.Sprintf(":%d", cfg.Port),
-		Handler:           handler,
+		Handler:           a.handler,
 		ReadHeaderTimeout: 30 * time.Second,
 	}
 	errc := make(chan error, 1)
@@ -147,6 +180,7 @@ func serve(cfg config.Config) error {
 		return fmt.Errorf("listen: %w", err)
 	case <-ctx.Done():
 	}
+	logger.Info("mockingbird stopping")
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(shutdownCtx); err != nil {

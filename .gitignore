@@ -2,3 +2,4 @@
 .agents/
 /bin/
 node_modules/
+/mockingbird
