@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<soapPort>
+    <id>Po01cd</id>
+    <name>CalculatorSoap</name>
+    <uri>CalculatorSoap</uri>
+    <projectId>Sp01ab</projectId>
+</soapPort>

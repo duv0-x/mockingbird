@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<soapEvent>
+    <id>Ev02so</id>
+    <resourceName>Add</resourceName>
+    <startDate>2023-02-03T11:00:00+01:00</startDate>
+    <endDate>2023-02-03T11:00:01+01:00</endDate>
+    <request>
+        <body>&lt;Add/&gt;</body>
+        <envelope>&lt;Add/&gt;</envelope>
+        <contentType>text/xml</contentType>
+        <uri>CalculatorSoap</uri>
+        <httpMethod>POST</httpMethod>
+        <operationName>Add</operationName>
+        <operationIdentifier>
+            <name>Add</name>
+            <namespace>http://tempuri.org/</namespace>
+        </operationIdentifier>
+        <soapVersion>SOAP11</soapVersion>
+        <httpHeaders/>
+    </request>
+    <projectId>Sp01ab</projectId>
+    <portId>Po01cd</portId>
+    <operationId>Op01ef</operationId>
+</soapEvent>

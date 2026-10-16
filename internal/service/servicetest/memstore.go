@@ -96,6 +96,20 @@ func soapIDs(p domain.SoapProject) []string {
 	return ids
 }
 
+// conflict reports an id of ids already used outside the project being
+// written (skipRest/skipSoap) or repeated within ids.
+func (m *MemStore) conflict(ids []string, skipRest, skipSoap string) error {
+	existing := m.allIDs(skipRest, skipSoap)
+	seen := map[string]bool{}
+	for _, id := range ids {
+		if existing[id] || seen[id] {
+			return fmt.Errorf("id %s: %w", id, storage.ErrConflict)
+		}
+		seen[id] = true
+	}
+	return nil
+}
+
 func (m *MemStore) allIDs(skipRest, skipSoap string) map[string]bool {
 	ids := map[string]bool{}
 	for _, p := range m.rest {
@@ -190,11 +204,8 @@ func (r memRest) FindByName(ctx context.Context, name string) (domain.RestProjec
 func (r memRest) Create(ctx context.Context, p domain.RestProject) error {
 	r.m.mu.Lock()
 	defer r.m.mu.Unlock()
-	existing := r.m.allIDs("", "")
-	for _, id := range restIDs(p) {
-		if existing[id] {
-			return fmt.Errorf("id %s: %w", id, storage.ErrConflict)
-		}
+	if err := r.m.conflict(restIDs(p), "", ""); err != nil {
+		return err
 	}
 	p = clone(p)
 	setRestParents(&p)
@@ -214,6 +225,9 @@ func (r memRest) Update(ctx context.Context, id string, fn func(*domain.RestProj
 		return domain.RestProject{}, err
 	}
 	p.ID = id
+	if err := r.m.conflict(restIDs(p), id, ""); err != nil {
+		return domain.RestProject{}, err
+	}
 	setRestParents(&p)
 	r.m.rest[i] = clone(p)
 	return clone(p), nil
@@ -222,6 +236,9 @@ func (r memRest) Update(ctx context.Context, id string, fn func(*domain.RestProj
 func (r memRest) Put(ctx context.Context, p domain.RestProject) error {
 	r.m.mu.Lock()
 	defer r.m.mu.Unlock()
+	if err := r.m.conflict(restIDs(p), p.ID, ""); err != nil {
+		return err
+	}
 	p = clone(p)
 	setRestParents(&p)
 	if i := r.index(p.ID); i >= 0 {
@@ -291,11 +308,8 @@ func (s memSoap) FindByName(ctx context.Context, name string) (domain.SoapProjec
 func (s memSoap) Create(ctx context.Context, p domain.SoapProject) error {
 	s.m.mu.Lock()
 	defer s.m.mu.Unlock()
-	existing := s.m.allIDs("", "")
-	for _, id := range soapIDs(p) {
-		if existing[id] {
-			return fmt.Errorf("id %s: %w", id, storage.ErrConflict)
-		}
+	if err := s.m.conflict(soapIDs(p), "", ""); err != nil {
+		return err
 	}
 	p = clone(p)
 	setSoapParents(&p)
@@ -323,6 +337,9 @@ func (s memSoap) Update(ctx context.Context, id string, fn func(*domain.SoapProj
 		return domain.SoapProject{}, err
 	}
 	p.ID = id
+	if err := s.m.conflict(soapIDs(p), "", id); err != nil {
+		return domain.SoapProject{}, err
+	}
 	setSoapParents(&p)
 	s.dropRemovedContents(s.m.soap[i], p)
 	s.m.soap[i] = clone(p)
@@ -332,6 +349,9 @@ func (s memSoap) Update(ctx context.Context, id string, fn func(*domain.SoapProj
 func (s memSoap) Put(ctx context.Context, p domain.SoapProject) error {
 	s.m.mu.Lock()
 	defer s.m.mu.Unlock()
+	if err := s.m.conflict(soapIDs(p), "", p.ID); err != nil {
+		return err
+	}
 	p = clone(p)
 	setSoapParents(&p)
 	if i := s.index(p.ID); i >= 0 {

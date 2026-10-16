@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<restMethod>
+    <id>Me02kl</id>
+    <name>deletePet</name>
+    <resourceId>Rs01ef</resourceId>
+    <defaultBody>{}</defaultBody>
+    <httpMethod>DELETE</httpMethod>
+    <status>DISABLED</status>
+    <responseStrategy>RANDOM</responseStrategy>
+    <currentResponseSequenceIndex>0</currentResponseSequenceIndex>
+</restMethod>

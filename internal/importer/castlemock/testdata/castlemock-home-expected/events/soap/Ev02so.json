@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "kind": "SoapEvent",
+  "event": {
+    "id": "Ev02so",
+    "resourceName": "Add",
+    "startDate": "2023-02-03T10:00:00.000+00:00",
+    "endDate": "2023-02-03T10:00:01.000+00:00",
+    "request": {
+      "body": "<Add/>",
+      "envelope": "<Add/>",
+      "contentType": "text/xml",
+      "uri": "CalculatorSoap",
+      "httpMethod": "POST",
+      "operationName": "Add",
+      "soapVersion": "SOAP11",
+      "httpHeaders": [],
+      "operationIdentifier": {
+        "name": "Add",
+        "namespace": "http://tempuri.org/"
+      }
+    },
+    "response": null,
+    "projectId": "Sp01ab",
+    "portId": "Po01cd",
+    "operationId": "Op01ef"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "kind": "RestProject",
+  "id": "Ab12Cd",
+  "name": "Project Ab12Cd",
+  "description": "Pets <&> more",
+  "created": "2024-05-01T10:20:30.123Z",
+  "updated": "2024-05-01T10:20:30.123Z",
+  "applications": [
+    {
+      "id": "xapp1",
+      "name": "app",
+      "resources": [
+        {
+          "id": "xres1",
+          "name": "pet",
+          "uri": "/pet/{id}",
+          "methods": [
+            {
+              "id": "xmet1",
+              "name": "get",
+              "httpMethod": "GET",
+              "status": "MOCKED",
+              "responseStrategy": "RANDOM",
+              "simulateNetworkDelay": true,
+              "networkDelay": 5,
+              "mockResponses": [
+                {
+                  "id": "xmr1",
+                  "name": "ok",
+                  "status": "ENABLED",
+                  "httpStatusCode": 200,
+                  "usingExpressions": false,
+                  "body": "{}",
+                  "httpHeaders": [
+                    {
+                      "name": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "contentEncodings": [
+                    "GZIP"
+                  ],
+                  "parameterQueries": [],
+                  "headerQueries": [],
+                  "xpathExpressions": [
+                    "//a"
+                  ],
+                  "jsonPathExpressions": [
+                    "$.a"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

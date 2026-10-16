@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "kind": "RestEvent",
+  "event": {
+    "id": "Ev01re",
+    "resourceName": "getPetById",
+    "startDate": "2023-02-03T09:00:00.100+00:00",
+    "endDate": "2023-02-03T09:00:00.150+00:00",
+    "request": {
+      "uri": "/pet/1",
+      "httpMethod": "GET",
+      "httpHeaders": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "httpParameters": [
+        {
+          "name": "verbose",
+          "value": "true"
+        }
+      ]
+    },
+    "response": {
+      "body": "{\"id\": 1}",
+      "mockResponseName": "200 OK",
+      "httpStatusCode": 200,
+      "contentType": "application/json",
+      "httpHeaders": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "contentEncodings": []
+    },
+    "projectId": "Pr01ab",
+    "applicationId": "Ap01cd",
+    "resourceId": "Rs01ef",
+    "methodId": "Me01gh"
+  }
+}

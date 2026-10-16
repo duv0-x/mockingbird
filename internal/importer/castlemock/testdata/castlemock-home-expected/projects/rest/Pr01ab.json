@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "kind": "RestProject",
+  "id": "Pr01ab",
+  "name": "Pet store",
+  "description": "Legacy <REST> project",
+  "created": "2023-01-15T11:00:00.000Z",
+  "updated": "2023-02-01T09:15:30.123Z",
+  "applications": [
+    {
+      "id": "Ap01cd",
+      "name": "petstore",
+      "resources": [
+        {
+          "id": "Rs01ef",
+          "name": "/pet/{petId}",
+          "uri": "/pet/{petId}",
+          "methods": [
+            {
+              "id": "Me01gh",
+              "name": "getPetById",
+              "httpMethod": "GET",
+              "status": "MOCKED",
+              "responseStrategy": "SEQUENCE",
+              "forwardedEndpoint": "https://petstore.example.com/v2",
+              "simulateNetworkDelay": true,
+              "networkDelay": 250,
+              "automaticForward": false,
+              "defaultMockResponseId": "Mr01ij",
+              "mockResponses": [
+                {
+                  "id": "Mr01ij",
+                  "name": "200 OK",
+                  "status": "ENABLED",
+                  "httpStatusCode": 200,
+                  "usingExpressions": true,
+                  "body": "{\n  \"id\": ${PATH_PARAMETER(parameter=\"petId\")},\n  \"name\": \"doggie & co\"\n}",
+                  "httpHeaders": [
+                    {
+                      "name": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "contentEncodings": [
+                    "GZIP"
+                  ],
+                  "parameterQueries": [
+                    {
+                      "parameter": "petId",
+                      "query": "1",
+                      "matchCase": false,
+                      "matchAny": false,
+                      "matchRegex": false,
+                      "urlEncoded": true
+                    }
+                  ],
+                  "headerQueries": [
+                    {
+                      "header": "X-Env",
+                      "query": "qa",
+                      "matchCase": true,
+                      "matchAny": false,
+                      "matchRegex": false
+                    }
+                  ],
+                  "xpathExpressions": [
+                    "//pet[id=1]"
+                  ],
+                  "jsonPathExpressions": [
+                    "$.pet[?(@.id == 1)]"
+                  ]
+                },
+                {
+                  "id": "Mr02mn",
+                  "name": "404 Not found",
+                  "status": "DISABLED",
+                  "httpStatusCode": 404,
+                  "usingExpressions": false,
+                  "httpHeaders": [],
+                  "contentEncodings": [],
+                  "parameterQueries": [],
+                  "headerQueries": [],
+                  "xpathExpressions": [],
+                  "jsonPathExpressions": []
+                }
+              ]
+            },
+            {
+              "id": "Me02kl",
+              "name": "deletePet",
+              "httpMethod": "DELETE",
+              "status": "DISABLED",
+              "responseStrategy": "RANDOM",
+              "defaultBody": "{}",
+              "mockResponses": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

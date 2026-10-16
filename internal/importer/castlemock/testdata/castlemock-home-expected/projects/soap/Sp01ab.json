@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "kind": "SoapProject",
+  "id": "Sp01ab",
+  "name": "Calculator",
+  "created": "2023-02-01T09:15:30.123Z",
+  "updated": "2023-02-01T09:15:30.123Z",
+  "resources": [
+    {
+      "id": "Rc01wd",
+      "name": "calculator.wsdl",
+      "type": "WSDL"
+    },
+    {
+      "id": "Rc02sc",
+      "name": "types.xsd",
+      "type": "SCHEMA"
+    },
+    {
+      "id": "Rc03im",
+      "name": "imported.wsdl",
+      "type": "WSDL_IMPORT"
+    }
+  ],
+  "ports": [
+    {
+      "id": "Po01cd",
+      "name": "CalculatorSoap",
+      "uri": "CalculatorSoap",
+      "operations": [
+        {
+          "id": "Op01ef",
+          "name": "Add",
+          "operationIdentifier": {
+            "name": "Add",
+            "namespace": "http://tempuri.org/"
+          },
+          "httpMethod": "POST",
+          "soapVersion": "SOAP11",
+          "status": "MOCKED",
+          "responseStrategy": "XPATH_INPUT",
+          "identifyStrategy": "ELEMENT_NAMESPACE",
+          "defaultBody": "<soapenv:Envelope/>",
+          "forwardedEndpoint": "http://www.dneonline.com/calculator.asmx",
+          "originalEndpoint": "http://www.dneonline.com/calculator.asmx",
+          "simulateNetworkDelay": false,
+          "networkDelay": 0,
+          "mockOnFailure": true,
+          "automaticForward": false,
+          "defaultMockResponseId": "Sr01gh",
+          "mockResponses": [
+            {
+              "id": "Sr01gh",
+              "name": "Auto-generated mocked response",
+              "status": "ENABLED",
+              "httpStatusCode": 200,
+              "usingExpressions": false,
+              "body": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">\n   <soapenv:Body>?</soapenv:Body>\n</soapenv:Envelope>",
+              "httpHeaders": [],
+              "contentEncodings": [],
+              "xpathExpressions": [
+                "//*[local-name()='intA']"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "Op02ij",
+          "name": "Subtract",
+          "operationIdentifier": {
+            "name": "SubtractRequest"
+          },
+          "httpMethod": "POST",
+          "soapVersion": "SOAP12",
+          "status": "ECHO",
+          "responseStrategy": "SEQUENCE",
+          "identifyStrategy": "ELEMENT_NAMESPACE",
+          "mockResponses": []
+        }
+      ]
+    }
+  ]
+}

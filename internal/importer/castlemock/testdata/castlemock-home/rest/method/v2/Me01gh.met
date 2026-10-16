@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<restMethod>
+    <id>Me01gh</id>
+    <name>getPetById</name>
+    <resourceId>Rs01ef</resourceId>
+    <httpMethod>GET</httpMethod>
+    <forwardedEndpoint>https://petstore.example.com/v2</forwardedEndpoint>
+    <status>MOCKED</status>
+    <responseStrategy>SEQUENCE</responseStrategy>
+    <currentResponseSequenceIndex>2</currentResponseSequenceIndex>
+    <simulateNetworkDelay>true</simulateNetworkDelay>
+    <networkDelay>250</networkDelay>
+    <defaultMockResponseId>Mr01ij</defaultMockResponseId>
+    <automaticForward>false</automaticForward>
+</restMethod>
