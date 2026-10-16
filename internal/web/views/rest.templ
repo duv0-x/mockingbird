@@ -516,7 +516,9 @@ type EntityForm struct {
 	ShowURI         bool
 	ShowMethod      bool
 	ShowStatus      bool
-	Error           string
+	// HideName drops the Name field (SOAP ports only edit their URI).
+	HideName bool
+	Error    string
 	// Hint is shown above the fields.
 	Hint string
 }
@@ -527,8 +529,10 @@ templ EntityDialog(v EntityForm) {
 		if v.Hint != "" {
 			<p class="muted">{ v.Hint }</p>
 		}
-		@FormField(Field{Label: "Name", For: "entity-name"}) {
-			@TextInput(Input{ID: "entity-name", Name: "name", Value: v.Name, Required: true, Autofocus: true})
+		if !v.HideName {
+			@FormField(Field{Label: "Name", For: "entity-name"}) {
+				@TextInput(Input{ID: "entity-name", Name: "name", Value: v.Name, Required: true, Autofocus: true})
+			}
 		}
 		if v.ShowMethod {
 			@FormField(Field{Label: "HTTP method", For: "entity-method"}) {

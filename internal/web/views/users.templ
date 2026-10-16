@@ -1,0 +1,246 @@
+package views
+
+import "github.com/duv0-x/mockingbird/internal/domain"
+
+func UserPath(id string) string { return "/web/user/" + id }
+
+// RoleInfo describes what a role can do (UserOverview.js / DESIGN.md §9.9).
+type RoleInfo struct {
+	Role domain.Role
+	Text string
+}
+
+var Roles = []RoleInfo{
+	{domain.RoleAdmin, "Everything, including users and system information"},
+	{domain.RoleModifier, "Create and edit projects, mocks, responses and events"},
+	{domain.RoleReader, "Read-only access to projects and events"},
+}
+
+// Users is the user overview (UserOverview.js).
+type Users struct {
+	Rows  []domain.User
+	Total int
+	Query string
+	// Self is the id of the signed-in user.
+	Self string
+}
+
+templ UsersPage(p Page, v Users) {
+	@Layout(p) {
+		@Header(PageHead{
+			Title:   "Users",
+			Badges:  usersCount(v),
+			Actions: newButton(p, "New user", "/web/user/new"),
+		})
+		<div class="stats">
+			for _, r := range Roles {
+				<div class="stat">
+					@RoleBadge(r.Role)
+					<p class="muted" style="margin-top:var(--space-2)">{ r.Text }</p>
+				</div>
+			}
+		</div>
+		<form id="bulk-users" class="bulk" action={ p.SafeURL("/web/user") } method="get" hx-get={ p.URL("/web/user") } hx-target="#bulk-users" hx-select="#bulk-users" hx-swap="outerHTML" hx-push-url="true" hx-trigger="input changed delay:250ms from:#user-search, search from:#user-search">
+			@BulkToolbar(userFilter(v), nil, BulkButtons(BulkActions{Base: p.URL("/web/user"), Form: "bulk-users", Delete: true}))
+			<div class="table-wrap">
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="col-check">
+								@SelectAll()
+							</th>
+							<th>Username</th>
+							<th>Name</th>
+							<th>Role</th>
+							<th>Status</th>
+							<th>Created</th>
+							<th>Updated</th>
+						</tr>
+					</thead>
+					<tbody>
+						for _, u := range v.Rows {
+							<tr>
+								<td class="col-check">
+									@RowCheck(u.ID, u.Username)
+								</td>
+								<td>
+									<a class="row-link mono" href={ p.SafeURL(UserPath(u.ID)) }>{ u.Username }</a>
+									if u.ID == v.Self {
+										<span class="badge badge--count">you</span>
+									}
+									if u.Email != "" {
+										<span class="row-sub">{ u.Email }</span>
+									}
+								</td>
+								<td>{ OrDash(u.FullName) }</td>
+								<td>
+									@RoleBadge(u.Role)
+								</td>
+								<td>
+									@UserStatusBadge(u.Status)
+								</td>
+								<td class="mono nowrap" title={ FormatTime(u.Created) }>{ Ago(u.Created) }</td>
+								<td class="mono nowrap" title={ FormatTime(u.Updated) }>{ Ago(u.Updated) }</td>
+							</tr>
+						}
+						if len(v.Rows) == 0 {
+							<tr>
+								<td colspan="7">
+									@EmptyState(Empty{Icon: "search", Title: "No matching users", Text: "Try another username, name or email."}, nil)
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+				<div class="table-foot">
+					<span>Showing { Itoa(len(v.Rows)) } of { Plural(v.Total, "user", "users") }</span>
+				</div>
+			</div>
+		</form>
+	}
+}
+
+templ usersCount(v Users) {
+	<span class="muted">{ Plural(v.Total, "user", "users") }</span>
+}
+
+templ userFilter(v Users) {
+	<label class="search">
+		<span class="sr-only">Filter users</span>
+		@Icon("search")
+		<input class="input" type="search" id="user-search" name="q" value={ v.Query } placeholder="Filter users…" autocomplete="off"/>
+	</label>
+}
+
+// UserView is the user page (User.js) and, with Profile set, the profile page.
+type UserView struct {
+	User    domain.User
+	Profile bool
+}
+
+templ UserPage(p Page, v UserView) {
+	@Layout(p) {
+		@Header(PageHead{
+			Title:   v.User.Username,
+			Badges:  userBadges(v.User),
+			Sub:     v.User.FullName,
+			Actions: userActions(p, v),
+		})
+		<div class="grid-detail">
+			<div class="card">
+				<div class="card__head"><h2 class="card__title">Account</h2></div>
+				<div class="card__body">
+					<dl class="kv">
+						<dt>Username</dt>
+						<dd class="mono">{ v.User.Username }</dd>
+						<dt>Name</dt>
+						<dd>{ OrDash(v.User.FullName) }</dd>
+						<dt>Email</dt>
+						<dd>{ OrDash(v.User.Email) }</dd>
+						<dt>Role</dt>
+						<dd>
+							@RoleBadge(v.User.Role)
+						</dd>
+						<dt>Status</dt>
+						<dd>
+							@UserStatusBadge(v.User.Status)
+						</dd>
+						<dt>Created</dt>
+						<dd class="mono">{ FormatTime(v.User.Created) }</dd>
+						<dt>Updated</dt>
+						<dd class="mono">{ FormatTime(v.User.Updated) }</dd>
+					</dl>
+				</div>
+			</div>
+			<div class="card">
+				<div class="card__head"><h2 class="card__title">Permissions</h2></div>
+				<div class="card__body stack">
+					for _, r := range Roles {
+						if r.Role == v.User.Role {
+							<p>{ r.Text }.</p>
+						}
+					}
+					if v.Profile {
+						<p class="muted">Your role and status are managed by an administrator.</p>
+					}
+				</div>
+			</div>
+		</div>
+	}
+}
+
+templ userBadges(u domain.User) {
+	@RoleBadge(u.Role)
+	@UserStatusBadge(u.Status)
+}
+
+templ userActions(p Page, v UserView) {
+	if v.Profile {
+		<button type="button" class="btn btn--primary" hx-get={ p.URL("/web/profile/update") } hx-target="#modal-root">
+			@Icon("pencil")
+			Update profile
+		</button>
+	} else {
+		<button type="button" class="btn btn--secondary" hx-get={ p.URL(UserPath(v.User.ID) + "/update") } hx-target="#modal-root">
+			@Icon("pencil")
+			Edit
+		</button>
+		<button type="button" class="btn btn--danger-ghost" hx-get={ p.URL(UserPath(v.User.ID) + "/delete") } hx-target="#modal-root">
+			@Icon("trash")
+			Delete
+		</button>
+	}
+}
+
+// UserForm is the create/update user dialog and, with Profile set, the
+// update profile dialog (no role or status).
+type UserForm struct {
+	Modal
+	User    domain.User
+	Profile bool
+	Create  bool
+	Error   string
+}
+
+templ UserDialog(v UserForm) {
+	@ModalDialog(v.Modal) {
+		@FormError(v.Error)
+		<div class="form-row">
+			@FormField(Field{Label: "Username", For: "user-username"}) {
+				@TextInput(Input{ID: "user-username", Name: "username", Value: v.User.Username, Required: true, Autofocus: true, Attrs: templ.Attributes{"autocomplete": "off", "autocapitalize": "none", "spellcheck": "false"}})
+			}
+			@FormField(Field{Label: "Name", For: "user-fullname"}) {
+				@TextInput(Input{ID: "user-fullname", Name: "fullName", Value: v.User.FullName})
+			}
+		</div>
+		@FormField(Field{Label: "Email", For: "user-email"}) {
+			@TextInput(Input{ID: "user-email", Name: "email", Type: "email", Value: v.User.Email})
+		}
+		@FormField(Field{Label: "Password", For: "user-password", Help: passwordHelp(v.Create)}) {
+			@TextInput(Input{ID: "user-password", Name: "password", Type: "password", Required: v.Create, Attrs: templ.Attributes{"autocomplete": "new-password"}})
+		}
+		if !v.Profile {
+			@FormField(Field{Label: "Role", For: "user-role"}) {
+				<div class="choice" id="user-role" role="radiogroup" aria-label="Role" style="grid-template-columns:repeat(3,1fr)">
+					for _, r := range Roles {
+						<label>
+							<input type="radio" name="role" value={ string(r.Role) } checked?={ r.Role == v.User.Role }/>
+							<span class="choice__title">{ EnumLabel(string(r.Role)) }</span>
+							<span class="choice__desc">{ r.Text }</span>
+						</label>
+					}
+				</div>
+			}
+			@FormField(Field{Label: "Status", For: "user-status"}) {
+				@Select("user-status", "status", enumOptions("ACTIVE", "INACTIVE", "LOCKED"), string(v.User.Status))
+			}
+		}
+	}
+}
+
+func passwordHelp(create bool) string {
+	if create {
+		return ""
+	}
+	return "Leave empty to keep the current password."
+}

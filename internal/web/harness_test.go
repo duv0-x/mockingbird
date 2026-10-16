@@ -118,8 +118,17 @@ func (e *testEnv) do(r req) *httptest.ResponseRecorder {
 // seedIDs are the entities created by seed.
 type seedIDs struct {
 	rest, app, resource, method, response, response2 string
-	soap                                             string
+	soap, soapResponse                               string
 }
+
+// Fixed ids of the seeded SOAP project.
+const (
+	seedPort      = "port01"
+	seedOperation = "oper01"
+	seedResource  = "wsdl01"
+)
+
+const seedWSDL = `<?xml version="1.0"?><definitions name="Account" xmlns="http://schemas.xmlsoap.org/wsdl/"><service name="AccountService"><port name="AccountPort" binding="tns:AccountBinding"/></service></definitions>`
 
 // seed builds a small REST project (through the service) and a SOAP project.
 func seed(t testing.TB, svc *service.Service, store *servicetest.MemStore) seedIDs {
@@ -172,14 +181,31 @@ func seed(t testing.TB, svc *service.Service, store *servicetest.MemStore) seedI
 	must(err)
 	ids.soap = sp.ID
 	_, err = store.Soap().Update(ctx, sp.ID, func(p *domain.SoapProject) error {
-		p.Ports = append(p.Ports, domain.SoapPort{ID: "port01", Name: "AccountPort", URI: "AccountPort", ProjectID: sp.ID,
-			Operations: []domain.SoapOperation{{ID: "oper01", Name: "GetAccount", PortID: "port01", Status: domain.SoapOperationMocked, ResponseStrategy: domain.SoapStrategyRandom, HTTPMethod: domain.MethodPOST, SoapVersion: domain.SOAP11, IdentifyStrategy: domain.IdentifyByElementNamespace}}})
+		p.Ports = append(p.Ports, domain.SoapPort{ID: seedPort, Name: "AccountPort", URI: "AccountPort", ProjectID: sp.ID,
+			Operations: []domain.SoapOperation{{ID: seedOperation, Name: "GetAccount", PortID: seedPort, Status: domain.SoapOperationForwarded,
+				ResponseStrategy: domain.SoapStrategyXPathInput, HTTPMethod: domain.MethodPOST, SoapVersion: domain.SOAP11,
+				IdentifyStrategy: domain.IdentifyByElementNamespace, ForwardedEndpoint: "https://core.example/account",
+				OriginalEndpoint:    "http://bank.example/AccountService",
+				OperationIdentifier: domain.SoapOperationIdentifier{Name: "GetAccountRequest", Namespace: "http://bank.example/account"},
+				DefaultBody:         "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body><GetAccountResponse/></soapenv:Body></soapenv:Envelope>"}}})
+		p.Resources = append(p.Resources, domain.SoapResource{ID: seedResource, Name: "AccountService.wsdl", ProjectID: sp.ID, Type: domain.SoapResourceWSDL})
 		return nil
 	})
 	must(err)
+	must(store.Soap().PutResourceContent(ctx, sp.ID, seedResource, seedWSDL))
+	smr, err := svc.CreateSoapMockResponse(ctx, seedOperation, service.SoapMockResponseInput{Name: "account-ok", Body: "<ok/>", HTTPStatusCode: 200,
+		XPathExpressions: []domain.SoapXPathExpression{{Expression: "//accountId[text()='1001']"}}})
+	must(err)
+	ids.soapResponse = smr.ID
 	now := time.Now().UTC()
 	must(store.Events().AddRest(ctx, domain.RestEvent{Event: domain.Event{ID: "evt001", ResourceName: "Get customer", StartDate: domain.Time{Time: now.Add(-time.Minute)}, EndDate: domain.Time{Time: now}},
-		Request: domain.RestRequest{URI: "/customers/42", HTTPMethod: domain.MethodGET}, ProjectID: p.ID, ApplicationID: app.ID, ResourceID: res.ID, MethodID: m.ID}))
+		Request:   domain.RestRequest{URI: "/customers/42", HTTPMethod: domain.MethodGET, HTTPParameters: []domain.HTTPParameter{{Name: "expand", Value: "true"}}},
+		Response:  &domain.RestResponse{Body: `{"id":42}`, MockResponseName: "customer", HTTPStatusCode: 200, ContentType: "application/json"},
+		ProjectID: p.ID, ApplicationID: app.ID, ResourceID: res.ID, MethodID: m.ID}))
+	must(store.Events().AddSoap(ctx, domain.SoapEvent{Event: domain.Event{ID: "evt002", ResourceName: "GetAccount", StartDate: domain.Time{Time: now.Add(-2 * time.Minute)}, EndDate: domain.Time{Time: now.Add(-2*time.Minute + 14*time.Millisecond)}},
+		Request: domain.SoapRequest{Body: "<GetAccountRequest/>", URI: "/castlemock/mock/soap/project/" + sp.ID + "/AccountPort", HTTPMethod: domain.MethodPOST, OperationName: "GetAccount", SoapVersion: domain.SOAP11,
+			OperationIdentifier: domain.SoapOperationIdentifier{Name: "GetAccountRequest", Namespace: "http://bank.example/account"}},
+		ProjectID: sp.ID, PortID: seedPort, OperationID: seedOperation}))
 	return ids
 }
 

@@ -1,0 +1,143 @@
+package views
+
+import "github.com/duv0-x/mockingbird/internal/domain"
+
+// SoapResponseView is the SOAP mock response editor (SoapMockResponse.js):
+// body, headers and XPath expressions, posted as one form on Save.
+type SoapResponseView struct {
+	IDs      SoapIDs
+	Response domain.SoapMockResponse
+	Error    string
+}
+
+templ SoapResponsePage(p Page, v SoapResponseView) {
+	@Layout(p) {
+		<form id="response-form" method="post" action={ p.SafeURL(v.IDs.ResponsePath()) } data-dirty-track>
+			@Header(PageHead{
+				Title:   v.Response.Name,
+				Badges:  soapResponseBadges(v.Response),
+				Actions: soapResponseActions(p, v),
+			})
+			@FormError(v.Error)
+			<fieldset class="grid-detail" style="border:0;margin:0;padding:0;min-width:0" disabled?={ !p.CanModify() }>
+				<div class="stack">
+					<div class="codebox">
+						<div class="codebox__head">
+							<span class="codebox__title">Body</span>
+							<span class="codebox__tools">
+								<span class="badge badge-strategy">XML</span>
+								<button type="button" class="btn btn--ghost btn--sm" data-format="mr-body">
+									@Icon("align-left")
+									Format
+								</button>
+								<button type="button" class="btn btn--ghost btn--sm" data-wrap="mr-body" aria-pressed="false">
+									@Icon("wrap")
+									Wrap
+								</button>
+								@CopyButton(v.Response.Body)
+							</span>
+						</div>
+						<label class="sr-only" for="mr-body">Body</label>
+						<textarea class="code code--edit" id="mr-body" name="body" rows="18" spellcheck="false" wrap="off">{ v.Response.Body }</textarea>
+					</div>
+					<div class="card">
+						@TabList("Headers and XPath", []Tab{
+							{ID: "headers", Label: "Headers", Count: len(v.Response.HTTPHeaders)},
+							{ID: "xpath", Label: "XPath", Count: len(v.Response.XPathExpressions)},
+						}, "headers")
+						<div class="card__body">
+							<div id="panel-headers" role="tabpanel" aria-labelledby="tab-headers">
+								@headersEditor(v.Response.HTTPHeaders)
+							</div>
+							<div id="panel-xpath" role="tabpanel" aria-labelledby="tab-xpath" hidden>
+								@expressionsEditor("xp", "XPath expression", "//accountId[text()='1001']", soapXPaths(v.Response.XPathExpressions), "Used by the XPath input strategy: the response matches when an expression matches the request body.")
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="stack">
+					<div class="card">
+						<div class="card__head"><h2 class="card__title">Settings</h2></div>
+						<div class="card__body form">
+							@FormField(Field{Label: "Name", For: "mr-name"}) {
+								@TextInput(Input{ID: "mr-name", Name: "name", Value: v.Response.Name, Required: true})
+							}
+							@FormField(Field{Label: "HTTP status code", For: "mr-status-code"}) {
+								<div class="input-group">
+									<input class="input input--mono" type="number" min="100" max="599" id="mr-status-code" name="httpStatusCode" value={ Itoa(v.Response.HTTPStatusCode) } required/>
+									<span class="input-group__suffix">{ StatusText(v.Response.HTTPStatusCode) }</span>
+								</div>
+							}
+							@SwitchRow("mr-enabled", "enabled", "Enabled", v.Response.Status != domain.SoapMockResponseDisabled)
+							@SwitchRow("mr-expressions", "usingExpressions", "Use expressions", domain.Deref(v.Response.UsingExpressions))
+						</div>
+					</div>
+					<div class="card">
+						<div class="card__head">
+							<h2 class="card__title">Expressions</h2>
+							<button type="button" class="btn btn--secondary btn--sm" hx-get={ p.URL(v.IDs.ResponsePath() + "/validate") } hx-target="#modal-root">
+								@Icon("play")
+								Validate
+							</button>
+						</div>
+						<div class="card__body exprlist">
+							for _, ex := range Expressions {
+								<div class="exprlist__item">
+									<span title={ ex }>{ ex }</span>
+									<button type="button" class="btn btn--ghost btn--sm btn--icon" data-insert={ ex } data-target="mr-body" aria-label={ "Insert " + ex }>
+										@Icon("plus")
+									</button>
+								</div>
+							}
+							<p class="field__help">Expressions are evaluated when "Use expressions" is on.</p>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			if p.CanModify() {
+				<div class="savebar">
+					<span class="savebar__state" data-dirty-state>All changes saved</span>
+					<span class="toolbar__right">
+						<a class="btn btn--secondary" href={ p.SafeURL(v.IDs.ResponsePath()) }>Discard changes</a>
+						<button type="submit" class="btn btn--primary">
+							@Icon("check")
+							Save response
+						</button>
+					</span>
+				</div>
+			}
+		</form>
+		<template id="tpl-h">
+			@headerRow("__i__", domain.HTTPHeader{})
+		</template>
+		<template id="tpl-xp">
+			@expressionRow("xp", "__i__", "", "//accountId[text()='1001']", "XPath expression")
+		</template>
+	}
+}
+
+templ soapResponseBadges(r domain.SoapMockResponse) {
+	@StatusBadge(r.HTTPStatusCode)
+	@ResponseBadge(string(r.Status))
+}
+
+templ soapResponseActions(p Page, v SoapResponseView) {
+	if p.CanModify() {
+		<button type="button" class="btn btn--secondary" hx-get={ p.URL(v.IDs.OperationPath() + "/mockresponse/duplicate?ids=" + v.Response.ID) } hx-target="#modal-root">
+			@Icon("copy")
+			Duplicate
+		</button>
+		<button type="button" class="btn btn--danger-ghost" hx-get={ p.URL(v.IDs.ResponsePath() + "/delete") } hx-target="#modal-root">
+			@Icon("trash")
+			Delete
+		</button>
+	}
+}
+
+func soapXPaths(es []domain.SoapXPathExpression) []string {
+	out := make([]string, 0, len(es))
+	for _, e := range es {
+		out = append(out, e.Expression)
+	}
+	return out
+}

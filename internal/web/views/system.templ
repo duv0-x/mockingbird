@@ -1,0 +1,99 @@
+package views
+
+import "github.com/duv0-x/mockingbird/internal/domain"
+
+// SystemPage shows SystemInformation (System.js). Field names are
+// CastleMock's (Java/Tomcat) and carry Go runtime values (SPEC §5.3).
+templ SystemPage(p Page, s domain.SystemInformation) {
+	@Layout(p) {
+		@Header(PageHead{Title: "System"})
+		<div class="grid-detail" style="grid-template-columns:repeat(auto-fit,minmax(360px,1fr))">
+			<div class="card">
+				<div class="card__head">
+					<h2 class="card__title">
+						@Icon("info")
+						About
+					</h2>
+					<span class="muted mono">Runtime environment</span>
+				</div>
+				<div class="card__body">
+					<dl class="kv">
+						<dt>Server</dt>
+						<dd class="mono">{ OrDash(s.TomcatInfo) }</dd>
+						<dt>Version</dt>
+						<dd class="mono">{ OrDash(s.TomcatVersion) }</dd>
+						<dt>Built</dt>
+						<dd class="mono">{ OrDash(s.TomcatBuilt) }</dd>
+						<dt>Runtime</dt>
+						<dd class="mono">{ OrDash(s.JavaVersion) }</dd>
+						<dt>Runtime vendor</dt>
+						<dd class="mono">{ OrDash(s.JavaVendor) }</dd>
+						<dt>Operating system</dt>
+						<dd class="mono">{ OrDash(s.OperatingSystemName) }</dd>
+					</dl>
+				</div>
+			</div>
+			<div class="card">
+				<div class="card__head">
+					<h2 class="card__title">
+						@Icon("server")
+						Resources
+					</h2>
+				</div>
+				<div class="card__body stack">
+					<dl class="kv">
+						<dt>Processors</dt>
+						<dd class="mono">{ Itoa(s.AvailableProcessors) }</dd>
+						<dt>Total memory</dt>
+						<dd class="mono">{ megabytes(s.TotalMemory) }</dd>
+						<dt>Max memory</dt>
+						<dd class="mono">{ megabytes(s.MaxMemory) }</dd>
+						<dt>Free memory</dt>
+						<dd class="mono">{ megabytes(s.FreeMemory) }</dd>
+					</dl>
+					if s.MaxMemory > 0 {
+						<div class="modebar" style="max-width:none" title="Used of max memory">
+							<div class="modebar__track">
+								<span class="modebar__seg modebar__seg--mocked" style={ segWidth(int(s.TotalMemory-s.FreeMemory), int(s.MaxMemory)) }></span>
+							</div>
+							<span class="modebar__legend">{ megabytes(s.TotalMemory-s.FreeMemory) } used of { megabytes(s.MaxMemory) }</span>
+						</div>
+					}
+				</div>
+			</div>
+			if s.ShowCastleMockHomeDirectory {
+				<div class="card">
+					<div class="card__head">
+						<h2 class="card__title">
+							@Icon("folder")
+							Storage
+						</h2>
+					</div>
+					<div class="card__body stack">
+						<span class="field__label">Data directory</span>
+						@Endpoint(s.CastleMockHomeDirectory, true)
+					</div>
+				</div>
+			}
+			<div class="card">
+				<div class="card__head">
+					<h2 class="card__title">
+						@Icon("monitor")
+						Appearance
+					</h2>
+					<span class="muted">This browser only</span>
+				</div>
+				<div class="card__body stack">
+					<span class="field__label">Theme</span>
+					<div class="segmented segmented--block" role="radiogroup" aria-label="Theme">
+						<label><input type="radio" name="theme" value="light" data-theme-set/>Light</label>
+						<label><input type="radio" name="theme" value="dark" data-theme-set/>Dark</label>
+						<label><input type="radio" name="theme" value="system" data-theme-set/>System</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}
+
+func megabytes(n int64) string { return Itoa(int(n)) + " MB" }

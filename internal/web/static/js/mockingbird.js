@@ -15,6 +15,12 @@
         i.hidden = i.getAttribute("data-theme-icon") !== t;
       });
     });
+    document.querySelectorAll("input[data-theme-set]").forEach(function (i) { i.checked = i.value === t; });
+  }
+
+  function setTheme(t) {
+    try { localStorage.setItem("mb-theme", t); } catch (e) { /* private mode */ }
+    applyTheme(t);
   }
 
   function storedTheme() {
@@ -116,9 +122,7 @@
       return;
     }
     if (t.hasAttribute("data-theme-toggle")) {
-      const next = THEMES[(THEMES.indexOf(storedTheme()) + 1) % THEMES.length];
-      try { localStorage.setItem("mb-theme", next); } catch (e) { /* private mode */ }
-      applyTheme(next);
+      setTheme(THEMES[(THEMES.indexOf(storedTheme()) + 1) % THEMES.length]);
     } else if (t.hasAttribute("data-copy")) {
       const text = t.getAttribute("data-copy");
       if (navigator.clipboard) navigator.clipboard.writeText(text).then(function () {
@@ -190,6 +194,7 @@
   }
 
   document.addEventListener("change", function (ev) {
+    if (ev.target.matches("input[data-theme-set]")) { setTheme(ev.target.value); return; }
     if (ev.target.matches('input[name="ids"]')) updateBulk(ev.target.closest("form"));
     if (ev.target.matches('input[type="file"][data-file-label]')) {
       const out = document.getElementById(ev.target.getAttribute("data-file-label"));
