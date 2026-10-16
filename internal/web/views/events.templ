@@ -1,0 +1,308 @@
+package views
+
+import (
+	"time"
+
+	"github.com/duv0-x/mockingbird/internal/domain"
+)
+
+// Events is the event overview (EventOverview.js): searchable, paginated,
+// newest first.
+type Events struct {
+	Rows     []domain.OverviewEvent
+	Total    int
+	Filtered int
+	Query    string
+	Type     string // "" | rest | soap
+	Page     int
+	Pages    int
+	From, To int
+}
+
+func (v Events) pageURL(p Page, page int) string {
+	return p.URL("/web/event") + projectsQuery(v.Query, v.Type, page)
+}
+
+// EventPath is the detail page of an overview event.
+func EventPath(e domain.OverviewEvent) string {
+	return "/web/" + string(e.Type) + "/event/" + e.ID
+}
+
+// Duration renders the time between start and end.
+func Duration(start, end domain.Time) string {
+	if start.IsZero() || end.IsZero() {
+		return "—"
+	}
+	d := end.Sub(start.Time)
+	if d < 0 {
+		d = 0
+	}
+	if d < time.Second {
+		return Itoa(int(d.Milliseconds())) + " ms"
+	}
+	return d.Round(time.Millisecond).String()
+}
+
+templ EventsPage(p Page, v Events) {
+	@Layout(p) {
+		@Header(PageHead{
+			Title:   "Events",
+			Badges:  eventsCount(v),
+			Actions: eventsActions(p, v),
+		})
+		@EventTable(p, v)
+	}
+}
+
+templ eventsCount(v Events) {
+	<span class="muted">{ Plural(v.Total, "event", "events") }</span>
+}
+
+templ eventsActions(p Page, v Events) {
+	if p.CanModify() && v.Total > 0 {
+		<button type="button" class="btn btn--danger-ghost" hx-get={ p.URL("/web/event/clear") } hx-target="#modal-root">
+			@Icon("trash")
+			Clear events
+		</button>
+	}
+}
+
+// EventTable is swapped by htmx on search, type filter and paging.
+templ EventTable(p Page, v Events) {
+	<form id="event-table" action={ p.SafeURL("/web/event") } method="get" hx-get={ p.URL("/web/event") } hx-target="#event-table" hx-swap="outerHTML" hx-push-url="true" hx-trigger="input changed delay:250ms from:#event-search, search from:#event-search, change from:.event-type">
+		@BulkToolbar(eventFilter(v), eventTypeFilter(v), nil)
+		if v.Total == 0 {
+			<div class="card">
+				@EmptyState(Empty{Icon: "activity", Title: "No requests captured yet", Text: "Point your client at a mock endpoint; every request it answers is listed here."}, nil)
+			</div>
+		} else {
+			<div class="table-wrap">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Resource</th>
+							<th>Type</th>
+							<th>Start</th>
+							<th>End</th>
+							<th class="num">Duration</th>
+						</tr>
+					</thead>
+					<tbody>
+						for _, e := range v.Rows {
+							<tr>
+								<td><a class="row-link" href={ p.SafeURL(EventPath(e)) }>{ OrDash(e.ResourceName) }</a></td>
+								<td>
+									@TypeBadge(projectTypeLabel(e.Type))
+								</td>
+								<td class="mono nowrap">{ FormatTime(e.StartDate) }</td>
+								<td class="mono nowrap">{ FormatTime(e.EndDate) }</td>
+								<td class="num mono">{ Duration(e.StartDate, e.EndDate) }</td>
+							</tr>
+						}
+						if len(v.Rows) == 0 {
+							<tr>
+								<td colspan="5">
+									@EmptyState(Empty{Icon: "search", Title: "No matching events", Text: "Try another resource name or type."}, nil)
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+				<div class="table-foot">
+					if v.Filtered > 0 {
+						<span>Showing { Itoa(v.From) }–{ Itoa(v.To) } of { Itoa(v.Filtered) }</span>
+					} else {
+						<span>Showing 0 of 0</span>
+					}
+					<span class="pager">
+						<span class="mono">Page { Itoa(v.Page) } of { Itoa(v.Pages) }</span>
+						if v.Page > 1 {
+							<a class="btn btn--ghost btn--sm btn--icon" href={ templ.SafeURL(v.pageURL(p, v.Page-1)) } hx-get={ v.pageURL(p, v.Page-1) } hx-target="#event-table" hx-swap="outerHTML" hx-push-url="true" aria-label="Previous page">
+								@Icon("chevron-left")
+							</a>
+						}
+						if v.Page < v.Pages {
+							<a class="btn btn--ghost btn--sm btn--icon" href={ templ.SafeURL(v.pageURL(p, v.Page+1)) } hx-get={ v.pageURL(p, v.Page+1) } hx-target="#event-table" hx-swap="outerHTML" hx-push-url="true" aria-label="Next page">
+								@Icon("chevron-right")
+							</a>
+						}
+					</span>
+				</div>
+			</div>
+		}
+	</form>
+}
+
+templ eventFilter(v Events) {
+	<label class="search">
+		<span class="sr-only">Filter events</span>
+		@Icon("search")
+		<input class="input" type="search" id="event-search" name="q" value={ v.Query } placeholder="Filter by resource…" autocomplete="off"/>
+	</label>
+}
+
+templ eventTypeFilter(v Events) {
+	<div class="segmented" role="radiogroup" aria-label="Event type">
+		@eventTypeOption("", "All", v.Type)
+		@eventTypeOption("rest", "REST", v.Type)
+		@eventTypeOption("soap", "SOAP", v.Type)
+	</div>
+}
+
+templ eventTypeOption(value, label, current string) {
+	<label>
+		<input class="event-type" type="radio" name="type" value={ value } checked?={ value == current }/>
+		{ label }
+	</label>
+}
+
+// EventLink is a labelled link to an entity of the event.
+type EventLink struct {
+	Label string
+	ID    string
+	Href  string
+}
+
+// EventDetail is shared by the REST and SOAP event pages (RestEvent.js,
+// SoapEvent.js).
+type EventDetail struct {
+	Event    domain.Event
+	Type     string // REST | SOAP
+	Method   domain.HTTPMethod
+	// Status is the HTTP status of the response; 0 without response.
+	Status   int
+	Links    []EventLink
+	Request  EventMessage
+	Response *EventMessage
+}
+
+// EventMessage is the request or response side of an event.
+type EventMessage struct {
+	Facts      []EventFact
+	Body       string
+	Headers    []domain.HTTPHeader
+	Parameters []domain.HTTPParameter
+	// ShowParameters adds the parameters table (REST requests).
+	ShowParameters bool
+}
+
+type EventFact struct {
+	Label string
+	Value string
+	Mono  bool
+}
+
+templ EventDetailPage(p Page, v EventDetail) {
+	@Layout(p) {
+		@Header(PageHead{
+			Prefix: MethodBadge(v.Method),
+			Title:  OrDash(v.Event.ResourceName),
+			Badges: eventBadges(v),
+			Meta:   monoText(Duration(v.Event.StartDate, v.Event.EndDate)),
+		})
+		<div class="grid-detail">
+			<div class="card">
+				@TabList("Event", []Tab{{ID: "request", Label: "Request"}, {ID: "response", Label: "Response"}}, "request")
+				<div class="card__body">
+					<div id="panel-request" role="tabpanel" aria-labelledby="tab-request" class="stack">
+						@eventMessage(v.Request)
+					</div>
+					<div id="panel-response" role="tabpanel" aria-labelledby="tab-response" class="stack" hidden>
+						if v.Response == nil {
+							@EmptyState(Empty{Icon: "inbox", Title: "No response recorded", Text: "The request was not answered by a mock response."}, nil)
+						} else {
+							@eventMessage(*v.Response)
+						}
+					</div>
+				</div>
+			</div>
+			<div class="card">
+				<div class="card__head"><h2 class="card__title">Event</h2></div>
+				<div class="card__body">
+					<dl class="kv">
+						<dt>Event id</dt>
+						<dd class="mono">{ v.Event.ID }</dd>
+						for _, l := range v.Links {
+							<dt>{ l.Label }</dt>
+							<dd class="mono">
+								if l.Href != "" {
+									<a href={ p.SafeURL(l.Href) }>{ l.ID }</a>
+								} else {
+									{ OrDash(l.ID) }
+								}
+							</dd>
+						}
+						<dt>Start</dt>
+						<dd class="mono">{ FormatTime(v.Event.StartDate) }</dd>
+						<dt>End</dt>
+						<dd class="mono">{ FormatTime(v.Event.EndDate) }</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	}
+}
+
+templ eventBadges(v EventDetail) {
+	@TypeBadge(v.Type)
+	if v.Status != 0 {
+		@StatusBadge(v.Status)
+	}
+}
+
+templ eventMessage(m EventMessage) {
+	<dl class="kv">
+		for _, f := range m.Facts {
+			<dt>{ f.Label }</dt>
+			<dd class={ templ.KV("mono", f.Mono) }>{ OrDash(f.Value) }</dd>
+		}
+	</dl>
+	if m.Body != "" {
+		@CodeBlock("Body", "", m.Body)
+	} else {
+		<p class="muted">No body.</p>
+	}
+	@pairsTable("Headers", headerPairs(m.Headers))
+	if m.ShowParameters {
+		@pairsTable("Parameters", parameterPairs(m.Parameters))
+	}
+}
+
+type pair struct{ Name, Value string }
+
+func headerPairs(hs []domain.HTTPHeader) []pair {
+	out := make([]pair, 0, len(hs))
+	for _, h := range hs {
+		out = append(out, pair{h.Name, h.Value})
+	}
+	return out
+}
+
+func parameterPairs(ps []domain.HTTPParameter) []pair {
+	out := make([]pair, 0, len(ps))
+	for _, h := range ps {
+		out = append(out, pair{h.Name, h.Value})
+	}
+	return out
+}
+
+templ pairsTable(title string, rows []pair) {
+	<div>
+		<h3 class="section__head card__title">
+			{ title }
+			@CountBadge(len(rows))
+		</h3>
+		if len(rows) > 0 {
+			<div class="table-wrap">
+				<table class="table">
+					<thead><tr><th>Name</th><th>Value</th></tr></thead>
+					<tbody>
+						for _, r := range rows {
+							<tr><td class="mono">{ r.Name }</td><td class="mono">{ r.Value }</td></tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		}
+	</div>
+}

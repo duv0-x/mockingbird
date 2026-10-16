@@ -1,0 +1,599 @@
+package views
+
+import "github.com/duv0-x/mockingbird/internal/domain"
+
+// ---------- Paths ----------
+
+// SoapIDs are the path ids of the current SOAP screen.
+type SoapIDs struct {
+	Project, Port, Operation, Response, Resource string
+}
+
+func SoapProjectPath(p string) string { return "/web/soap/project/" + p }
+func SoapPortPath(p, po string) string { return SoapProjectPath(p) + "/port/" + po }
+func SoapOperationPath(p, po, o string) string {
+	return SoapPortPath(p, po) + "/operation/" + o
+}
+func SoapResponsePath(p, po, o, mr string) string {
+	return SoapOperationPath(p, po, o) + "/mockresponse/" + mr
+}
+func SoapResourcePath(p, rs string) string { return SoapProjectPath(p) + "/resource/" + rs }
+
+func (ids SoapIDs) ProjectPath() string   { return SoapProjectPath(ids.Project) }
+func (ids SoapIDs) PortPath() string      { return SoapPortPath(ids.Project, ids.Port) }
+func (ids SoapIDs) OperationPath() string { return SoapOperationPath(ids.Project, ids.Port, ids.Operation) }
+func (ids SoapIDs) ResponsePath() string {
+	return SoapResponsePath(ids.Project, ids.Port, ids.Operation, ids.Response)
+}
+func (ids SoapIDs) ResourcePath() string { return SoapResourcePath(ids.Project, ids.Resource) }
+
+// ---------- SOAP project ----------
+
+type SoapProjectView struct {
+	IDs     SoapIDs
+	Project domain.SoapProject
+	MockURL string
+}
+
+templ SoapProjectPage(p Page, v SoapProjectView) {
+	@Layout(p) {
+		@Header(PageHead{
+			Title:   v.Project.Name,
+			Badges:  TypeBadge("SOAP"),
+			Sub:     v.Project.Description,
+			Meta:    Endpoint(v.MockURL, false),
+			Actions: soapProjectActions(p, v),
+		})
+		<section class="section">
+			<form id="bulk-ports" class="bulk">
+				@BulkToolbar(sectionTitle("Ports", len(v.Project.Ports)), nil, soapPortsBulk(p, v.IDs))
+				if len(v.Project.Ports) == 0 {
+					<div class="card">
+						@EmptyState(Empty{Icon: "file-code", Title: "No ports yet", Text: "Ports and operations are created from a WSDL. Upload a file or import it from a URL."}, soapImportButton(p, v.IDs, "btn--primary"))
+					</div>
+				} else {
+					<div class="table-wrap">
+						<table class="table">
+							<thead>
+								<tr>
+									if p.CanModify() {
+										<th class="col-check">
+											@SelectAll()
+										</th>
+									}
+									<th>Name</th>
+									<th>URI</th>
+									<th class="num">Operations</th>
+									<th>Modes</th>
+								</tr>
+							</thead>
+							<tbody>
+								for _, po := range v.Project.Ports {
+									<tr>
+										if p.CanModify() {
+											<td class="col-check">
+												@RowCheck(po.ID, po.Name)
+											</td>
+										}
+										<td><a class="row-link mono" href={ p.SafeURL(SoapPortPath(v.IDs.Project, po.ID)) }>{ po.Name }</a></td>
+										<td class="mono">{ po.URI }</td>
+										<td class="num mono">{ Itoa(ModeTotal(SoapCounts(po.StatusCount))) }</td>
+										<td>
+											@ModeBar(SoapCounts(po.StatusCount))
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				}
+			</form>
+		</section>
+		<section class="section">
+			<div class="card">
+				<div class="card__head">
+					@sectionTitle("WSDL resources", len(v.Project.Resources))
+				</div>
+				if len(v.Project.Resources) == 0 {
+					@EmptyState(Empty{Icon: "file-code", Title: "No resources", Text: "Imported WSDL and XSD files are listed here."}, nil)
+				} else {
+					<div class="table-wrap">
+						<table class="table">
+							<thead>
+								<tr><th>Name</th><th>Type</th></tr>
+							</thead>
+							<tbody>
+								for _, rs := range v.Project.Resources {
+									<tr>
+										<td><a class="row-link mono" href={ p.SafeURL(SoapResourcePath(v.IDs.Project, rs.ID)) }>{ rs.Name }</a></td>
+										<td>
+											@TypeBadge(SoapResourceTypeLabel(rs.Type))
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				}
+			</div>
+		</section>
+	}
+}
+
+templ soapPortsBulk(p Page, ids SoapIDs) {
+	if p.CanModify() {
+		@BulkButtons(BulkActions{Base: p.URL(ids.ProjectPath() + "/port"), Form: "bulk-ports", Status: true, Endpoint: true, Delete: true})
+	}
+}
+
+templ soapImportButton(p Page, ids SoapIDs, class string) {
+	if p.CanModify() {
+		<button type="button" class={ "btn", class } hx-get={ p.URL(ids.ProjectPath() + "/wsdl") } hx-target="#modal-root">
+			@Icon("upload")
+			Import WSDL
+		</button>
+	}
+}
+
+templ soapProjectActions(p Page, v SoapProjectView) {
+	@soapImportButton(p, v.IDs, "btn--secondary")
+	<details class="menu">
+		<summary class="btn btn--secondary">
+			@Icon("download")
+			Export
+			@Icon("chevron-down")
+		</summary>
+		<div class="menu__panel">
+			<a class="menu__item" href={ p.SafeURL(v.IDs.ProjectPath() + "/export") } hx-boost="false" download>CastleMock XML</a>
+			<a class="menu__item" href={ p.SafeURL(v.IDs.ProjectPath() + "/export?format=json") } hx-boost="false" download>mockingbird JSON</a>
+		</div>
+	</details>
+	if p.CanModify() {
+		<button type="button" class="btn btn--secondary" hx-get={ p.URL(v.IDs.ProjectPath() + "/update") } hx-target="#modal-root">
+			@Icon("pencil")
+			Edit
+		</button>
+		<button type="button" class="btn btn--danger-ghost" hx-get={ p.URL(v.IDs.ProjectPath() + "/delete") } hx-target="#modal-root">
+			@Icon("trash")
+			Delete
+		</button>
+	}
+}
+
+// SoapResourceTypeLabel names a SoapResourceType.
+func SoapResourceTypeLabel(t domain.SoapResourceType) string {
+	switch t {
+	case domain.SoapResourceSchema:
+		return "XSD"
+	case domain.SoapResourceWSDLImport:
+		return "WSDL import"
+	}
+	return "WSDL"
+}
+
+// WSDLForm is the "Import WSDL" dialog (UploadWSDLModal.js).
+type WSDLForm struct {
+	Modal
+	Source           string // file | url
+	URL              string
+	GenerateResponse bool
+	IncludeImports   bool
+	Error            string
+}
+
+templ WSDLDialog(v WSDLForm) {
+	@ModalDialog(v.Modal) {
+		@FormError(v.Error)
+		<input type="hidden" name="source" value={ v.Source }/>
+		if v.Source == "url" {
+			@FormField(Field{Label: "WSDL URL", For: "wsdl-url"}) {
+				@TextInput(Input{ID: "wsdl-url", Name: "url", Value: v.URL, Type: "url", Mono: true, Placeholder: "https://example.com/service?wsdl", Required: true, Autofocus: true})
+			}
+			@Checkbox("wsdl-imports", "includeImports", "Import linked WSDLs", v.IncludeImports)
+		} else {
+			@FormField(Field{Label: "WSDL file", For: "wsdl-file"}) {
+				<div class="dropzone">
+					@IconSized("upload", "icon--20")
+					<span>Drop a .wsdl file here or <span class="mono">browse</span></span>
+					<span class="dropzone__name" id="wsdl-file-name"></span>
+					<input type="file" id="wsdl-file" name="file" accept=".wsdl,.xml,application/xml,text/xml" required data-file-label="wsdl-file-name"/>
+				</div>
+			}
+		}
+		@Checkbox("wsdl-generate", "generateResponse", "Generate responses for each operation", v.GenerateResponse)
+	}
+}
+
+templ WSDLTabs(p Page, base, source string) {
+	<div class="tabs" role="tablist" aria-label="Source">
+		<button type="button" class="tab" role="tab" aria-selected={ boolString(source != "url") } hx-get={ p.URL(base + "/wsdl") } hx-target="#modal-root">File upload</button>
+		<button type="button" class="tab" role="tab" aria-selected={ boolString(source == "url") } hx-get={ p.URL(base + "/wsdl?source=url") } hx-target="#modal-root">URL</button>
+	</div>
+}
+
+// ---------- SOAP port ----------
+
+type SoapPortView struct {
+	IDs     SoapIDs
+	Port    domain.SoapPort
+	Address string
+}
+
+templ SoapPortPage(p Page, v SoapPortView) {
+	@Layout(p) {
+		@Header(PageHead{
+			Title:   v.Port.Name,
+			Badges:  TypeBadge("Port"),
+			Meta:    soapPortMeta(v),
+			Actions: soapPortActions(p, v.IDs),
+		})
+		<section class="section">
+			<form id="bulk-operations" class="bulk">
+				@BulkToolbar(sectionTitle("Operations", len(v.Port.Operations)), nil, soapOperationsBulk(p, v.IDs))
+				if len(v.Port.Operations) == 0 {
+					<div class="card">
+						@EmptyState(Empty{Icon: "list", Title: "No operations", Text: "Operations come from the WSDL of the project."}, nil)
+					</div>
+				} else {
+					<div class="table-wrap">
+						<table class="table">
+							<thead>
+								<tr>
+									if p.CanModify() {
+										<th class="col-check">
+											@SelectAll()
+										</th>
+									}
+									<th>Name</th>
+									<th>Method</th>
+									<th>SOAP version</th>
+									<th>Response strategy</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								for _, o := range v.Port.Operations {
+									<tr>
+										if p.CanModify() {
+											<td class="col-check">
+												@RowCheck(o.ID, o.Name)
+											</td>
+										}
+										<td><a class="row-link mono" href={ p.SafeURL(SoapOperationPath(v.IDs.Project, v.IDs.Port, o.ID)) }>{ o.Name }</a></td>
+										<td>
+											@MethodBadge(o.HTTPMethod)
+										</td>
+										<td>
+											@TypeBadge(SoapVersionLabel(o.SoapVersion))
+										</td>
+										<td>
+											@StrategyBadge(string(o.ResponseStrategy))
+										</td>
+										<td>
+											@ModeBadge(string(o.Status))
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				}
+			</form>
+		</section>
+	}
+}
+
+templ soapPortMeta(v SoapPortView) {
+	@Endpoint(v.Address, false)
+	<a class="btn btn--ghost btn--sm" href={ templ.SafeURL(v.Address + "?wsdl") } hx-boost="false" target="_blank" rel="noopener">
+		@Icon("file-code")
+		WSDL
+	</a>
+}
+
+templ soapPortActions(p Page, ids SoapIDs) {
+	if p.CanModify() {
+		<button type="button" class="btn btn--secondary" hx-get={ p.URL(ids.PortPath() + "/update") } hx-target="#modal-root">
+			@Icon("pencil")
+			Edit
+		</button>
+		<button type="button" class="btn btn--danger-ghost" hx-get={ p.URL(ids.PortPath() + "/delete") } hx-target="#modal-root">
+			@Icon("trash")
+			Delete
+		</button>
+	}
+}
+
+templ soapOperationsBulk(p Page, ids SoapIDs) {
+	if p.CanModify() {
+		@BulkButtons(BulkActions{Base: p.URL(ids.PortPath() + "/operation"), Form: "bulk-operations", Status: true, Endpoint: true})
+	}
+}
+
+// SoapVersionLabel renders SOAP11 / SOAP12 as "SOAP 1.1" / "SOAP 1.2".
+func SoapVersionLabel(v domain.SoapVersion) string {
+	if v == domain.SOAP12 {
+		return "SOAP 1.2"
+	}
+	return "SOAP 1.1"
+}
+
+// ---------- SOAP operation ----------
+
+type SoapOperationView struct {
+	IDs       SoapIDs
+	Operation domain.SoapOperation
+	Address   string
+}
+
+templ SoapOperationPage(p Page, v SoapOperationView) {
+	@Layout(p) {
+		@Header(PageHead{
+			Prefix:  TypeBadge(SoapVersionLabel(v.Operation.SoapVersion)),
+			Title:   v.Operation.Name,
+			Badges:  ModeBadge(string(v.Operation.Status)),
+			Meta:    soapIdentifier(v.Operation.OperationIdentifier),
+			Actions: soapOperationActions(p, v.IDs),
+		})
+		<div class="card">
+			<div class="strip">
+				@stripItem("Mode", ModeBadge(string(v.Operation.Status)))
+				@stripItem("Response strategy", StrategyBadge(string(v.Operation.ResponseStrategy)))
+				@stripItem("Identify by", text(SoapIdentifyLabel(v.Operation.IdentifyStrategy)))
+				@stripItem("Network delay", soapDelay(v.Operation))
+				@stripItem("Default response", text(OrDash(v.Operation.DefaultResponseName)))
+				@stripItem("Forwarded endpoint", monoText(OrDash(v.Operation.ForwardedEndpoint)))
+			</div>
+		</div>
+		<div class="grid-detail section">
+			<div class="stack">
+				<form id="bulk-responses" class="bulk">
+					<div class="card">
+						<div class="card__head">
+							@sectionTitle("Mock responses", len(v.Operation.MockResponses))
+							<div class="toolbar__right">
+								if p.CanModify() {
+									<div class="bulkbar" role="group" aria-label="Bulk actions">
+										<span class="bulkbar__count" data-bulk-count>0 selected</span>
+										@BulkButtons(BulkActions{Base: p.URL(v.IDs.OperationPath() + "/mockresponse"), Form: "bulk-responses", Status: true, Duplicate: true, Delete: true})
+									</div>
+								}
+								if v.Operation.ResponseStrategy == domain.SoapStrategySequence && len(v.Operation.MockResponses) > 0 {
+									<span class="mono muted toolbar__filter">Sequence: next response is #{ Itoa(v.Operation.CurrentResponseSequenceIndex%len(v.Operation.MockResponses) + 1) }</span>
+								}
+							</div>
+						</div>
+						if len(v.Operation.MockResponses) == 0 {
+							@EmptyState(Empty{Icon: "inbox", Title: "No mock responses yet", Text: "Requests are answered with the default body until a response is added."}, newButton(p, "Add response", v.IDs.OperationPath()+"/mockresponse/new"))
+						} else {
+							<div class="table-wrap">
+								<table class="table">
+									<thead>
+										<tr>
+											if p.CanModify() {
+												<th class="col-check">
+													@SelectAll()
+												</th>
+											}
+											<th class="num">#</th>
+											<th>Name</th>
+											<th>Status</th>
+											<th>HTTP status</th>
+											<th>XPath</th>
+										</tr>
+									</thead>
+									<tbody>
+										for i, r := range v.Operation.MockResponses {
+											<tr class={ templ.KV("is-disabled", r.Status == domain.SoapMockResponseDisabled) }>
+												if p.CanModify() {
+													<td class="col-check">
+														@RowCheck(r.ID, r.Name)
+													</td>
+												}
+												<td class="num mono">{ Itoa(i + 1) }</td>
+												<td>
+													<a class="row-link" href={ p.SafeURL(SoapResponsePath(v.IDs.Project, v.IDs.Port, v.IDs.Operation, r.ID)) }>{ r.Name }</a>
+													if r.ID == v.Operation.DefaultMockResponseID {
+														@DefaultBadge()
+													}
+												</td>
+												<td>
+													@ResponseBadge(string(r.Status))
+												</td>
+												<td>
+													@StatusBadge(r.HTTPStatusCode)
+												</td>
+												<td class="mono muted truncate">{ soapXPathSummary(r) }</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							</div>
+						}
+					</div>
+				</form>
+				if v.Operation.DefaultBody != "" {
+					@CodeBlock("Default response body", "XML", v.Operation.DefaultBody)
+				}
+			</div>
+			<div class="stack">
+				<div class="card">
+					<div class="card__head"><h2 class="card__title">Mock endpoint</h2></div>
+					<div class="card__body stack">
+						@Endpoint(v.Address, true)
+						<a class="btn btn--secondary btn--sm" href={ templ.SafeURL(v.Address + "?wsdl") } hx-boost="false" target="_blank" rel="noopener">
+							@Icon("file-code")
+							WSDL definition
+						</a>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card__head"><h2 class="card__title">Details</h2></div>
+					<div class="card__body">
+						<dl class="kv">
+							<dt>SOAP version</dt>
+							<dd>{ SoapVersionLabel(v.Operation.SoapVersion) }</dd>
+							<dt>HTTP method</dt>
+							<dd>
+								@MethodBadge(v.Operation.HTTPMethod)
+							</dd>
+							<dt>Original endpoint</dt>
+							<dd class="mono">{ OrDash(v.Operation.OriginalEndpoint) }</dd>
+							<dt>Automatic forward</dt>
+							<dd>{ BoolLabel(v.Operation.AutomaticForward) }</dd>
+							<dt>Mock on failure</dt>
+							<dd>{ BoolLabel(v.Operation.MockOnFailure) }</dd>
+							<dt>Operation id</dt>
+							<dd class="mono">{ v.Operation.ID }</dd>
+						</dl>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}
+
+templ soapIdentifier(id domain.SoapOperationIdentifier) {
+	<span class="endpoint">
+		@Icon("code-xml")
+		<span class="endpoint__text">
+			operation: { id.Name }
+			if id.Namespace != "" {
+				{ " · namespace " + id.Namespace }
+			}
+		</span>
+	</span>
+}
+
+templ soapOperationActions(p Page, ids SoapIDs) {
+	if p.CanModify() {
+		<button type="button" class="btn btn--secondary" hx-get={ p.URL(ids.OperationPath() + "/update") } hx-target="#modal-root">
+			@Icon("pencil")
+			Edit
+		</button>
+		@newButton(p, "Add response", ids.OperationPath()+"/mockresponse/new")
+	}
+}
+
+templ soapDelay(o domain.SoapOperation) {
+	if o.SimulateNetworkDelay != nil && *o.SimulateNetworkDelay {
+		<span class="mono">{ Itoa(int(domain.Deref(o.NetworkDelay))) } ms</span>
+	} else {
+		<span class="muted">Off</span>
+	}
+}
+
+func soapXPathSummary(r domain.SoapMockResponse) string {
+	if len(r.XPathExpressions) == 0 {
+		return "—"
+	}
+	if len(r.XPathExpressions) == 1 {
+		return r.XPathExpressions[0].Expression
+	}
+	return Plural(len(r.XPathExpressions), "expression", "expressions")
+}
+
+// SoapIdentifyLabel names a SoapOperationIdentifyStrategy.
+func SoapIdentifyLabel(s domain.SoapOperationIdentifyStrategy) string {
+	if s == domain.IdentifyByElement {
+		return "Element"
+	}
+	return "Element + namespace"
+}
+
+// SoapOperationForm is the "Update operation" dialog (UpdateOperationModal.js).
+type SoapOperationForm struct {
+	Modal
+	Operation domain.SoapOperation
+	Error     string
+}
+
+templ SoapOperationDialog(v SoapOperationForm) {
+	@ModalDialog(v.Modal) {
+		@FormError(v.Error)
+		<div class="form-row">
+			@FormField(Field{Label: "Status", For: "op-status"}) {
+				@Select("op-status", "status", RestMethodStatusOptions(), string(v.Operation.Status))
+			}
+			@FormField(Field{Label: "Response strategy", For: "op-strategy"}) {
+				@Select("op-strategy", "responseStrategy", SoapStrategyOptions(), string(v.Operation.ResponseStrategy))
+			}
+		</div>
+		@FormField(Field{Label: "Identify strategy", For: "op-identify", Help: "How a request is matched to this operation."}) {
+			@Select("op-identify", "identifyStrategy", SoapIdentifyOptions(), string(v.Operation.IdentifyStrategy))
+		}
+		@FormField(Field{Label: "Forwarded endpoint", For: "op-endpoint", Help: "Used by the Forwarded, Recording and Record once modes."}) {
+			@TextInput(Input{ID: "op-endpoint", Name: "forwardedEndpoint", Value: v.Operation.ForwardedEndpoint, Mono: true, Placeholder: OrDash(v.Operation.OriginalEndpoint)})
+		}
+		@Switch("op-autoforward", "automaticForward", "Automatic forward with no match", domain.Deref(v.Operation.AutomaticForward))
+		<div class="form-row">
+			@FormField(Field{Label: "Network delay", For: "op-delay"}) {
+				<div class="input-group">
+					<input class="input input--mono" type="number" min="0" step="1" id="op-delay" name="networkDelay" value={ delayInput(v.Operation.NetworkDelay) }/>
+					<span class="input-group__suffix">ms</span>
+				</div>
+			}
+			@FormField(Field{Label: "Default response", For: "op-default", Help: "Returned when no response matches."}) {
+				@Select("op-default", "defaultMockResponseId", SoapDefaultResponseOptions(v.Operation.MockResponses), v.Operation.DefaultMockResponseID)
+			}
+		</div>
+		@Switch("op-simulate", "simulateNetworkDelay", "Simulate network delay", domain.Deref(v.Operation.SimulateNetworkDelay))
+		@Switch("op-mockfailure", "mockOnFailure", "Mock on failure (answer with a mock when forwarding fails)", domain.Deref(v.Operation.MockOnFailure))
+	}
+}
+
+func SoapStrategyOptions() []Option {
+	return []Option{
+		{Value: string(domain.SoapStrategyRandom), Label: "Random"},
+		{Value: string(domain.SoapStrategySequence), Label: "Sequence"},
+		{Value: string(domain.SoapStrategyXPathInput), Label: "XPath input"},
+	}
+}
+
+func SoapIdentifyOptions() []Option {
+	return []Option{
+		{Value: string(domain.IdentifyByElementNamespace), Label: "Element + namespace"},
+		{Value: string(domain.IdentifyByElement), Label: "Element"},
+	}
+}
+
+func SoapDefaultResponseOptions(rs []domain.SoapMockResponse) []Option {
+	out := []Option{{Value: "", Label: "None"}}
+	for _, r := range rs {
+		out = append(out, Option{Value: r.ID, Label: r.Name + " (" + Itoa(r.HTTPStatusCode) + ")"})
+	}
+	return out
+}
+
+// ---------- SOAP resource ----------
+
+type SoapResourceView struct {
+	IDs      SoapIDs
+	Resource domain.SoapResource
+	Content  string
+	RawURL   string
+}
+
+templ SoapResourcePage(p Page, v SoapResourceView) {
+	@Layout(p) {
+		@Header(PageHead{
+			Title:   v.Resource.Name,
+			Badges:  TypeBadge(SoapResourceTypeLabel(v.Resource.Type)),
+			Actions: soapResourceActions(v),
+		})
+		if v.Content == "" {
+			<div class="card">
+				@EmptyState(Empty{Icon: "file-code", Title: "Empty resource", Text: "This resource has no stored content."}, nil)
+			</div>
+		} else {
+			@CodeBlock("Content", "XML", v.Content)
+		}
+	}
+}
+
+templ soapResourceActions(v SoapResourceView) {
+	<a class="btn btn--secondary" href={ templ.SafeURL(v.RawURL) } hx-boost="false" target="_blank" rel="noopener">
+		@Icon("external-link")
+		Open raw
+	</a>
+}

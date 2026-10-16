@@ -842,23 +842,7 @@ func (u *ui) restResponseValidate(c *gin.Context) {
 		u.fail(c, err)
 		return
 	}
-	f := views.ValidateForm{Modal: views.Modal{Title: "Validate expression", Size: "md", Action: u.url(rc.ids.ResponsePath() + "/validate"), Submit: "Validate", Include: "#mr-body"}}
-	if isPost(c) {
-		f.RequestBody = c.PostForm("requestBody")
-		body, ok := c.GetPostForm("body")
-		if !ok {
-			body = rc.resp.Body
-		}
-		f.Output, err = u.deps.Service.ValidateExpression(c, f.RequestBody, body)
-		f.Validated = err == nil
-		if err != nil {
-			f.Error = "The expression could not be evaluated: " + err.Error()
-		}
-	}
-	u.renderModal(c, http.StatusOK, f.Modal, func(m views.Modal) templ.Component {
-		f.Modal = m
-		return views.ValidateDialog(f)
-	}, u.url(rc.ids.ResponsePath()), f.Modal.Title)
+	u.validateExpression(c, rc.resp.Body, u.url(rc.ids.ResponsePath()))
 }
 
 // ---------- Bulk specs ----------
