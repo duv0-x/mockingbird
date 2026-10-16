@@ -64,6 +64,7 @@ Normative words: **MUST** = required for parity, **SHOULD** = recommended,
 | D-16 | React SPA at `{ctx}/` with hash routes `#/web/...` | templ + htmx pages at `{ctx}/web/...` (§8); `{ctx}/` redirects to `{ctx}/web` |
 | D-17 | Forwarding (REST `RestClient`) fails with HTTP 500 when the target answers 4xx (`HttpURLConnection.getInputStream` throws) | Any status of the target is served/recorded as is |
 | D-18 | A mock body expression that throws (e.g. `${RANDOM_ENUM}` without values, `max=0`) fails the whole mock request with HTTP 500 | The expression is left in the body unchanged (§4.4) |
+| D-19 | WSDL resources are stored re-serialized by a DOM Transformer (new XML declaration, re-indented) | The uploaded/downloaded document is stored byte for byte |
 
 Everything not listed here MUST behave like CastleMock.
 
@@ -852,7 +853,7 @@ Port of `SoapPortConverter`, `DocumentConverter`, `ServicePortConverter`, `Bindi
   `soapVersion` updated, new ones added with their responses. New ports added.
 - Resources: all existing WSDL and WSDL_IMPORT resources are deleted, then one resource per parsed
   document (name = uploaded file name, `UploadedFile-xxxxxx` for links in Java — mockingbird uses the URL's last path segment) with the
-  serialized document as content. Link + `includeImports` → follow `wsdl:import@location` recursively
+  document as content (D-19). Link + `includeImports` → follow `wsdl:import@location` recursively
   (relative to the importing URL), type WSDL_IMPORT.
 - Fixtures: `service/service-mock/service-mock-soap/src/test/resources/**`.
 
