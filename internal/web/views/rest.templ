@@ -1,0 +1,717 @@
+package views
+
+import "github.com/duv0-x/mockingbird/internal/domain"
+
+// ---------- Paths ----------
+
+func RestProjectPath(p string) string        { return "/web/rest/project/" + p }
+func RestAppPath(p, a string) string         { return RestProjectPath(p) + "/application/" + a }
+func RestResourcePath(p, a, r string) string { return RestAppPath(p, a) + "/resource/" + r }
+func RestMethodPath(p, a, r, m string) string {
+	return RestResourcePath(p, a, r) + "/method/" + m
+}
+func RestResponsePath(p, a, r, m, mr string) string {
+	return RestMethodPath(p, a, r, m) + "/mockresponse/" + mr
+}
+
+// RestIDs are the path ids of the current REST screen.
+type RestIDs struct {
+	Project, App, Resource, Method, Response string
+}
+
+func (ids RestIDs) ProjectPath() string  { return RestProjectPath(ids.Project) }
+func (ids RestIDs) AppPath() string      { return RestAppPath(ids.Project, ids.App) }
+func (ids RestIDs) ResourcePath() string { return RestResourcePath(ids.Project, ids.App, ids.Resource) }
+func (ids RestIDs) MethodPath() string {
+	return RestMethodPath(ids.Project, ids.App, ids.Resource, ids.Method)
+}
+func (ids RestIDs) ResponsePath() string {
+	return RestResponsePath(ids.Project, ids.App, ids.Resource, ids.Method, ids.Response)
+}
+
+// ---------- REST project ----------
+
+type RestProjectView struct {
+	IDs     RestIDs
+	Project domain.RestProject
+	MockURL string
+}
+
+templ RestProjectPage(p Page, v RestProjectView) {
+	@Layout(p) {
+		@Header(PageHead{
+			Title:   v.Project.Name,
+			Badges:  TypeBadge("REST"),
+			Sub:     v.Project.Description,
+			Meta:    Endpoint(v.MockURL, false),
+			Actions: restProjectActions(p, v),
+		})
+		<section class="section">
+			<form id="bulk-applications" class="bulk">
+				@BulkToolbar(sectionTitle("Applications", len(v.Project.Applications)), nil, restBulk(p, v.IDs.ProjectPath()+"/application", "bulk-applications", true, false))
+				if len(v.Project.Applications) == 0 {
+					<div class="card">
+						@EmptyState(Empty{Icon: "layers", Title: "No applications yet", Text: "Applications group the resources of an API. Create one or import a RAML, Swagger, OpenAPI or WADL definition."}, restProjectEmpty(p, v))
+					</div>
+				} else {
+					<div class="table-wrap">
+						<table class="table">
+							<thead>
+								<tr>
+									if p.CanModify() {
+										<th class="col-check">
+											@SelectAll()
+										</th>
+									}
+									<th>Name</th>
+									<th class="num">Methods</th>
+									<th>Modes</th>
+								</tr>
+							</thead>
+							<tbody>
+								for _, a := range v.Project.Applications {
+									<tr>
+										if p.CanModify() {
+											<td class="col-check">
+												@RowCheck(a.ID, a.Name)
+											</td>
+										}
+										<td><a class="row-link mono" href={ p.SafeURL(RestAppPath(v.IDs.Project, a.ID)) }>{ a.Name }</a></td>
+										<td class="num mono">{ Itoa(ModeTotal(RestCounts(a.StatusCount))) }</td>
+										<td>
+											@ModeBar(RestCounts(a.StatusCount))
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				}
+			</form>
+		</section>
+		<section class="section">
+			<div class="card">
+				<div class="card__head"><h2 class="card__title">Mode legend</h2></div>
+				<div class="card__body">
+					@ModeLegendBadges()
+				</div>
+			</div>
+		</section>
+	}
+}
+
+templ sectionTitle(title string, n int) {
+	<h2 class="card__title">
+		{ title }
+		@CountBadge(n)
+	</h2>
+}
+
+// restBulk is the bulk bar of a REST table: status and endpoint apply to
+// every method below the selected rows.
+templ restBulk(p Page, base, form string, endpoint, duplicate bool) {
+	if p.CanModify() {
+		@BulkButtons(BulkActions{Base: p.URL(base), Form: form, Status: true, Endpoint: endpoint, Duplicate: duplicate, Delete: true})
+	}
+}
+
+templ restProjectActions(p Page, v RestProjectView) {
+	if p.CanModify() {
+		<details class="menu">
+			<summary class="btn btn--secondary">
+				@Icon("upload")
+				Import definition
+				@Icon("chevron-down")
+			</summary>
+			<div class="menu__panel">
+				for _, d := range RestDefinitionTypes {
+					<button type="button" class="menu__item" hx-get={ p.URL(v.IDs.ProjectPath() + "/definition?type=" + d.Value) } hx-target="#modal-root">{ d.Label }</button>
+				}
+			</div>
+		</details>
+	}
+	<details class="menu">
+		<summary class="btn btn--secondary">
+			@Icon("download")
+			Export
+			@Icon("chevron-down")
+		</summary>
+		<div class="menu__panel">
+			<a class="menu__item" href={ p.SafeURL(v.IDs.ProjectPath() + "/export") } hx-boost="false" download>CastleMock XML</a>
+			<a class="menu__item" href={ p.SafeURL(v.IDs.ProjectPath() + "/export?format=json") } hx-boost="false" download>mockingbird JSON</a>
+		</div>
+	</details>
+	if p.CanModify() {
+		<button type="button" class="btn btn--secondary" hx-get={ p.URL(v.IDs.ProjectPath() + "/update") } hx-target="#modal-root">
+			@Icon("pencil")
+			Edit
+		</button>
+		<button type="button" class="btn btn--danger-ghost" hx-get={ p.URL(v.IDs.ProjectPath() + "/delete") } hx-target="#modal-root">
+			@Icon("trash")
+			Delete
+		</button>
+		<button type="button" class="btn btn--primary" hx-get={ p.URL(v.IDs.ProjectPath() + "/application/new") } hx-target="#modal-root">
+			@Icon("plus")
+			New application
+		</button>
+	}
+}
+
+templ restProjectEmpty(p Page, v RestProjectView) {
+	if p.CanModify() {
+		<button type="button" class="btn btn--primary" hx-get={ p.URL(v.IDs.ProjectPath() + "/application/new") } hx-target="#modal-root">
+			@Icon("plus")
+			New application
+		</button>
+		<button type="button" class="btn btn--secondary" hx-get={ p.URL(v.IDs.ProjectPath() + "/definition?type=OPENAPI") } hx-target="#modal-root">
+			@Icon("upload")
+			Import definition
+		</button>
+	}
+}
+
+// RestDefinitionTypes is the "Import definition" menu (RestProject.js).
+var RestDefinitionTypes = []Option{
+	{Value: string(domain.RestDefinitionRAML), Label: "RAML"},
+	{Value: string(domain.RestDefinitionSwagger), Label: "Swagger V2"},
+	{Value: string(domain.RestDefinitionOpenAPI), Label: "OpenAPI V3"},
+	{Value: string(domain.RestDefinitionWADL), Label: "WADL"},
+}
+
+// ---------- REST application ----------
+
+type RestApplicationView struct {
+	IDs     RestIDs
+	App     domain.RestApplication
+	MockURL string
+}
+
+templ RestApplicationPage(p Page, v RestApplicationView) {
+	@Layout(p) {
+		@Header(PageHead{
+			Title:   v.App.Name,
+			Badges:  TypeBadge("Application"),
+			Meta:    Endpoint(v.MockURL, false),
+			Actions: entityActions(p, v.IDs.AppPath(), "New resource", v.IDs.AppPath()+"/resource/new"),
+		})
+		<section class="section">
+			<form id="bulk-resources" class="bulk">
+				@BulkToolbar(sectionTitle("Resources", len(v.App.Resources)), nil, restBulk(p, v.IDs.AppPath()+"/resource", "bulk-resources", true, false))
+				if len(v.App.Resources) == 0 {
+					<div class="card">
+						@EmptyState(Empty{Icon: "route", Title: "No resources yet", Text: "A resource is a URI such as /customers/{id}; its methods answer the requests."}, newButton(p, "New resource", v.IDs.AppPath()+"/resource/new"))
+					</div>
+				} else {
+					<div class="table-wrap">
+						<table class="table">
+							<thead>
+								<tr>
+									if p.CanModify() {
+										<th class="col-check">
+											@SelectAll()
+										</th>
+									}
+									<th>Name</th>
+									<th>URI</th>
+									<th class="num">Methods</th>
+									<th>Modes</th>
+								</tr>
+							</thead>
+							<tbody>
+								for _, r := range v.App.Resources {
+									<tr>
+										if p.CanModify() {
+											<td class="col-check">
+												@RowCheck(r.ID, r.Name)
+											</td>
+										}
+										<td><a class="row-link" href={ p.SafeURL(RestResourcePath(v.IDs.Project, v.IDs.App, r.ID)) }>{ r.Name }</a></td>
+										<td class="mono">
+											@URI(r.URI)
+										</td>
+										<td class="num mono">{ Itoa(ModeTotal(RestCounts(r.StatusCount))) }</td>
+										<td>
+											@ModeBar(RestCounts(r.StatusCount))
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				}
+			</form>
+		</section>
+	}
+}
+
+// entityActions are the header actions of a detail page: Edit, Delete and
+// the primary "create child" action.
+templ entityActions(p Page, base, newLabel, newPath string) {
+	if p.CanModify() {
+		<button type="button" class="btn btn--secondary" hx-get={ p.URL(base + "/update") } hx-target="#modal-root">
+			@Icon("pencil")
+			Edit
+		</button>
+		<button type="button" class="btn btn--danger-ghost" hx-get={ p.URL(base + "/delete") } hx-target="#modal-root">
+			@Icon("trash")
+			Delete
+		</button>
+		@newButton(p, newLabel, newPath)
+	}
+}
+
+templ newButton(p Page, label, path string) {
+	if p.CanModify() {
+		<button type="button" class="btn btn--primary" hx-get={ p.URL(path) } hx-target="#modal-root">
+			@Icon("plus")
+			{ label }
+		</button>
+	}
+}
+
+// ---------- REST resource ----------
+
+type RestResourceView struct {
+	IDs      RestIDs
+	Resource domain.RestResource
+	Address  string
+}
+
+templ RestResourcePage(p Page, v RestResourceView) {
+	@Layout(p) {
+		@Header(PageHead{
+			Title:   v.Resource.Name,
+			Badges:  resourceURIBadge(v.Resource.URI),
+			Meta:    Endpoint(v.Address, false),
+			Actions: entityActions(p, v.IDs.ResourcePath(), "New method", v.IDs.ResourcePath()+"/method/new"),
+		})
+		<section class="section">
+			<form id="bulk-methods" class="bulk">
+				@BulkToolbar(sectionTitle("Methods", len(v.Resource.Methods)), nil, restBulk(p, v.IDs.ResourcePath()+"/method", "bulk-methods", true, false))
+				if len(v.Resource.Methods) == 0 {
+					<div class="card">
+						@EmptyState(Empty{Icon: "list", Title: "No methods yet", Text: "Add a method (GET, POST, …) to answer requests on this URI."}, newButton(p, "New method", v.IDs.ResourcePath()+"/method/new"))
+					</div>
+				} else {
+					<div class="table-wrap">
+						<table class="table">
+							<thead>
+								<tr>
+									if p.CanModify() {
+										<th class="col-check">
+											@SelectAll()
+										</th>
+									}
+									<th>Method</th>
+									<th>Name</th>
+									<th>Status</th>
+									<th>Strategy</th>
+									<th>Forwarded endpoint</th>
+								</tr>
+							</thead>
+							<tbody>
+								for _, m := range v.Resource.Methods {
+									<tr>
+										if p.CanModify() {
+											<td class="col-check">
+												@RowCheck(m.ID, string(m.HTTPMethod)+" "+m.Name)
+											</td>
+										}
+										<td>
+											@MethodBadge(m.HTTPMethod)
+										</td>
+										<td><a class="row-link" href={ p.SafeURL(RestMethodPath(v.IDs.Project, v.IDs.App, v.IDs.Resource, m.ID)) }>{ m.Name }</a></td>
+										<td>
+											@ModeBadge(string(m.Status))
+										</td>
+										<td>
+											@StrategyBadge(string(m.ResponseStrategy))
+										</td>
+										<td class="mono truncate">{ OrDash(m.ForwardedEndpoint) }</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				}
+			</form>
+		</section>
+	}
+}
+
+templ resourceURIBadge(uri string) {
+	<span class="endpoint">
+		@URI(uri)
+	</span>
+}
+
+// ---------- REST method ----------
+
+type RestMethodView struct {
+	IDs     RestIDs
+	Method  domain.RestMethod
+	URI     string
+	Address string
+	Curl    string
+}
+
+templ RestMethodPage(p Page, v RestMethodView) {
+	@Layout(p) {
+		@Header(PageHead{
+			Prefix:  MethodBadge(v.Method.HTTPMethod),
+			Title:   v.Method.Name,
+			Badges:  methodBadges(v),
+			Actions: entityActions(p, v.IDs.MethodPath(), "Add response", v.IDs.MethodPath()+"/mockresponse/new"),
+		})
+		<div class="card">
+			<div class="strip">
+				@stripItem("Mode", ModeBadge(string(v.Method.Status)))
+				@stripItem("Response strategy", StrategyBadge(string(v.Method.ResponseStrategy)))
+				@stripItem("Network delay", delayValue(v.Method))
+				@stripItem("Default response", text(OrDash(v.Method.DefaultResponseName)))
+				@stripItem("Forwarded endpoint", monoText(OrDash(v.Method.ForwardedEndpoint)))
+				@stripItem("Automatic forward", text(BoolLabel(v.Method.AutomaticForward)))
+			</div>
+		</div>
+		<div class="grid-detail section">
+			<form id="bulk-responses" class="bulk stack">
+				<div class="card">
+					<div class="card__head">
+						@sectionTitle("Mock responses", len(v.Method.MockResponses))
+						<div class="toolbar__right">
+							if p.CanModify() {
+								<div class="bulkbar" role="group" aria-label="Bulk actions">
+									<span class="bulkbar__count" data-bulk-count>0 selected</span>
+									@BulkButtons(BulkActions{Base: p.URL(v.IDs.MethodPath() + "/mockresponse"), Form: "bulk-responses", Status: true, Duplicate: true, Delete: true})
+								</div>
+							}
+							if v.Method.ResponseStrategy == domain.RestStrategySequence && len(v.Method.MockResponses) > 0 {
+								<span class="mono muted toolbar__filter">Sequence: next response is #{ Itoa(v.Method.CurrentResponseSequenceIndex%len(v.Method.MockResponses) + 1) }</span>
+							}
+						</div>
+					</div>
+					if len(v.Method.MockResponses) == 0 {
+						@EmptyState(Empty{Icon: "inbox", Title: "No mock responses yet", Text: "This method has no responses yet. Requests will return the default body."}, newButton(p, "Add response", v.IDs.MethodPath()+"/mockresponse/new"))
+					} else {
+						<div class="table-wrap">
+							<table class="table">
+								<thead>
+									<tr>
+										if p.CanModify() {
+											<th class="col-check">
+												@SelectAll()
+											</th>
+										}
+										<th class="num">#</th>
+										<th>Name</th>
+										<th>Status</th>
+										<th>HTTP status</th>
+										<th>Content-Type</th>
+										<th>Match</th>
+									</tr>
+								</thead>
+								<tbody>
+									for i, r := range v.Method.MockResponses {
+										<tr class={ templ.KV("is-disabled", r.Status == domain.RestMockResponseDisabled) }>
+											if p.CanModify() {
+												<td class="col-check">
+													@RowCheck(r.ID, r.Name)
+												</td>
+											}
+											<td class="num mono">{ Itoa(i + 1) }</td>
+											<td>
+												<a class="row-link" href={ p.SafeURL(RestResponsePath(v.IDs.Project, v.IDs.App, v.IDs.Resource, v.IDs.Method, r.ID)) }>{ r.Name }</a>
+												if r.ID == v.Method.DefaultMockResponseID {
+													@DefaultBadge()
+												}
+											</td>
+											<td>
+												@ResponseBadge(string(r.Status))
+											</td>
+											<td>
+												@StatusBadge(r.HTTPStatusCode)
+											</td>
+											<td class="mono">{ OrDash(HeaderValue(r.HTTPHeaders, "Content-Type")) }</td>
+											<td class="mono muted">{ MatchSummary(r) }</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					}
+				</div>
+			</form>
+			<div class="stack">
+				<div class="card">
+					<div class="card__head"><h2 class="card__title">Mock endpoint</h2></div>
+					<div class="card__body stack">
+						@Endpoint(v.Address, true)
+						@CodeBlock("curl", "", v.Curl)
+					</div>
+				</div>
+				<div class="card">
+					<div class="card__head"><h2 class="card__title">Details</h2></div>
+					<div class="card__body">
+						<dl class="kv">
+							<dt>URI</dt>
+							<dd class="mono">
+								@URI(v.URI)
+							</dd>
+							<dt>Simulate delay</dt>
+							<dd>{ BoolLabel(v.Method.SimulateNetworkDelay) }</dd>
+							<dt>Method id</dt>
+							<dd class="mono">{ v.Method.ID }</dd>
+						</dl>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}
+
+templ methodBadges(v RestMethodView) {
+	@ModeBadge(string(v.Method.Status))
+	<span class="endpoint">
+		@URI(v.URI)
+	</span>
+}
+
+templ stripItem(label string, value templ.Component) {
+	<div class="strip__item">
+		<span class="strip__label">{ label }</span>
+		<span class="strip__value">
+			@value
+		</span>
+	</div>
+}
+
+templ text(s string) {
+	{ s }
+}
+
+templ monoText(s string) {
+	<span class="mono">{ s }</span>
+}
+
+templ delayValue(m domain.RestMethod) {
+	if m.SimulateNetworkDelay != nil && *m.SimulateNetworkDelay {
+		<span class="mono">{ Itoa(int(domain.Deref(m.NetworkDelay))) } ms</span>
+	} else {
+		<span class="muted">Off</span>
+	}
+}
+
+// ---------- Dialogs ----------
+
+// EntityForm is the create/update dialog of projects, applications,
+// resources, methods and mock responses; Show* select the fields.
+type EntityForm struct {
+	Modal
+	Name            string
+	Description     string
+	URI             string
+	HTTPMethod      string
+	Status          string
+	ShowDescription bool
+	ShowURI         bool
+	ShowMethod      bool
+	ShowStatus      bool
+	Error           string
+	// Hint is shown above the fields.
+	Hint string
+}
+
+templ EntityDialog(v EntityForm) {
+	@ModalDialog(v.Modal) {
+		@FormError(v.Error)
+		if v.Hint != "" {
+			<p class="muted">{ v.Hint }</p>
+		}
+		@FormField(Field{Label: "Name", For: "entity-name"}) {
+			@TextInput(Input{ID: "entity-name", Name: "name", Value: v.Name, Required: true, Autofocus: true})
+		}
+		if v.ShowMethod {
+			@FormField(Field{Label: "HTTP method", For: "entity-method"}) {
+				@Select("entity-method", "httpMethod", HTTPMethodOptions(), v.HTTPMethod)
+			}
+		}
+		if v.ShowURI {
+			@FormField(Field{Label: "URI", For: "entity-uri", Help: "Path pattern such as /customers/{id}; a query template like /search?q={q} is allowed."}) {
+				@TextInput(Input{ID: "entity-uri", Name: "uri", Value: v.URI, Mono: true, Placeholder: "/customers/{id}", Required: true})
+			}
+		}
+		if v.ShowStatus {
+			@FormField(Field{Label: "Status", For: "entity-status"}) {
+				@Select("entity-status", "status", ResponseStatusOptions(), v.Status)
+			}
+		}
+		if v.ShowDescription {
+			@FormField(Field{Label: "Description", For: "entity-description", Help: "Optional."}) {
+				<textarea class="textarea" id="entity-description" name="description" rows="3">{ v.Description }</textarea>
+			}
+		}
+	}
+}
+
+// RestMethodForm is the "Update method" dialog (RestMethod.js).
+type RestMethodForm struct {
+	Modal
+	Method domain.RestMethod
+	Error  string
+}
+
+templ RestMethodDialog(v RestMethodForm) {
+	@ModalDialog(v.Modal) {
+		@FormError(v.Error)
+		<div class="form-row">
+			@FormField(Field{Label: "Name", For: "method-name"}) {
+				@TextInput(Input{ID: "method-name", Name: "name", Value: v.Method.Name, Required: true, Autofocus: true})
+			}
+			@FormField(Field{Label: "HTTP method", For: "method-type"}) {
+				@Select("method-type", "httpMethod", HTTPMethodOptions(), string(v.Method.HTTPMethod))
+			}
+		</div>
+		<div class="form-row">
+			@FormField(Field{Label: "Status", For: "method-status"}) {
+				@Select("method-status", "status", RestMethodStatusOptions(), string(v.Method.Status))
+			}
+			@FormField(Field{Label: "Response strategy", For: "method-strategy"}) {
+				@Select("method-strategy", "responseStrategy", RestStrategyOptions(), string(v.Method.ResponseStrategy))
+			}
+		</div>
+		@FormField(Field{Label: "Forwarded endpoint", For: "method-endpoint", Help: "Used by the Forwarded, Recording and Record once modes."}) {
+			@TextInput(Input{ID: "method-endpoint", Name: "forwardedEndpoint", Value: v.Method.ForwardedEndpoint, Mono: true, Placeholder: "https://api.example.com"})
+		}
+		@Switch("method-autoforward", "automaticForward", "Automatic forward with no match", domain.Deref(v.Method.AutomaticForward))
+		<div class="form-row">
+			@FormField(Field{Label: "Network delay", For: "method-delay"}) {
+				<div class="input-group">
+					<input class="input input--mono" type="number" min="0" step="1" id="method-delay" name="networkDelay" value={ delayInput(v.Method.NetworkDelay) }/>
+					<span class="input-group__suffix">ms</span>
+				</div>
+			}
+			@FormField(Field{Label: "Default response", For: "method-default", Help: "Returned when no response matches."}) {
+				@Select("method-default", "defaultMockResponseId", DefaultResponseOptions(v.Method.MockResponses), v.Method.DefaultMockResponseID)
+			}
+		</div>
+		@Switch("method-simulate", "simulateNetworkDelay", "Simulate network delay", domain.Deref(v.Method.SimulateNetworkDelay))
+	}
+}
+
+func delayInput(d *int64) string {
+	if d == nil {
+		return ""
+	}
+	return Itoa(int(*d))
+}
+
+// DefinitionForm is the "Import definition" dialog.
+type DefinitionForm struct {
+	Modal
+	Type             string
+	Source           string // file | url
+	URL              string
+	GenerateResponse bool
+	Error            string
+}
+
+templ DefinitionDialog(p Page, v DefinitionForm, base string) {
+	@ModalDialog(v.Modal) {
+		@FormError(v.Error)
+		<input type="hidden" name="definitionType" value={ v.Type }/>
+		<input type="hidden" name="source" value={ v.Source }/>
+		if v.Source == "url" {
+			@FormField(Field{Label: "Definition URL", For: "definition-url"}) {
+				@TextInput(Input{ID: "definition-url", Name: "url", Value: v.URL, Type: "url", Mono: true, Placeholder: "https://example.com/openapi.yaml", Required: true, Autofocus: true})
+			}
+		} else {
+			@FormField(Field{Label: "Definition file", For: "definition-file"}) {
+				<div class="dropzone">
+					@IconSized("upload", "icon--20")
+					<span>Drop a { DefinitionLabel(v.Type) } file here or <span class="mono">browse</span></span>
+					<span class="dropzone__name" id="definition-file-name"></span>
+					<input type="file" id="definition-file" name="file" required data-file-label="definition-file-name"/>
+				</div>
+			}
+		}
+		@Checkbox("definition-generate", "generateResponse", "Generate responses for each operation", v.GenerateResponse)
+	}
+}
+
+templ DefinitionTabs(p Page, base, typ, source string) {
+	<div class="tabs" role="tablist" aria-label="Source">
+		<button type="button" class="tab" role="tab" aria-selected={ boolString(source != "url") } hx-get={ p.URL(base + "/definition?type=" + typ) } hx-target="#modal-root">File upload</button>
+		<button type="button" class="tab" role="tab" aria-selected={ boolString(source == "url") } hx-get={ p.URL(base + "/definition?source=url&type=" + typ) } hx-target="#modal-root">URL</button>
+	</div>
+}
+
+// DefinitionLabel names a RestDefinitionType as in the import menu.
+func DefinitionLabel(t string) string {
+	for _, d := range RestDefinitionTypes {
+		if d.Value == t {
+			return d.Label
+		}
+	}
+	return t
+}
+
+// ---------- Options ----------
+
+func HTTPMethodOptions() []Option {
+	out := make([]Option, 0, len(domain.HTTPMethods))
+	for _, m := range domain.HTTPMethods {
+		out = append(out, Option{Value: string(m), Label: string(m)})
+	}
+	return out
+}
+
+func enumOptions(values ...string) []Option {
+	out := make([]Option, 0, len(values))
+	for _, v := range values {
+		out = append(out, Option{Value: v, Label: EnumLabel(v)})
+	}
+	return out
+}
+
+func RestMethodStatusOptions() []Option {
+	return enumOptions("MOCKED", "DISABLED", "FORWARDED", "RECORDING", "RECORD_ONCE", "ECHO")
+}
+
+func RestStrategyOptions() []Option {
+	return []Option{
+		{Value: string(domain.RestStrategyRandom), Label: "Random"},
+		{Value: string(domain.RestStrategySequence), Label: "Sequence"},
+		{Value: string(domain.RestStrategyQueryMatch), Label: "Query match"},
+		{Value: string(domain.RestStrategyXPath), Label: "XPath"},
+		{Value: string(domain.RestStrategyJSONPath), Label: "JSON Path"},
+		{Value: string(domain.RestStrategyHeaderQueryMatch), Label: "Header query match"},
+	}
+}
+
+func ResponseStatusOptions() []Option { return enumOptions("ENABLED", "DISABLED") }
+
+func DefaultResponseOptions(rs []domain.RestMockResponse) []Option {
+	out := []Option{{Value: "", Label: "None"}}
+	for _, r := range rs {
+		out = append(out, Option{Value: r.ID, Label: r.Name + " (" + Itoa(r.HTTPStatusCode) + ")"})
+	}
+	return out
+}
+
+// MatchSummary describes the matchers of a mock response for the table.
+func MatchSummary(r domain.RestMockResponse) string {
+	var parts []string
+	add := func(n int, one, many string) {
+		if n > 0 {
+			parts = append(parts, Plural(n, one, many))
+		}
+	}
+	add(len(r.ParameterQueries), "parameter", "parameters")
+	add(len(r.HeaderQueries), "header", "headers")
+	add(len(r.JSONPathExpressions), "JSON path", "JSON paths")
+	add(len(r.XPathExpressions), "XPath", "XPaths")
+	if len(parts) == 0 {
+		return "—"
+	}
+	return joinDot(parts)
+}

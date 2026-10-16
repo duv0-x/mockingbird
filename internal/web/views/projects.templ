@@ -1,0 +1,257 @@
+package views
+
+import "github.com/duv0-x/mockingbird/internal/domain"
+
+// ProjectRow is a row of the project overview.
+type ProjectRow struct {
+	domain.OverviewProject
+	Endpoints int
+	Counts    map[string]int
+}
+
+// Projects is the project overview (ProjectOverview.js, DESIGN.md §9.2).
+type Projects struct {
+	Rows      []ProjectRow
+	Total     int // projects before filtering
+	Filtered  int // projects matching the filter
+	Endpoints int
+	Mocked    int
+	Requests  int // events of the last 24h
+	Query     string
+	Type      string // "" | rest | soap
+	Page      int
+	Pages     int
+	From, To  int
+}
+
+func (v Projects) pageURL(p Page, page int) string {
+	return p.URL("/web") + projectsQuery(v.Query, v.Type, page)
+}
+
+func (v Projects) typeURL(p Page, t string) string {
+	return p.URL("/web") + projectsQuery(v.Query, t, 1)
+}
+
+templ ProjectsPage(p Page, v Projects) {
+	@Layout(p) {
+		@Header(PageHead{
+			Title:   "Projects",
+			Badges:  projectsCount(v),
+			Actions: projectsActions(p),
+		})
+		<div class="stats">
+			@stat("Projects", Itoa(v.Total))
+			@stat("Endpoints", Itoa(v.Endpoints))
+			@stat("Mocked endpoints", Itoa(v.Mocked))
+			@stat("Requests (24h)", Itoa(v.Requests))
+		</div>
+		@ProjectTable(p, v)
+	}
+}
+
+templ projectsCount(v Projects) {
+	<span class="muted">{ Plural(v.Total, "project", "projects") } · { Plural(v.Endpoints, "endpoint", "endpoints") }</span>
+}
+
+templ projectsActions(p Page) {
+	if p.CanModify() {
+		<button type="button" class="btn btn--secondary" hx-get={ p.URL("/web/project/new?tab=import") } hx-target="#modal-root">
+			@Icon("upload")
+			Import
+		</button>
+		<button type="button" class="btn btn--primary" hx-get={ p.URL("/web/project/new") } hx-target="#modal-root">
+			@Icon("plus")
+			New project
+		</button>
+	}
+}
+
+templ stat(label, value string) {
+	<div class="stat">
+		<div class="stat__label">{ label }</div>
+		<div class="stat__value">{ value }</div>
+	</div>
+}
+
+// ProjectTable is the filterable table; htmx swaps it on search, type filter
+// and paging.
+templ ProjectTable(p Page, v Projects) {
+	<form id="project-table" class="bulk" action={ p.SafeURL("/web") } method="get" hx-get={ p.URL("/web") } hx-target="#project-table" hx-swap="outerHTML" hx-push-url="true" hx-trigger="input changed delay:250ms from:#project-search, search from:#project-search, change from:.project-type">
+		@BulkToolbar(projectFilter(v), projectTypeFilter(p, v), projectBulk(p))
+		if v.Total == 0 {
+			<div class="card">
+				@EmptyState(Empty{Icon: "folder", Title: "Create your first mock project", Text: "Projects group the REST applications or SOAP ports you mock."}, projectsActions(p))
+			</div>
+		} else {
+			<div class="table-wrap">
+				<table class="table">
+					<thead>
+						<tr>
+							if p.CanModify() {
+								<th class="col-check">
+									@SelectAll()
+								</th>
+							}
+							<th>Name</th>
+							<th>Type</th>
+							<th class="num">Endpoints</th>
+							<th>Modes</th>
+							<th>Updated</th>
+						</tr>
+					</thead>
+					<tbody id="rows">
+						for _, r := range v.Rows {
+							<tr>
+								if p.CanModify() {
+									<td class="col-check">
+										@RowCheck(r.ID, r.Name)
+									</td>
+								}
+								<td>
+									<a class="row-link mono" href={ p.SafeURL("/web/" + string(r.Type) + "/project/" + r.ID) }>{ r.Name }</a>
+									if r.Description != "" {
+										<span class="row-sub">{ r.Description }</span>
+									}
+								</td>
+								<td>
+									@TypeBadge(projectTypeLabel(r.Type))
+								</td>
+								<td class="num mono">{ Itoa(r.Endpoints) }</td>
+								<td>
+									@ModeBar(r.Counts)
+								</td>
+								<td class="mono nowrap" title={ FormatTime(r.Updated) }>{ Ago(r.Updated) }</td>
+							</tr>
+						}
+						if len(v.Rows) == 0 {
+							<tr>
+								<td colspan="6">
+									@EmptyState(Empty{Icon: "search", Title: "No matching projects", Text: "Try another name or type filter."}, nil)
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+				<div class="table-foot">
+					if v.Filtered > 0 {
+						<span>Showing { Itoa(v.From) }–{ Itoa(v.To) } of { Itoa(v.Filtered) }</span>
+					} else {
+						<span>Showing 0 of 0</span>
+					}
+					<span class="pager">
+						<span class="mono">Page { Itoa(v.Page) } of { Itoa(v.Pages) }</span>
+						if v.Page > 1 {
+							<a class="btn btn--ghost btn--sm btn--icon" href={ templ.SafeURL(v.pageURL(p, v.Page-1)) } hx-get={ v.pageURL(p, v.Page-1) } hx-target="#project-table" hx-swap="outerHTML" hx-push-url="true" aria-label="Previous page">
+								@Icon("chevron-left")
+							</a>
+						}
+						if v.Page < v.Pages {
+							<a class="btn btn--ghost btn--sm btn--icon" href={ templ.SafeURL(v.pageURL(p, v.Page+1)) } hx-get={ v.pageURL(p, v.Page+1) } hx-target="#project-table" hx-swap="outerHTML" hx-push-url="true" aria-label="Next page">
+								@Icon("chevron-right")
+							</a>
+						}
+					</span>
+				</div>
+			</div>
+		}
+	</form>
+}
+
+templ projectFilter(v Projects) {
+	<label class="search">
+		<span class="sr-only">Filter projects</span>
+		@Icon("search")
+		<input class="input" type="search" id="project-search" name="q" value={ v.Query } placeholder="Filter projects…" autocomplete="off"/>
+	</label>
+}
+
+templ projectTypeFilter(p Page, v Projects) {
+	<div class="segmented" role="radiogroup" aria-label="Project type">
+		@typeOption("", "All", v.Type)
+		@typeOption("rest", "REST", v.Type)
+		@typeOption("soap", "SOAP", v.Type)
+	</div>
+}
+
+templ typeOption(value, label, current string) {
+	<label>
+		<input class="project-type" type="radio" name="type" value={ value } checked?={ value == current }/>
+		{ label }
+	</label>
+}
+
+templ projectBulk(p Page) {
+	if p.CanModify() {
+		<button type="button" class="btn btn--danger-ghost btn--sm" hx-get={ p.URL("/web/project/delete") } hx-include="#project-table" hx-target="#modal-root">
+			@Icon("trash")
+			Delete
+		</button>
+	}
+}
+
+func projectTypeLabel(t domain.ProjectType) string {
+	if t == domain.ProjectTypeSOAP {
+		return "SOAP"
+	}
+	return "REST"
+}
+
+// NewProject is the "New project" dialog: a blank project or an import.
+type NewProject struct {
+	Modal
+	Tab         string // blank | import
+	Name        string
+	Description string
+	Type        string // rest | soap
+	Error       string
+}
+
+templ NewProjectDialog(v NewProject) {
+	@ModalDialog(v.Modal) {
+		@FormError(v.Error)
+		if v.Tab == "import" {
+			@FormField(Field{Label: "Project type", For: "import-type"}) {
+				<div class="segmented segmented--block" id="import-type" role="radiogroup" aria-label="Project type">
+					<label><input type="radio" name="type" value="rest" checked?={ v.Type != "soap" }/>REST</label>
+					<label><input type="radio" name="type" value="soap" checked?={ v.Type == "soap" }/>SOAP</label>
+				</div>
+			}
+			@FormField(Field{Label: "Project file", For: "import-file", Help: "A CastleMock export (.xml) or a mockingbird project file (.json). The project keeps its ids."}) {
+				<div class="dropzone">
+					@IconSized("upload", "icon--20")
+					<span>Drop a file here or <span class="mono">browse</span></span>
+					<span class="dropzone__name" id="import-file-name"></span>
+					<input type="file" id="import-file" name="file" accept=".xml,.json,application/xml,text/xml,application/json" required data-file-label="import-file-name"/>
+				</div>
+			}
+		} else {
+			@FormField(Field{Label: "Name", For: "project-name"}) {
+				@TextInput(Input{ID: "project-name", Name: "name", Value: v.Name, Required: true, Autofocus: true})
+			}
+			@FormField(Field{Label: "Type", For: "project-type"}) {
+				<div class="choice" id="project-type" role="radiogroup" aria-label="Project type">
+					<label>
+						<input type="radio" name="type" value="rest" checked?={ v.Type != "soap" }/>
+						<span class="choice__title">REST</span>
+						<span class="choice__desc">Applications, resources and methods</span>
+					</label>
+					<label>
+						<input type="radio" name="type" value="soap" checked?={ v.Type == "soap" }/>
+						<span class="choice__title">SOAP</span>
+						<span class="choice__desc">Ports and operations from a WSDL</span>
+					</label>
+				</div>
+			}
+			@FormField(Field{Label: "Description", For: "project-description", Help: "Optional."}) {
+				<textarea class="textarea" id="project-description" name="description" rows="3">{ v.Description }</textarea>
+			}
+		}
+	}
+}
+
+templ NewProjectTabs(p Page, tab string) {
+	<div class="tabs" role="tablist" aria-label="New project">
+		<button type="button" class="tab" role="tab" aria-selected={ boolString(tab != "import") } hx-get={ p.URL("/web/project/new") } hx-target="#modal-root">Blank</button>
+		<button type="button" class="tab" role="tab" aria-selected={ boolString(tab == "import") } hx-get={ p.URL("/web/project/new?tab=import") } hx-target="#modal-root">Import</button>
+	</div>
+}
