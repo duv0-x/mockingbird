@@ -1,26 +1,292 @@
 package views
 
-// Layout is a structural stub. T5 replaces its markup following design/.
-templ Layout(p Page) {
+// htmxConfig makes 422 (form validation errors) swappable and keeps other
+// error statuses as errors (DESIGN.md §8). History snapshots are disabled so
+// pages are always re-rendered by the server.
+const htmxConfig = `{"responseHandling":[{"code":"204","swap":false},{"code":"[23]..","swap":true},{"code":"422","swap":true},{"code":"409","swap":true},{"code":"[45]..","swap":false,"error":true}],"historyCacheSize":0,"refreshOnHistoryMiss":true,"scrollIntoViewOnBoost":false}`
+
+// Base is the HTML document shared by every page: tokens, fonts, htmx and the
+// theme bootstrap (an explicit choice is kept in localStorage, otherwise the
+// OS preference applies through tokens.css).
+templ Base(p Page) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
 			<meta charset="utf-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
-			<title>{ p.Title }</title>
+			<title>{ pageTitle(p) }</title>
+			<meta name="htmx-config" content={ htmxConfig }/>
+			<meta name="mockingbird-version" content={ p.Version }/>
+			<script>try{var t=localStorage.getItem("mb-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+			<link rel="icon" href={ p.Asset("img/favicon.svg") } type="image/svg+xml"/>
+			<link rel="icon" href={ p.Asset("img/favicon-32.png") } sizes="32x32" type="image/png"/>
+			<link rel="apple-touch-icon" href={ p.Asset("img/favicon-180.png") }/>
+			<link rel="preload" href={ p.ContextPath + "/static/fonts/inter-latin-wght-normal.woff2" } as="font" type="font/woff2" crossorigin/>
+			<link rel="stylesheet" href={ p.Asset("css/tokens.css") }/>
 			<link rel="stylesheet" href={ p.Asset("css/mockingbird.css") }/>
 			<script src={ p.Asset("js/htmx.min.js") } defer></script>
+			<script src={ p.Asset("js/mockingbird.js") } defer></script>
 		</head>
-		<body>
-			<main>
-				{ children... }
-			</main>
-		</body>
+		{ children... }
 	</html>
 }
 
-templ Placeholder(p Page) {
+func pageTitle(p Page) string {
+	if p.Title == "" || p.Title == "mockingbird" {
+		return "mockingbird"
+	}
+	return p.Title + " · mockingbird"
+}
+
+// Layout is the application shell (DESIGN.md §5): top bar, sidebar with the
+// primary nav and the project tree, breadcrumbs and the scrolling main area.
+templ Layout(p Page) {
+	@Base(p) {
+		<body hx-boost="true" hx-indicator="#top-progress">
+			<div class="shell">
+				@topbar(p)
+				@sidebar(p)
+				<main class="main" id="main">
+					<div id="top-progress" class="progress" aria-hidden="true"></div>
+					<div class="main__inner">
+						if len(p.Crumbs) > 0 {
+							@Breadcrumbs(p.Crumbs)
+						}
+						{ children... }
+					</div>
+				</main>
+			</div>
+			<div id="modal-root"></div>
+			<div id="toasts" class="toasts" role="status" aria-live="polite">
+				if p.Flash != nil {
+					@Toast(*p.Flash)
+				}
+			</div>
+		</body>
+	}
+}
+
+templ topbar(p Page) {
+	<header class="topbar">
+		<a class="brand" href={ p.SafeURL("/web") } aria-label="mockingbird home">
+			@Logo("top")
+		</a>
+		<div class="topbar__spacer"></div>
+		<div class="topbar__actions">
+			<button type="button" class="btn btn--ghost btn--icon" data-theme-toggle aria-label="Theme: system" title="Theme: system">
+				<span data-theme-icon="system">
+					@Icon("monitor")
+				</span>
+				<span data-theme-icon="light" hidden>
+					@Icon("sun")
+				</span>
+				<span data-theme-icon="dark" hidden>
+					@Icon("moon")
+				</span>
+			</button>
+			<a class="btn btn--ghost btn--icon" href={ p.SafeURL("/doc/api/rest") } hx-boost="false" target="_blank" rel="noopener" aria-label="REST API documentation" title="REST API documentation">
+				@Icon("help")
+			</a>
+			if p.User != nil {
+				<span class="topbar__sep" aria-hidden="true"></span>
+				<details class="menu usermenu">
+					<summary aria-label="Account menu">
+						<span class="avatar" aria-hidden="true">{ Initials(p.User) }</span>
+						<span>{ p.User.Username }</span>
+						@Icon("chevron-down")
+					</summary>
+					<div class="menu__panel">
+						<div class="menu__label">{ string(p.User.Role) }</div>
+						<a class="menu__item" href={ p.SafeURL("/web/profile") }>
+							@Icon("user")
+							Profile
+						</a>
+						<div class="menu__sep"></div>
+						<a class="menu__item" href={ p.SafeURL("/web/logout") } hx-boost="false">
+							@Icon("log-out")
+							Sign out
+						</a>
+					</div>
+				</details>
+			}
+		</div>
+	</header>
+}
+
+templ sidebar(p Page) {
+	<nav class="sidebar" aria-label="Primary">
+		<div class="sidebar__nav">
+			@navLink(p, NavProjects, "/web", "folder", "Projects")
+			@navLink(p, NavEvents, "/web/event", "activity", "Events")
+			if p.IsAdmin() {
+				@navLink(p, NavUsers, "/web/user", "users", "Users")
+				@navLink(p, NavSystem, "/web/system", "settings", "System")
+			}
+		</div>
+		<div class="sidebar__section" id="sidebar-tree">
+			if p.Tree != nil {
+				<div class="sidebar__heading">Project explorer</div>
+				<ul class="tree">
+					@TreeItem(*p.Tree)
+				</ul>
+			} else {
+				<div class="sidebar__heading">
+					<span>Projects</span>
+					if p.CanModify() {
+						<button type="button" class="btn btn--ghost btn--sm btn--icon" aria-label="New project" title="New project" hx-get={ p.URL("/web/project/new") } hx-target="#modal-root">
+							@Icon("plus")
+						</button>
+					}
+				</div>
+				<ul class="tree">
+					for _, pr := range p.Projects {
+						<li class="tree__row">
+							<a class="tree__link" href={ p.SafeURL("/web/" + string(pr.Type) + "/project/" + pr.ID) } title={ pr.Name }>
+								<span class="tree__label tree__label--mono">{ pr.Name }</span>
+								<span class="tree__meta">{ string(pr.Type) }</span>
+							</a>
+						</li>
+					}
+					if len(p.Projects) == 0 {
+						<li class="tree__empty">No projects yet</li>
+					}
+				</ul>
+			}
+		</div>
+		<div class="sidebar__footer">
+			<a href={ p.SafeURL("/doc/api/rest") } hx-boost="false" target="_blank" rel="noopener">
+				@Icon("book")
+				API docs
+			</a>
+			<span class="mono" title="mockingbird version">{ p.Version }</span>
+		</div>
+	</nav>
+}
+
+templ navLink(p Page, key, path, icon, label string) {
+	<a class="navlink" href={ p.SafeURL(path) } if p.Nav == key {
+	aria-current="page"
+} title={ label }>
+		@Icon(icon)
+		<span class="navlink__label">{ label }</span>
+	</a>
+}
+
+// TreeItem renders one node of the sidebar context tree. Collapsed nodes with
+// a ChildrenURL fetch their children the first time they are opened.
+templ TreeItem(n TreeNode) {
+	<li>
+		if n.Leaf() {
+			<div class="tree__row">
+				@treeRow(n, false)
+			</div>
+		} else {
+			<details open?={ n.Open }>
+				<summary class="tree__row">
+					@treeRow(n, true)
+				</summary>
+				if n.Loaded {
+					<ul class="tree">
+						@TreeChildren(n.Children)
+					</ul>
+				} else {
+					<ul class="tree" hx-get={ n.ChildrenURL } hx-trigger="toggle once from:closest details" hx-swap="innerHTML">
+						<li class="tree__empty">Loading…</li>
+					</ul>
+				}
+			</details>
+		}
+	</li>
+}
+
+// TreeChildren is the fragment returned by lazy tree endpoints.
+templ TreeChildren(nodes []TreeNode) {
+	for _, c := range nodes {
+		@TreeItem(c)
+	}
+	if len(nodes) == 0 {
+		<li class="tree__empty">Empty</li>
+	}
+}
+
+templ treeRow(n TreeNode, branch bool) {
+	if branch {
+		<span class="tree__chevron">
+			@Icon("chevron-right")
+		</span>
+	} else {
+		<span class="tree__spacer"></span>
+	}
+	<a class="tree__link" href={ templ.SafeURL(n.Href) } title={ n.Label } if n.Current {
+	aria-current="page"
+}>
+		if n.Method != "" {
+			<span class={ "badge", "badge-method", "badge-method--sm", MethodClass(n.Method) }>{ string(n.Method) }</span>
+		}
+		<span class={ "tree__label", templ.KV("tree__label--mono", n.Mono) }>{ n.Label }</span>
+		if n.Meta != "" {
+			<span class="tree__meta">{ n.Meta }</span>
+		}
+		if n.Mode != "" {
+			<span class={ "dot", "dot--" + ModeSlug(n.Mode) } title={ EnumLabel(n.Mode) }></span>
+		}
+	</a>
+}
+
+// Logo is the mark + wordmark, inlined so it follows the theme: the bird uses
+// the text colour and the echo arc the accent (DESIGN.md §12). id keeps the
+// mask id unique when the logo appears more than once.
+templ Logo(id string) {
+	<svg class="brand__mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+		<defs>
+			<mask id={ "mb-cut-" + id }>
+				<rect width="64" height="64" fill="#fff"></rect>
+				<path d="M27.5 26.5 L39.5 35.5 L30.5 44.5" fill="none" stroke="#000" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"></path>
+				<circle cx="38" cy="16.5" r="1.8" fill="#000"></circle>
+			</mask>
+		</defs>
+		<g fill="currentColor" mask={ "url(#mb-cut-" + id + ")" }>
+			<circle cx="36" cy="18" r="8.5"></circle>
+			<path d="M42 14 L53 18.5 L42 21.5 Z"></path>
+			<path d="M29.5 12.5 C22 20 21 33 26.5 41.5 L31 46.5 C42 46 49 38 47.5 27 C46.8 22 44.5 17.5 40 12 Z"></path>
+			<path d="M26 39 L7 53 L10.5 57 L33 46 Z"></path>
+		</g>
+		<path class="logo-arc" d="M56 11.5 A10 10 0 0 1 56 25.5" fill="none" stroke-width="3.6" stroke-linecap="round"></path>
+	</svg>
+	<svg class="brand__word" viewBox="-1.5 4 141 28" role="img" aria-label="mockingbird">
+		<g stroke="currentColor" fill="currentColor">
+			<g fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+				<path d="M1.2 24V12M1.2 16a4 4 0 0 1 8 0v8M9.2 16a4 4 0 0 1 8 0v8"></path>
+				<circle cx="26.8" cy="18" r="6"></circle>
+				<path d="M46.64 13.76a6 6 0 1 0 0 8.48"></path>
+				<path d="M50.8 6v18M58 12l-7.2 6.6M53.6 16.2l5 7.8"></path>
+				<path d="M62.6 12v12"></path>
+				<path d="M67.2 24V12M67.2 16.6a4.4 4.4 0 0 1 8.8 0V24"></path>
+				<circle cx="86" cy="18" r="6"></circle>
+				<path d="M92 12v13a5 5 0 0 1-9.6 2"></path>
+				<path d="M96.6 6v18"></path>
+				<circle cx="102.6" cy="18" r="6"></circle>
+				<path d="M112.6 12v12"></path>
+				<path d="M117.2 24V12M117.2 17.4a5.4 5.4 0 0 1 6.6-5.2"></path>
+				<circle cx="132" cy="18" r="6"></circle>
+				<path d="M138 6v18"></path>
+			</g>
+			<circle cx="62.6" cy="7.4" r="1.5"></circle>
+			<circle cx="112.6" cy="7.4" r="1.5"></circle>
+		</g>
+	</svg>
+}
+
+// ErrorPage renders 403/404/500 inside the shell.
+templ ErrorPage(p Page, code int, title, msg string) {
 	@Layout(p) {
-		<p>mockingbird { p.Version }: UI not implemented yet.</p>
+		<div class="errorpage">
+			<div class="errorpage__code">{ Itoa(code) }</div>
+			<h1 class="empty__title">{ title }</h1>
+			<p class="muted">{ msg }</p>
+			<div class="empty__actions">
+				<a class="btn btn--secondary" href={ p.SafeURL("/web") }>Back to projects</a>
+			</div>
+		</div>
 	}
 }

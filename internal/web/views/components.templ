@@ -1,0 +1,589 @@
+package views
+
+import "github.com/duv0-x/mockingbird/internal/domain"
+
+// Icon renders a 16px Lucide icon.
+templ Icon(name string) {
+	@templ.Raw(IconSVG(name, ""))
+}
+
+// IconSized renders a Lucide icon with an extra class (icon--20, icon--32).
+templ IconSized(name, class string) {
+	@templ.Raw(IconSVG(name, class))
+}
+
+// Breadcrumbs mirrors the URL; the last crumb is the current page.
+templ Breadcrumbs(crumbs []Crumb) {
+	<nav class="crumbs" aria-label="Breadcrumb">
+		<ol>
+			for i, c := range crumbs {
+				<li>
+					if i == len(crumbs)-1 || c.Href == "" {
+						<span class={ templ.KV("mono", c.Mono) } aria-current="page" title={ c.Label }>{ c.Label }</span>
+					} else {
+						<a class={ templ.KV("mono", c.Mono) } href={ templ.SafeURL(c.Href) } title={ c.Label }>{ c.Label }</a>
+					}
+				</li>
+			}
+		</ol>
+	</nav>
+}
+
+// PageHead is the page header: title, badges, subtitle, meta line and actions.
+type PageHead struct {
+	Title   string
+	Sub     string
+	Badges  templ.Component
+	Meta    templ.Component
+	Actions templ.Component
+	// Prefix is rendered before the title (e.g. a method badge).
+	Prefix templ.Component
+}
+
+templ Header(h PageHead) {
+	<div class="pagehead">
+		<div class="pagehead__main">
+			<div class="pagehead__title">
+				if h.Prefix != nil {
+					@h.Prefix
+				}
+				<h1>{ h.Title }</h1>
+				if h.Badges != nil {
+					@h.Badges
+				}
+			</div>
+			if h.Sub != "" {
+				<p class="pagehead__sub">{ h.Sub }</p>
+			}
+			if h.Meta != nil {
+				<div class="pagehead__meta">
+					@h.Meta
+				</div>
+			}
+		</div>
+		if h.Actions != nil {
+			<div class="pagehead__actions">
+				@h.Actions
+			</div>
+		}
+	</div>
+}
+
+// ---------- Badges ----------
+
+templ MethodBadge(m domain.HTTPMethod) {
+	<span class={ "badge", "badge-method", MethodClass(m) }>{ string(m) }</span>
+}
+
+templ StatusBadge(code int) {
+	<span class={ "badge", StatusClass(code) } title={ StatusText(code) }>{ Itoa(code) }</span>
+}
+
+// ModeBadge renders a RestMethodStatus / SoapOperationStatus.
+templ ModeBadge(mode string) {
+	<span class={ "badge", "badge-mode", "badge-mode--" + ModeSlug(mode) }>
+		switch mode {
+			case "FORWARDED":
+				@Icon("arrow-right")
+			case "ECHO":
+				@Icon("rotate")
+		}
+		{ EnumLabel(mode) }
+	</span>
+}
+
+templ StrategyBadge(s string) {
+	<span class="badge badge-strategy">{ EnumLabel(s) }</span>
+}
+
+templ TypeBadge(t string) {
+	<span class="badge badge-type">{ t }</span>
+}
+
+templ RoleBadge(r domain.Role) {
+	<span class={ "badge", "badge-role--" + ModeSlug(string(r)) }>{ string(r) }</span>
+}
+
+templ UserStatusBadge(s domain.UserStatus) {
+	<span class={ "badge", "badge-user-status--" + ModeSlug(string(s)) }>{ string(s) }</span>
+}
+
+// ResponseBadge renders ENABLED / DISABLED of a mock response.
+templ ResponseBadge(status string) {
+	<span class={ "badge", "badge-response--" + ModeSlug(status) }>{ EnumLabel(status) }</span>
+}
+
+templ DefaultBadge() {
+	<span class="badge badge--default" title="Default response">Default</span>
+}
+
+templ CountBadge(n int) {
+	<span class="badge badge--count">{ Itoa(n) }</span>
+}
+
+// ModeBar is the stacked mode summary bar with its legend (DESIGN.md §7.5).
+templ ModeBar(counts map[string]int) {
+	<div class="modebar" title={ ModeLegend(counts) }>
+		<div class="modebar__track" role="img" aria-label={ ModeLegend(counts) }>
+			for _, mc := range ModeCounts(counts) {
+				<span class={ "modebar__seg", "modebar__seg--" + ModeSlug(mc.Mode) } style={ segWidth(mc.Count, ModeTotal(counts)) }></span>
+			}
+		</div>
+		<span class="modebar__legend">{ ModeLegend(counts) }</span>
+	</div>
+}
+
+// ModeLegendBadges lists every mode with its colour.
+templ ModeLegendBadges() {
+	<div class="legend">
+		for _, m := range ModeOrder {
+			@ModeBadge(m)
+		}
+	</div>
+}
+
+// ---------- Copy, endpoint, URI ----------
+
+templ CopyButton(text string) {
+	<button type="button" class="btn btn--ghost btn--sm btn--icon" data-copy={ text } aria-label="Copy" title="Copy">
+		@Icon("copy")
+	</button>
+}
+
+// Endpoint is a copyable mono URL.
+templ Endpoint(url string, block bool) {
+	<span class={ "endpoint", templ.KV("endpoint--block", block) }>
+		<span class="endpoint__text" title={ url }>{ url }</span>
+		@CopyButton(url)
+	</span>
+}
+
+// URI highlights the {params} of a resource URI.
+templ URI(uri string) {
+	<span class="uri">
+		for _, part := range SplitURI(uri) {
+			if part.Param {
+				<span class="uri__param">{ part.Text }</span>
+			} else {
+				{ part.Text }
+			}
+		}
+	</span>
+}
+
+// ---------- Empty state ----------
+
+type Empty struct {
+	Icon  string
+	Title string
+	Text  string
+}
+
+templ EmptyState(e Empty, actions templ.Component) {
+	<div class="empty">
+		@IconSized(e.Icon, "icon--32")
+		<p class="empty__title">{ e.Title }</p>
+		if e.Text != "" {
+			<p class="empty__text">{ e.Text }</p>
+		}
+		if actions != nil {
+			<div class="empty__actions">
+				@actions
+			</div>
+		}
+	</div>
+}
+
+// ---------- Toasts ----------
+
+templ Toast(f Flash) {
+	<div class={ "toast", "toast--" + f.Type } role={ toastRole(f.Type) }>
+		@Icon(toastIcon(f.Type))
+		<div class="toast__msg">{ f.Msg }</div>
+		<button type="button" class="btn btn--ghost btn--sm btn--icon" data-toast-close aria-label="Dismiss">
+			@Icon("x")
+		</button>
+	</div>
+}
+
+func toastRole(t string) string {
+	if t == "error" {
+		return "alert"
+	}
+	return "status"
+}
+
+func toastIcon(t string) string {
+	switch t {
+	case "success":
+		return "check"
+	case "error", "warning":
+		return "alert"
+	}
+	return "info"
+}
+
+// ---------- Forms ----------
+
+type Option struct {
+	Value string
+	Label string
+}
+
+// Field wraps a control with its label, help text and error (DESIGN.md §7.2).
+type Field struct {
+	Label string
+	For   string
+	Help  string
+	Error string
+}
+
+templ FormField(f Field) {
+	<div class="field">
+		if f.Label != "" {
+			<label class="field__label" for={ f.For }>{ f.Label }</label>
+		}
+		{ children... }
+		if f.Error != "" {
+			<p class="field__error" id={ f.For + "-error" }>
+				@Icon("alert")
+				{ f.Error }
+			</p>
+		} else if f.Help != "" {
+			<p class="field__help">{ f.Help }</p>
+		}
+	</div>
+}
+
+templ FormError(msg string) {
+	if msg != "" {
+		<div class="alert alert--error" role="alert">
+			@Icon("alert")
+			<span>{ msg }</span>
+		</div>
+	}
+}
+
+// Input is a text input; mono for technical values.
+type Input struct {
+	ID          string
+	Name        string
+	Value       string
+	Type        string
+	Placeholder string
+	Mono        bool
+	Required    bool
+	Invalid     bool
+	Autofocus   bool
+	Attrs       templ.Attributes
+}
+
+templ TextInput(in Input) {
+	<input
+		class={ "input", templ.KV("input--mono", in.Mono) }
+		id={ in.ID }
+		name={ in.Name }
+		type={ inputType(in.Type) }
+		value={ in.Value }
+		if in.Placeholder != "" {
+			placeholder={ in.Placeholder }
+		}
+		required?={ in.Required }
+		autofocus?={ in.Autofocus }
+		if in.Invalid {
+			aria-invalid="true"
+			aria-describedby={ in.ID + "-error" }
+		}
+		{ in.Attrs... }
+	/>
+}
+
+func inputType(t string) string {
+	if t == "" {
+		return "text"
+	}
+	return t
+}
+
+templ Select(id, name string, options []Option, selected string) {
+	<select class="select" id={ id } name={ name }>
+		for _, o := range options {
+			<option value={ o.Value } selected?={ o.Value == selected }>{ o.Label }</option>
+		}
+	</select>
+}
+
+// Switch is a checkbox styled as a toggle; it posts value "true" when on.
+templ Switch(id, name, label string, checked bool) {
+	<label class="switch" for={ id }>
+		<input type="checkbox" role="switch" id={ id } name={ name } value="true" checked?={ checked }/>
+		<span class="switch__track" aria-hidden="true"></span>
+		<span>{ label }</span>
+	</label>
+}
+
+// SwitchRow is a full-width switch with the label on the left (settings panels).
+templ SwitchRow(id, name, label string, checked bool) {
+	<label class="switch switch--row" for={ id }>
+		<input type="checkbox" role="switch" id={ id } name={ name } value="true" checked?={ checked }/>
+		<span class="switch__track" aria-hidden="true"></span>
+		<span>{ label }</span>
+	</label>
+}
+
+templ Checkbox(id, name, label string, checked bool) {
+	<label class="check" for={ id }>
+		<input type="checkbox" id={ id } name={ name } value="true" checked?={ checked }/>
+		<span>{ label }</span>
+	</label>
+}
+
+// HiddenIDs carries a bulk selection through a dialog form.
+templ HiddenIDs(ids []string) {
+	for _, id := range ids {
+		<input type="hidden" name="ids" value={ id }/>
+	}
+}
+
+// ItemList lists the entities a bulk action applies to.
+templ ItemList(items []string) {
+	<ul class="itemlist">
+		for _, it := range items {
+			<li>{ it }</li>
+		}
+	</ul>
+}
+
+// ---------- Modals ----------
+
+// Modal describes a dialog form (DESIGN.md §7.9). It is loaded into
+// #modal-root by htmx; Standalone renders the same form as a page so the
+// action also works on a direct visit.
+type Modal struct {
+	Title  string
+	Size   string // "" (480) | md (640) | lg (896)
+	Action string // form action; empty for informational dialogs
+	// Multipart is set for file uploads.
+	Multipart bool
+	Submit    string
+	// Danger styles the submit button as a destructive action.
+	Danger bool
+	// SubmitID lets a confirm-by-name input enable the submit button.
+	SubmitID       string
+	SubmitDisabled bool
+	CancelHref     string
+	Standalone     bool
+	// Tabs, when set, is rendered between the header and the body.
+	Tabs templ.Component
+}
+
+templ ModalDialog(m Modal) {
+	if m.Standalone {
+		<div class="modal-page">
+			@modalForm(m) {
+				{ children... }
+			}
+		</div>
+	} else {
+		<dialog class={ "modal", templ.KV("modal--"+m.Size, m.Size != "") } aria-labelledby="modal-title">
+			@modalForm(m) {
+				{ children... }
+			}
+		</dialog>
+	}
+}
+
+templ modalForm(m Modal) {
+	if m.Action != "" {
+		<form
+			method="post"
+			action={ templ.SafeURL(m.Action) }
+			hx-post={ m.Action }
+			hx-target="#modal-root"
+			hx-swap="innerHTML"
+			if m.Multipart {
+				enctype="multipart/form-data"
+				hx-encoding="multipart/form-data"
+			}
+		>
+			@modalHead(m)
+			<div class="modal__body">
+				{ children... }
+			</div>
+			<div class="modal__foot">
+				@modalCancel(m, "Cancel")
+				<button
+					type="submit"
+					class={ "btn", templ.KV("btn--primary", !m.Danger), templ.KV("btn--danger", m.Danger) }
+					if m.SubmitID != "" {
+						id={ m.SubmitID }
+					}
+					disabled?={ m.SubmitDisabled }
+				>{ m.Submit }</button>
+			</div>
+		</form>
+	} else {
+		@modalHead(m)
+		<div class="modal__body">
+			{ children... }
+		</div>
+		<div class="modal__foot">
+			@modalCancel(m, "Close")
+		</div>
+	}
+}
+
+templ modalHead(m Modal) {
+	<div class="modal__head">
+		<h2 class="modal__title" id="modal-title">{ m.Title }</h2>
+		if m.Standalone {
+			<a class="btn btn--ghost btn--icon" href={ templ.SafeURL(m.CancelHref) } aria-label="Close">
+				@Icon("x")
+			</a>
+		} else {
+			<button type="button" class="btn btn--ghost btn--icon" data-close-modal aria-label="Close">
+				@Icon("x")
+			</button>
+		}
+	</div>
+	if m.Tabs != nil {
+		@m.Tabs
+	}
+}
+
+templ modalCancel(m Modal, label string) {
+	if m.Standalone {
+		<a class="btn btn--secondary" href={ templ.SafeURL(m.CancelHref) }>{ label }</a>
+	} else {
+		<button type="button" class="btn btn--secondary" data-close-modal>{ label }</button>
+	}
+}
+
+// ModalPage wraps a standalone dialog in the shell (direct visits, no JS).
+templ ModalPage(p Page, dialog templ.Component) {
+	@Layout(p) {
+		@dialog
+	}
+}
+
+// Confirm is a destructive confirmation (DESIGN.md §7.10). With ConfirmName
+// set the user must type that name before the danger button is enabled.
+type Confirm struct {
+	Modal
+	Message     string
+	Items       []string
+	IDs         []string
+	ConfirmName string
+	Error       string
+}
+
+templ ConfirmDialog(c Confirm) {
+	@ModalDialog(confirmModal(c)) {
+		@FormError(c.Error)
+		<p>{ c.Message }</p>
+		if len(c.Items) > 0 {
+			@ItemList(c.Items)
+		}
+		@HiddenIDs(c.IDs)
+		if c.ConfirmName != "" {
+			<div class="field" data-confirm-name={ c.ConfirmName } data-confirm-button="confirm-submit">
+				<label class="field__label" for="confirm-name">Type <strong class="mono">{ c.ConfirmName }</strong> to confirm</label>
+				<input class="input input--mono" id="confirm-name" name="confirmName" autocomplete="off" required/>
+			</div>
+		}
+	}
+}
+
+func confirmModal(c Confirm) Modal {
+	m := c.Modal
+	m.Danger = true
+	if c.ConfirmName != "" {
+		m.SubmitID = "confirm-submit"
+		m.SubmitDisabled = true
+	}
+	return m
+}
+
+// ---------- Tables ----------
+
+// BulkToolbar sits above a bulk table: filter controls on the left (hidden
+// while rows are selected) and the bulk bar with its actions.
+templ BulkToolbar(filter templ.Component, right templ.Component, actions templ.Component) {
+	<div class="toolbar">
+		<div class="toolbar__left">
+			<div class="toolbar__filter toolbar__left">
+				if filter != nil {
+					@filter
+				}
+			</div>
+			if actions != nil {
+				<div class="bulkbar" role="group" aria-label="Bulk actions">
+					<span class="bulkbar__count" data-bulk-count>0 selected</span>
+					@actions
+				</div>
+			}
+		</div>
+		if right != nil {
+			<div class="toolbar__right">
+				@right
+			</div>
+		}
+	</div>
+}
+
+// SelectAll is the header checkbox of a bulk table.
+templ SelectAll() {
+	<input type="checkbox" data-select-all aria-label="Select all rows"/>
+}
+
+// RowCheck is the per-row checkbox of a bulk table.
+templ RowCheck(id, label string) {
+	<input type="checkbox" name="ids" value={ id } aria-label={ "Select " + label }/>
+}
+
+// ---------- Code ----------
+
+// CodeBlock is a read-only code block with a copy button.
+templ CodeBlock(title, lang, content string) {
+	<div class="codebox">
+		<div class="codebox__head">
+			<span class="codebox__title">{ title }</span>
+			<span class="codebox__tools">
+				if lang != "" {
+					<span class="badge badge-strategy">{ lang }</span>
+				}
+				@CopyButton(content)
+			</span>
+		</div>
+		<pre class="code code--wrap">{ content }</pre>
+	</div>
+}
+
+// Tab is a client-side tab (panels live in the same form).
+type Tab struct {
+	ID    string
+	Label string
+	Count int
+	// ShowCount renders the count pill even when it is 0.
+	ShowCount bool
+}
+
+templ TabList(label string, tabs []Tab, selected string) {
+	<div class="tabs" role="tablist" aria-label={ label }>
+		for _, t := range tabs {
+			<button type="button" class="tab" role="tab" id={ "tab-" + t.ID } data-tab aria-controls={ "panel-" + t.ID } aria-selected={ boolString(t.ID == selected) }>
+				{ t.Label }
+				if t.Count > 0 || t.ShowCount {
+					@CountBadge(t.Count)
+				}
+			</button>
+		}
+	</div>
+}
+
+func boolString(b bool) string {
+	if b {
+		return "true"
+	}
+	return "false"
+}

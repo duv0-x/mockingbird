@@ -1,0 +1,303 @@
+/*
+ * mockingbird design tokens — v1 (2026-10-15)
+ * Source of truth: design/DESIGN.md · Stitch project 6436094703429753238
+ *
+ * Theme resolution:
+ *   1. no attribute            → follows the OS (prefers-color-scheme)
+ *   2. <html data-theme="light"> → forced light
+ *   3. <html data-theme="dark">  → forced dark
+ * Light values live in :root; dark values are declared once in a shared block
+ * reused by the media query and by [data-theme="dark"].
+ */
+
+/* ---------- Theme-independent tokens ---------- */
+:root {
+  /* Typography */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --text-2xs: 0.6875rem;  /* 11px — badges, table headers (uppercase) */
+  --text-xs:  0.75rem;    /* 12px — meta, help text */
+  --text-sm:  0.8125rem;  /* 13px — body / tables (default UI size) */
+  --text-md:  0.875rem;   /* 14px — section headings, inputs on forms */
+  --text-lg:  1.125rem;   /* 18px — modal titles, card titles */
+  --text-xl:  1.5rem;     /* 24px — page titles */
+  --text-2xl: 2rem;       /* 32px — login / empty-state hero only */
+  --text-code: 0.78125rem;/* 12.5px — code blocks */
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-code: 1.6;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --tracking-tight: -0.01em;
+  --tracking-caps: 0.04em;
+
+  /* Spacing — 4px base */
+  --space-0: 0;
+  --space-1: 0.25rem;  /* 4  */
+  --space-2: 0.5rem;   /* 8  */
+  --space-3: 0.75rem;  /* 12 */
+  --space-4: 1rem;     /* 16 */
+  --space-5: 1.25rem;  /* 20 */
+  --space-6: 1.5rem;   /* 24 */
+  --space-8: 2rem;     /* 32 */
+  --space-10: 2.5rem;  /* 40 */
+  --space-12: 3rem;    /* 48 */
+  --space-16: 4rem;    /* 64 */
+
+  /* Radius */
+  --radius-sm: 3px;    /* badges, kbd */
+  --radius-md: 4px;    /* buttons, inputs, table containers */
+  --radius-lg: 6px;    /* cards, modals, menus, toasts */
+  --radius-full: 999px;/* dots, avatars, toggles */
+
+  /* Sizing */
+  --control-h-sm: 1.75rem; /* 28px */
+  --control-h:    2rem;    /* 32px */
+  --control-h-lg: 2.5rem;  /* 40px — login only */
+  --row-h:        2.25rem; /* 36px table row */
+  --row-h-compact: 1.75rem;/* 28px tree row */
+
+  /* Layout */
+  --topbar-h: 3rem;        /* 48px */
+  --sidebar-w: 15rem;      /* 240px */
+  --sidebar-w-collapsed: 3.5rem;
+  --content-max: 90rem;    /* 1440px */
+  --gutter: var(--space-6);
+  --modal-w-sm: 30rem;     /* 480px */
+  --modal-w-md: 40rem;     /* 640px */
+  --modal-w-lg: 56rem;     /* 896px — diff / big editors */
+  --drawer-w: 36rem;       /* 576px — event detail side panel */
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+
+  /* Z-index */
+  --z-sticky: 10;
+  --z-dropdown: 40;
+  --z-overlay: 50;
+  --z-modal: 60;
+  --z-toast: 70;
+
+  /* Focus */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+}
+
+/* ---------- Light theme (default values) ---------- */
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg:            #F7F8FA;
+  --surface:       #FFFFFF;
+  --surface-2:     #F1F3F6;  /* hover rows, code blocks, table headers */
+  --surface-3:     #E9ECF1;  /* pressed, selected-unfocused */
+  --overlay:       rgb(15 17 21 / 0.45);
+
+  --border:        #E3E6EB;
+  --border-strong: #CDD2DA;
+
+  --text:          #14171C;
+  --text-muted:    #5B6472;
+  --text-faint:    #6E7785;  /* placeholders, disabled — not for essential copy */
+  --text-inverse:  #FFFFFF;
+
+  --accent:        #0F766E;
+  --accent-hover:  #115E59;
+  --accent-fg:     #FFFFFF;
+  --accent-text:   #0F766E;  /* links, active nav label */
+  --accent-subtle: rgb(15 118 110 / 0.10);
+  --accent-border: rgb(15 118 110 / 0.35);
+  --focus-ring:    #0F766E;
+
+  --danger:        #B91C1C;
+  --danger-hover:  #991B1B;
+  --danger-fg:     #FFFFFF;
+
+  /* Semantic hues — fg on a 10% tint of the same hue (AA ≥ 4.5:1 at 11px bold) */
+  --green:  #166534;  --green-subtle:  rgb(22 163 74 / 0.10);
+  --blue:   #1D4ED8;  --blue-subtle:   rgb(37 99 235 / 0.10);
+  --amber:  #92400E;  --amber-subtle:  rgb(217 119 6 / 0.12);
+  --violet: #6D28D9;  --violet-subtle: rgb(124 58 237 / 0.10);
+  --red:    #B91C1C;  --red-subtle:    rgb(220 38 38 / 0.10);
+  --orange: #9A3412;  --orange-subtle: rgb(234 88 12 / 0.10);
+  --teal:   #115E59;  --teal-subtle:   rgb(13 148 136 / 0.10);
+  --gray:   #4B5563;  --gray-subtle:   rgb(107 114 128 / 0.12);
+
+  /* Code / syntax (JSON + XML) */
+  --code-bg:      #F6F8FA;
+  --code-gutter:  #8A93A0;
+  --code-key:     #0F5F8A;   /* JSON keys, XML tag names */
+  --code-string:  #166534;
+  --code-number:  #9A3412;
+  --code-literal: #6D28D9;   /* true / false / null */
+  --code-attr:    #92400E;   /* XML attributes */
+  --code-punct:   #5B6472;
+  --code-expr:    #0F766E;   /* ${...} mockingbird expressions */
+  --diff-add-bg:  rgb(22 163 74 / 0.12);
+  --diff-del-bg:  rgb(220 38 38 / 0.10);
+
+  /* Elevation (light uses soft shadows; borders still do most of the work) */
+  --shadow-sm: 0 1px 2px rgb(15 17 21 / 0.06);
+  --shadow-md: 0 4px 12px rgb(15 17 21 / 0.08), 0 1px 3px rgb(15 17 21 / 0.06);
+  --shadow-lg: 0 16px 40px rgb(15 17 21 / 0.16), 0 2px 6px rgb(15 17 21 / 0.08);
+}
+
+/* ---------- Dark theme ---------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bg:            #0F1115;
+    --surface:       #161920;
+    --surface-2:     #1C2029;
+    --surface-3:     #232835;
+    --overlay:       rgb(0 0 0 / 0.6);
+
+    --border:        #2A2F3A;
+    --border-strong: #3A4150;
+
+    --text:          #E6E8EC;
+    --text-muted:    #9BA3B0;
+    --text-faint:    #7D8594;
+    --text-inverse:  #0F1115;
+
+    --accent:        #2DD4BF;
+    --accent-hover:  #5EEAD4;
+    --accent-fg:     #04201C;
+    --accent-text:   #5EEAD4;
+    --accent-subtle: rgb(45 212 191 / 0.12);
+    --accent-border: rgb(45 212 191 / 0.40);
+    --focus-ring:    #5EEAD4;
+
+    --danger:        #DC2626;
+    --danger-hover:  #EF4444;
+    --danger-fg:     #FFFFFF;
+
+    --green:  #4ADE80;  --green-subtle:  rgb(74 222 128 / 0.14);
+    --blue:   #60A5FA;  --blue-subtle:   rgb(96 165 250 / 0.14);
+    --amber:  #FBBF24;  --amber-subtle:  rgb(251 191 36 / 0.14);
+    --violet: #C4B5FD;  --violet-subtle: rgb(196 181 253 / 0.14);
+    --red:    #F87171;  --red-subtle:    rgb(248 113 113 / 0.14);
+    --orange: #FB923C;  --orange-subtle: rgb(251 146 60 / 0.14);
+    --teal:   #2DD4BF;  --teal-subtle:   rgb(45 212 191 / 0.14);
+    --gray:   #9BA3B0;  --gray-subtle:   rgb(155 163 176 / 0.14);
+
+    --code-bg:      #12151B;
+    --code-gutter:  #5B6472;
+    --code-key:     #7DD3FC;
+    --code-string:  #86EFAC;
+    --code-number:  #FDBA74;
+    --code-literal: #C4B5FD;
+    --code-attr:    #FCD34D;
+    --code-punct:   #9BA3B0;
+    --code-expr:    #5EEAD4;
+    --diff-add-bg:  rgb(74 222 128 / 0.12);
+    --diff-del-bg:  rgb(248 113 113 / 0.12);
+
+    --shadow-sm: none;
+    --shadow-md: 0 4px 12px rgb(0 0 0 / 0.35);
+    --shadow-lg: 0 16px 48px rgb(0 0 0 / 0.55);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg:            #0F1115;
+  --surface:       #161920;
+  --surface-2:     #1C2029;
+  --surface-3:     #232835;
+  --overlay:       rgb(0 0 0 / 0.6);
+
+  --border:        #2A2F3A;
+  --border-strong: #3A4150;
+
+  --text:          #E6E8EC;
+  --text-muted:    #9BA3B0;
+  --text-faint:    #7D8594;
+  --text-inverse:  #0F1115;
+
+  --accent:        #2DD4BF;
+  --accent-hover:  #5EEAD4;
+  --accent-fg:     #04201C;
+  --accent-text:   #5EEAD4;
+  --accent-subtle: rgb(45 212 191 / 0.12);
+  --accent-border: rgb(45 212 191 / 0.40);
+  --focus-ring:    #5EEAD4;
+
+  --danger:        #DC2626;
+  --danger-hover:  #EF4444;
+  --danger-fg:     #FFFFFF;
+
+  --green:  #4ADE80;  --green-subtle:  rgb(74 222 128 / 0.14);
+  --blue:   #60A5FA;  --blue-subtle:   rgb(96 165 250 / 0.14);
+  --amber:  #FBBF24;  --amber-subtle:  rgb(251 191 36 / 0.14);
+  --violet: #C4B5FD;  --violet-subtle: rgb(196 181 253 / 0.14);
+  --red:    #F87171;  --red-subtle:    rgb(248 113 113 / 0.14);
+  --orange: #FB923C;  --orange-subtle: rgb(251 146 60 / 0.14);
+  --teal:   #2DD4BF;  --teal-subtle:   rgb(45 212 191 / 0.14);
+  --gray:   #9BA3B0;  --gray-subtle:   rgb(155 163 176 / 0.14);
+
+  --code-bg:      #12151B;
+  --code-gutter:  #5B6472;
+  --code-key:     #7DD3FC;
+  --code-string:  #86EFAC;
+  --code-number:  #FDBA74;
+  --code-literal: #C4B5FD;
+  --code-attr:    #FCD34D;
+  --code-punct:   #9BA3B0;
+  --code-expr:    #5EEAD4;
+  --diff-add-bg:  rgb(74 222 128 / 0.12);
+  --diff-del-bg:  rgb(248 113 113 / 0.12);
+
+  --shadow-sm: none;
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.35);
+  --shadow-lg: 0 16px 48px rgb(0 0 0 / 0.55);
+}
+
+/* ---------- Semantic mappings (theme-agnostic, built on the hues above) ---------- */
+:root {
+  /* HTTP methods */
+  --method-get:     var(--green);  --method-get-bg:     var(--green-subtle);
+  --method-post:    var(--blue);   --method-post-bg:    var(--blue-subtle);
+  --method-put:     var(--amber);  --method-put-bg:     var(--amber-subtle);
+  --method-patch:   var(--violet); --method-patch-bg:   var(--violet-subtle);
+  --method-delete:  var(--red);    --method-delete-bg:  var(--red-subtle);
+  --method-other:   var(--gray);   --method-other-bg:   var(--gray-subtle); /* HEAD, OPTIONS, TRACE */
+
+  /* HTTP status code classes */
+  --status-1xx: var(--gray);   --status-1xx-bg: var(--gray-subtle);
+  --status-2xx: var(--green);  --status-2xx-bg: var(--green-subtle);
+  --status-3xx: var(--blue);   --status-3xx-bg: var(--blue-subtle);
+  --status-4xx: var(--amber);  --status-4xx-bg: var(--amber-subtle);
+  --status-5xx: var(--red);    --status-5xx-bg: var(--red-subtle);
+
+  /* Operation modes (RestMethodStatus / SoapOperationStatus) */
+  --mode-mocked:      var(--teal);   --mode-mocked-bg:      var(--teal-subtle);
+  --mode-forwarded:   var(--blue);   --mode-forwarded-bg:   var(--blue-subtle);
+  --mode-recording:   var(--red);    --mode-recording-bg:   var(--red-subtle);
+  --mode-record-once: var(--orange); --mode-record-once-bg: var(--orange-subtle);
+  --mode-echo:        var(--violet); --mode-echo-bg:        var(--violet-subtle);
+  --mode-disabled:    var(--gray);   --mode-disabled-bg:    var(--gray-subtle);
+
+  /* Feedback */
+  --success: var(--green); --success-bg: var(--green-subtle);
+  --info:    var(--blue);  --info-bg:    var(--blue-subtle);
+  --warning: var(--amber); --warning-bg: var(--amber-subtle);
+  --error:   var(--red);   --error-bg:   var(--red-subtle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+  }
+}

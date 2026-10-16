@@ -1,0 +1,38 @@
+package views
+
+// LoginForm is the state of the sign-in form.
+type LoginForm struct {
+	Username string
+	Next     string
+	Error    string
+}
+
+// Login is the public sign-in page (DESIGN.md §9.1, LoginContainer.js).
+templ Login(p Page, f LoginForm) {
+	@Base(p) {
+		<body>
+			<main class="login">
+				<div class="login__card">
+					<div class="login__brand">
+						@Logo("login")
+					</div>
+					<p class="login__sub">Sign in to your mock server</p>
+					<form class="form" method="post" action={ p.SafeURL("/web/login") }>
+						@FormError(f.Error)
+						<input type="hidden" name="next" value={ f.Next }/>
+						@FormField(Field{Label: "Username", For: "username"}) {
+							@TextInput(Input{ID: "username", Name: "username", Value: f.Username, Required: true, Autofocus: f.Username == "", Invalid: f.Error != "", Attrs: templ.Attributes{"autocomplete": "username", "autocapitalize": "none", "spellcheck": "false"}})
+						}
+						@FormField(Field{Label: "Password", For: "password"}) {
+							@TextInput(Input{ID: "password", Name: "password", Type: "password", Required: true, Autofocus: f.Username != "", Invalid: f.Error != "", Attrs: templ.Attributes{"autocomplete": "current-password"}})
+						}
+						<button type="submit" class="btn btn--primary btn--lg btn--block">Sign in</button>
+					</form>
+				</div>
+				<p class="login__foot">
+					{ p.Version } · <a href={ p.SafeURL("/doc/api/rest") }>REST API documentation</a>
+				</p>
+			</main>
+		</body>
+	}
+}
