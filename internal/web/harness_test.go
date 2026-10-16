@@ -154,7 +154,7 @@ func seed(t testing.TB, svc *service.Service, store *servicetest.MemStore) seedI
 	must(err)
 	_, err = svc.UpdateRestMethod(ctx, post.ID, service.RestMethodUpdate{Name: "Create charge", HTTPMethod: domain.MethodPOST, Status: domain.RestMethodForwarded, ResponseStrategy: domain.RestStrategyRandom, ForwardedEndpoint: domain.Ptr("https://api.example.com")})
 	must(err)
-	body := "{\n  \"id\": \"${PATH_PARAMETER(key=\\\"id\\\")}\",\n  \"name\": \"Ada Lovelace\",\n  \"tier\": \"vip\"\n}"
+	body := "{\n  \"id\": \"${PATH_PARAMETER(parameter=\\\"id\\\")}\",\n  \"name\": \"Ada Lovelace\",\n  \"tier\": \"vip\"\n}"
 	mr, err := svc.CreateRestMockResponse(ctx, m.ID, service.RestMockResponseInput{
 		Name: "customer", Body: &body, HTTPStatusCode: domain.Ptr(200), UsingExpressions: domain.Ptr(true),
 		HTTPHeaders:      []domain.HTTPHeader{{Name: "Content-Type", Value: "application/json"}},

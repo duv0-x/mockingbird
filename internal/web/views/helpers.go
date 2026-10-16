@@ -292,3 +292,15 @@ var statusTexts = map[int]string{
 	409: "Conflict", 415: "Unsupported Media Type", 422: "Unprocessable Entity", 429: "Too Many Requests",
 	500: "Internal Server Error", 501: "Not Implemented", 502: "Bad Gateway", 503: "Service Unavailable", 504: "Gateway Timeout",
 }
+
+func joinDot(parts []string) string { return strings.Join(parts, " · ") }
+
+func containsAny(s string, subs ...string) bool {
+	s = strings.ToLower(s)
+	for _, sub := range subs {
+		if strings.Contains(s, sub) {
+			return true
+		}
+	}
+	return false
+}

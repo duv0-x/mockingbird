@@ -1,7 +1,10 @@
 package web
 
 import (
+	"bytes"
+	"mime/multipart"
 	"net/http"
+	"net/http/httptest"
 	"net/url"
 	"strings"
 	"testing"
@@ -177,4 +180,47 @@ func assertContains(t *testing.T, body string, frags ...string) {
 			t.Fatalf("body does not contain %q", f)
 		}
 	}
+}
+
+func TestImportProject(t *testing.T) {
+	t.Parallel()
+	e := newEnv(t)
+	upload := func(role domain.Role, filename, content string) *httptest.ResponseRecorder {
+		var buf bytes.Buffer
+		mw := multipart.NewWriter(&buf)
+		_ = mw.WriteField("type", "rest")
+		if filename != "" {
+			fw, _ := mw.CreateFormFile("file", filename)
+			_, _ = fw.Write([]byte(content))
+		}
+		_ = mw.Close()
+		r := httptest.NewRequest(http.MethodPost, testCtx+"/web/project/import", &buf)
+		r.Host = "mock.test"
+		r.Header.Set("Origin", "http://mock.test")
+		r.Header.Set("Content-Type", mw.FormDataContentType())
+		r.Header.Set("HX-Request", "true")
+		tok, _ := e.auth.Token(e.users[role].ID)
+		r.AddCookie(&http.Cookie{Name: auth.CookieName, Value: tok})
+		w := httptest.NewRecorder()
+		e.engine.ServeHTTP(w, r)
+		return w
+	}
+	t.Run("missing file", func(t *testing.T) {
+		w := upload(domain.RoleModifier, "", "")
+		assertStatus(t, w.Code, http.StatusUnprocessableEntity)
+		assertContains(t, w.Body.String(), "choose a file")
+	})
+	t.Run("unrecognised file", func(t *testing.T) {
+		w := upload(domain.RoleModifier, "x.txt", "not a project")
+		assertStatus(t, w.Code, http.StatusUnprocessableEntity)
+		assertContains(t, w.Body.String(), "<dialog", "alert--error")
+	})
+	t.Run("too large", func(t *testing.T) {
+		w := upload(domain.RoleModifier, "big.json", strings.Repeat("x", 2<<20))
+		assertStatus(t, w.Code, http.StatusUnprocessableEntity)
+	})
+	t.Run("reader is forbidden", func(t *testing.T) {
+		w := upload(domain.RoleReader, "x.json", "{}")
+		assertStatus(t, w.Code, http.StatusForbidden)
+	})
 }

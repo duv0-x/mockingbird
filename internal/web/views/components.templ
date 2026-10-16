@@ -375,6 +375,8 @@ type Modal struct {
 	Standalone     bool
 	// Tabs, when set, is rendered between the header and the body.
 	Tabs templ.Component
+	// Include is an hx-include selector for values outside the dialog.
+	Include string
 }
 
 templ ModalDialog(m Modal) {
@@ -401,6 +403,9 @@ templ modalForm(m Modal) {
 			hx-post={ m.Action }
 			hx-target="#modal-root"
 			hx-swap="innerHTML"
+			if m.Include != "" {
+				hx-include={ m.Include }
+			}
 			if m.Multipart {
 				enctype="multipart/form-data"
 				hx-encoding="multipart/form-data"

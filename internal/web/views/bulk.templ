@@ -1,0 +1,110 @@
+package views
+
+// Bulk dialogs shared by REST and SOAP tables: update status, update
+// forwarded endpoint, duplicate. Deletes use ConfirmDialog.
+
+// BulkStatus sets the status of the selected entities (or of every method /
+// operation below them).
+type BulkStatus struct {
+	Modal
+	Help     string
+	IDs      []string
+	Items    []string
+	Options  []Option
+	Selected string
+	Error    string
+}
+
+templ BulkStatusDialog(v BulkStatus) {
+	@ModalDialog(v.Modal) {
+		@FormError(v.Error)
+		@HiddenIDs(v.IDs)
+		if len(v.Items) > 0 {
+			@FormField(Field{Label: "Selected"}) {
+				@ItemList(v.Items)
+			}
+		}
+		@FormField(Field{Label: "Status", For: "bulk-status", Help: v.Help}) {
+			@Select("bulk-status", "status", v.Options, v.Selected)
+		}
+	}
+}
+
+// BulkEndpoint sets the forwarded endpoint of the selection.
+type BulkEndpoint struct {
+	Modal
+	Help     string
+	IDs      []string
+	Items    []string
+	Endpoint string
+	Error    string
+}
+
+templ BulkEndpointDialog(v BulkEndpoint) {
+	@ModalDialog(v.Modal) {
+		@FormError(v.Error)
+		@HiddenIDs(v.IDs)
+		if len(v.Items) > 0 {
+			@FormField(Field{Label: "Selected"}) {
+				@ItemList(v.Items)
+			}
+		}
+		@FormField(Field{Label: "Forwarded endpoint", For: "bulk-endpoint", Help: v.Help}) {
+			@TextInput(Input{ID: "bulk-endpoint", Name: "forwardedEndpoint", Value: v.Endpoint, Mono: true, Placeholder: "https://api.example.com", Autofocus: true})
+		}
+	}
+}
+
+// BulkPlain confirms a non-destructive bulk action (duplicate).
+type BulkPlain struct {
+	Modal
+	Message string
+	IDs     []string
+	Items   []string
+}
+
+templ BulkPlainDialog(v BulkPlain) {
+	@ModalDialog(v.Modal) {
+		<p>{ v.Message }</p>
+		@HiddenIDs(v.IDs)
+		@ItemList(v.Items)
+	}
+}
+
+// BulkActions are the standard bulk bar buttons. base is the URL prefix of
+// the bulk dialogs (base+"/status", "/endpoint", "/duplicate", "/delete");
+// form is the id of the bulk form whose checkboxes are included.
+type BulkActions struct {
+	Base      string
+	Form      string
+	Status    bool
+	Endpoint  bool
+	Duplicate bool
+	Delete    bool
+}
+
+templ BulkButtons(b BulkActions) {
+	if b.Status {
+		<button type="button" class="btn btn--secondary btn--sm" hx-get={ b.Base + "/status" } hx-include={ "#" + b.Form } hx-target="#modal-root">
+			Set status
+		</button>
+	}
+	if b.Endpoint {
+		<button type="button" class="btn btn--secondary btn--sm" hx-get={ b.Base + "/endpoint" } hx-include={ "#" + b.Form } hx-target="#modal-root">
+			@Icon("arrow-right")
+			Update endpoint
+		</button>
+	}
+	if b.Duplicate {
+		<button type="button" class="btn btn--secondary btn--sm" hx-get={ b.Base + "/duplicate" } hx-include={ "#" + b.Form } hx-target="#modal-root">
+			@Icon("copy")
+			Duplicate
+		</button>
+	}
+	if b.Delete {
+		<button type="button" class="btn btn--danger-ghost btn--sm" hx-get={ b.Base + "/delete" } hx-include={ "#" + b.Form } hx-target="#modal-root">
+			@Icon("trash")
+			Delete
+		</button>
+	}
+}
