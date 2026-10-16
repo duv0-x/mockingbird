@@ -333,3 +333,6 @@ CI (`.github/workflows/ci.yml`) fails when `*_templ.go` are stale
 
 The project layout and the full contract live in `SPEC.md`; conventions in
 `AGENTS.md`.
+## License
+
+MIT — see [LICENSE](LICENSE). mockingbird ports parts of [Castle Mock](https://github.com/castlemock/castlemock) (Apache-2.0); attribution and third-party notices are in [NOTICE](NOTICE).

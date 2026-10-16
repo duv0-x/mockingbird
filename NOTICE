@@ -1,0 +1,26 @@
+mockingbird
+Copyright (c) 2026 duv0-x
+Licensed under the MIT License (see LICENSE).
+
+mockingbird is an independent Go reimplementation of Castle Mock
+(https://github.com/castlemock/castlemock), which is archived and no longer
+maintained. Parts of mockingbird (mock matching semantics, the response
+expression grammar and functions, the CastleMock data-dir/export formats and
+test cases derived from them) were ported from Castle Mock's source code.
+
+Castle Mock
+Copyright 2015 Karl Dahlgren and the Castle Mock contributors
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use those portions except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+"Castle Mock" is used only to describe compatibility; mockingbird is not
+affiliated with or endorsed by the Castle Mock project.
+
+Third-party assets bundled in internal/web/static:
+- htmx 2.0.4 (https://htmx.org), BSD Zero-Clause License.
+- Inter and JetBrains Mono fonts, SIL Open Font License 1.1
+  (see internal/web/static/fonts/OFL-*.txt).
